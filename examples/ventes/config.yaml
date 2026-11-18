@@ -1,0 +1,15 @@
+# Example overrides for the sample "ventes" dataset.
+# Usage: pbip-generator build examples/ventes/data -c examples/ventes/config.yaml -o output
+name: Ventes
+culture: fr-FR
+tables:
+  Ventes:
+    measures:
+      - name: Panier moyen
+        expression: DIVIDE([Total Montant], [Nb Ventes])
+        format: '#,##0.00 €'
+        folder: KPI
+      - name: Clients actifs
+        expression: DISTINCTCOUNT(Ventes[ClientID])
+        format: '#,##0'
+        folder: KPI

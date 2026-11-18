@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Fetch Microsoft Fabric JSON schemas
+        run: |
+          git clone --depth=1 --filter=blob:none --sparse https://github.com/microsoft/json-schemas.git .schemas-src
+          git -C .schemas-src sparse-checkout set fabric
+          echo "PBIP_SCHEMAS_DIR=$GITHUB_WORKSPACE/.schemas-src/fabric" >> "$GITHUB_ENV"
+      - run: pip install -e ".[dev]"
+      - run: ruff check src tests
+      - run: ruff format --check src tests
+      - run: pytest -v
+      - name: Build the example project
+        run: pbip-generator build examples/ventes/data -c examples/ventes/config.yaml -o output

@@ -1,0 +1,131 @@
+# pbip-generator
+
+Generate a complete, ready-to-open **Power BI project** from a folder of CSV or Excel files.
+
+It writes a [Power BI Project (PBIP)](https://learn.microsoft.com/power-bi/developer/projects/projects-overview):
+a semantic model in **TMDL** and a report in **PBIR**, both plain text. You open the `.pbip` in
+Power BI Desktop, click *Refresh*, and get a working star schema with measures and two report pages.
+
+```
+data/                         output/Ventes/
+├── clients.csv     ──►       ├── Ventes.pbip
+├── produits.csv              ├── Ventes.SemanticModel/definition/   (TMDL)
+└── ventes.csv                └── Ventes.Report/definition/          (PBIR)
+```
+
+## What it builds
+
+| Layer | Generated automatically |
+|---|---|
+| Power Query | One query per CSV file / Excel sheet, typed columns, a `DataFolder` parameter |
+| Model | Fact/dimension detection, many-to-one relationships, key columns hidden, a cycle-free graph |
+| Calendar | `Calendrier` table spanning the data's full years, month/weekday sort orders, marked as date table |
+| Measures | `Total <column>` per numeric column, `Nb <table>`, and N-1, variation % and year-to-date for the main measure |
+| Report | *Vue d'ensemble* page (slicers, KPI cards, line, column, bar and donut charts) and a *Détail* page (table) |
+
+Everything inferred can be corrected or extended with a YAML file (roles, types, relationships,
+hidden columns, custom DAX measures). Output is deterministic: same input, same files, clean git diffs.
+
+## Install
+
+```bash
+pip install git+https://github.com/<you>/pbip-generator
+# or, from a clone
+pip install -e ".[dev]"
+```
+
+Requires Python 3.10+.
+
+## Usage
+
+```bash
+# 1. Generate
+pbip-generator build path/to/data -o output --name Ventes
+
+# 2. Optional: dump what was inferred, edit it, regenerate
+pbip-generator init-config path/to/data -o config.yaml
+pbip-generator build path/to/data -c config.yaml -o output --overwrite
+```
+
+Useful options:
+
+| Option | Purpose |
+|---|---|
+| `--data-folder "C:\Users\me\data\"` | Folder Power BI reads from, on the machine that opens the project. Defaults to the absolute path of the input folder. Can also be changed later in Power BI (*Transform data > Edit parameters*). |
+| `--copy-data` | Copy the source files into `<project>/data`, to ship the project as a single folder |
+| `-c config.yaml` | Overrides (see [`examples/ventes/config.yaml`](examples/ventes/config.yaml) and the docstring of `config.py`) |
+
+### Config example
+
+```yaml
+tables:
+  Ventes:
+    role: fact
+    types: {CodePostal: string}
+    hide: [Commentaire]
+    measures:
+      - name: Panier moyen
+        expression: DIVIDE([Total Montant], [Nb Ventes])
+        format: '#,##0.00 €'
+relationships:
+  add:
+    - {from: Ventes[MagasinID], to: Magasins[ID]}
+  remove:
+    - {from: Ventes[ProduitID], to: Produits[ProduitID]}
+```
+
+## Opening the project in Power BI Desktop
+
+1. In *File > Options and settings > Options > Preview features*, enable **Power BI Project (.pbip) save option**,
+   **Store semantic model using TMDL format** and **Store reports using enhanced metadata format (PBIR)**
+   (recent Desktop versions may have some of them enabled by default).
+2. Open `<Name>.pbip`. The model loads without data: click **Refresh**.
+3. To get a single file, *File > Save as > .pbix*.
+
+## How inference works
+
+- **Types**: CSV columns are read as text and typed explicitly (int, decimal, date, datetime, boolean, text).
+  Codes with leading zeros stay text. A `;` separator switches to French parsing (`1 234,50`, `31/12/2024`).
+- **Relationships**: a column is linked to a unique column with the same normalized name in another table
+  (`Client_ID` = `ClientID`), or to `ID` in a table named after it (`ClientID` → `Clients[ID]`),
+  when at least 90 % of its values exist on the one side. Any edge that would create a second path
+  between two tables becomes inactive.
+- **Roles**: a table only on the many side is a fact; with no relationship, the table with the most
+  numeric columns is the fact.
+- **Main measure**: amounts (`montant`, `CA`, `sales`, `prix`...) first, then decimals, then integers.
+
+## Development
+
+```bash
+pip install -e ".[dev]"
+git clone --depth=1 --filter=blob:none --sparse https://github.com/microsoft/json-schemas.git .schemas-src
+git -C .schemas-src sparse-checkout set fabric
+PBIP_SCHEMAS_DIR=.schemas-src/fabric pytest
+ruff check src tests && ruff format --check src tests
+```
+
+Every generated JSON file is validated against Microsoft's official
+[Fabric JSON schemas](https://github.com/microsoft/json-schemas/tree/main/fabric) in the test suite.
+
+```
+src/pbip_generator/
+├── inference.py   # read files, infer types, relationships, roles, calendar, measures
+├── config.py      # YAML overrides
+├── mquery.py      # Power Query (M) expressions
+├── tmdl.py        # semantic model writer (TMDL)
+├── layout.py      # automatic report layout
+├── pbir.py        # report writer (PBIR) and PBIP wrapper files
+├── builder.py     # assemble and write the project folder
+└── cli.py
+```
+
+## Limitations
+
+- Import mode only, CSV/Excel sources only (no database connectors yet).
+- No custom theme: the report uses Power BI's default theme.
+- 1:1 relationships are not created automatically (direction is ambiguous): add them in the config.
+- PBIP, TMDL and PBIR are evolving formats; files target the schema versions listed in `pbir.py`.
+
+## License
+
+MIT
