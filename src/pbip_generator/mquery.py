@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import re
 
-from .model import Column, DataType, Project, Table, TableRole
+from .model import Column, DataType, Project, Table
 
 PARAMETER_NAME = "DataFolder"
 _PROMOTED = '#"Promoted Headers"'
@@ -43,7 +43,8 @@ def _type_step(table: Table, previous: str) -> str:
 
 def table_expression(project: Project, table: Table) -> str:
     src = table.source
-    if table.role == TableRole.DATE or src.kind == "date":
+    if src.kind == "date":
+        # Generated calendar. A CSV/Excel table marked as date table keeps its own source.
         return date_table_expression(project)
     path = f"{PARAMETER_NAME} & {m_string(src.file_name)}"
     if src.kind == "csv":

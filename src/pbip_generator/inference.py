@@ -309,7 +309,7 @@ def _assign_roles(tables: list[Table], rels: list[Relationship]) -> None:
 # --------------------------------------------------------------------------- #
 def _add_date_table(project: Project) -> None:
     date_cols = [(t, c) for t in project.facts for c in t.columns if c.data_type == DataType.DATETIME]
-    if not date_cols or project.has_table(DATE_TABLE_NAME):
+    if not date_cols or project.has_table(DATE_TABLE_NAME) or project.date_table is not None:
         return
     cal = Table(
         name=DATE_TABLE_NAME,
@@ -378,7 +378,8 @@ def _add_measures(project: Project) -> None:
         )
         if cal is not None:
             primary = measures[0]
-            date_ref = f"{quote_dax_table(cal.name)}[Date]"
+            key = next((c.name for c in cal.columns if c.is_key), "Date")
+            date_ref = f"{quote_dax_table(cal.name)}[{key}]"
             base = f"[{primary.name}]"
             measures += [
                 Measure(
@@ -474,5 +475,6 @@ def infer_project(
         _add_date_table(project)
     if config.auto_measures:
         _add_measures(project)
+    config.apply_theme(project)
     config.apply_measures(project)
     return project

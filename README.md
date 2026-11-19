@@ -58,7 +58,11 @@ Useful options:
 ### Config example
 
 ```yaml
+theme: theme.json             # a Power BI theme file, path relative to the YAML
 tables:
+  Calendrier:
+    role: date                # your own date table instead of the generated one
+    key: Date                 # its unique date column (marked as date table)
   Ventes:
     role: fact
     types: {CodePostal: string}
@@ -72,6 +76,22 @@ relationships:
     - {from: Ventes[MagasinID], to: Magasins[ID]}
   remove:
     - {from: Ventes[ProduitID], to: Produits[ProduitID]}
+```
+
+### Theme
+
+`theme:` takes the same JSON you would import in Desktop (*View > Themes > Browse for themes*).
+It is written to `<Name>.Report/StaticResources/RegisteredResources/` and registered in
+`report.json`, so the report opens already styled.
+
+### Writing the pages yourself
+
+Automatic pages are a starting point. For a real report, build the `Project` in Python and set
+`project.pages` with your own `Visual` objects (position, roles, title, sort). A `textbox`
+visual takes `text` and `text_size` for page titles:
+
+```python
+Visual("textbox", {}, 16, 16, 600, 56, text="Stock & Reallocation", text_size=24)
 ```
 
 ## Opening the project in Power BI Desktop
@@ -122,7 +142,6 @@ src/pbip_generator/
 ## Limitations
 
 - Import mode only, CSV/Excel sources only (no database connectors yet).
-- No custom theme: the report uses Power BI's default theme.
 - 1:1 relationships are not created automatically (direction is ambiguous): add them in the config.
 - PBIP, TMDL and PBIR are evolving formats; files target the schema versions listed in `pbir.py`.
 
