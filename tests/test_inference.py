@@ -58,14 +58,14 @@ def test_excel_multi_sheet(tmp_path: Path):
     d = tmp_path / "xl"
     d.mkdir()
     with pd.ExcelWriter(d / "classeur.xlsx") as w:
-        pd.DataFrame({"MagasinID": [1, 2], "Ville": ["Paris", "Lyon"]}).to_excel(w, "Magasins", index=False)
+        pd.DataFrame({"MagasinID": [1, 2], "Ville": ["Paris", "Lyon"]}).to_excel(w, sheet_name="Magasins", index=False)
         pd.DataFrame(
             {
                 "MagasinID": [1, 1, 2],
                 "Jour": pd.to_datetime(["2025-01-01", "2025-01-02", "2025-01-02"]),
                 "CA": [10.5, 20.0, 7.25],
             }
-        ).to_excel(w, "Ventes", index=False)
+        ).to_excel(w, sheet_name="Ventes", index=False)
     p = infer_project(d, "Magasins")
     assert {t.name for t in p.tables} == {"Magasins", "Ventes", "Calendrier"}
     assert p.table("Ventes").source.kind == "excel"
