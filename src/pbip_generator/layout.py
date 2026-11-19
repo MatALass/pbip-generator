@@ -38,14 +38,22 @@ def _label_columns(project: Project) -> list[FieldRef]:
 
 
 def _measure_refs(project: Project) -> tuple[list[FieldRef], FieldRef | None, FieldRef | None]:
-    """(base measures, primary measure, variation measure)."""
-    base, variation = [], None
+    """(base measures, primary measure, variation measure).
+
+    Base measures are the automatic ones (folder "Base") and those without a folder. When there
+    are none, for example with ``auto_measures: false`` and every custom measure in its own
+    folder, the custom measures are used instead, so the report is never left without pages.
+    """
+    base, custom, variation = [], [], None
     for t, m in project.all_measures():
         ref = FieldRef(t.name, m.name, is_measure=True)
         if m.display_folder == "Base" or m.display_folder is None:
             base.append(ref)
         elif m.name.endswith("Var % N-1"):
             variation = variation or ref
+        elif m.display_folder != "Temps":
+            custom.append(ref)
+    base = base or custom
     primary = base[0] if base else None
     return base, primary, variation
 

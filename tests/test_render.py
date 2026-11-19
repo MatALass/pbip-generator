@@ -106,3 +106,29 @@ def test_write_project(example_data, tmp_path):
     assert (root / "data" / "ventes.csv").is_file()
     raw = (root / "Ventes.SemanticModel/definition/model.tmdl").read_bytes()
     assert b"\r\n" not in raw
+
+
+def test_custom_measures_only_still_build_report_pages(example_data, tmp_path):
+    """auto_measures: false with measures in custom folders must not give an empty report."""
+    cfg = tmp_path / "config.yaml"
+    cfg.write_text(
+        """auto_measures: false
+tables:
+  Ventes:
+    measures:
+      - name: Chiffre d'affaires
+        expression: SUM(Ventes[Montant])
+        format: '#,##0 €'
+        folder: KPI
+      - name: Nombre de ventes
+        expression: COUNTROWS(Ventes)
+        folder: KPI
+""",
+        encoding="utf-8",
+    )
+    project = infer_project(example_data, "Ventes", config=ProjectConfig.load(cfg))
+    files = render_project(project)
+    pages = json.loads(files["Ventes.Report/definition/pages/pages.json"])
+    assert len(pages["pageOrder"]) == 2
+    visuals = "\n".join(v for k, v in files.items() if k.endswith("visual.json"))
+    assert "Chiffre d'affaires" in visuals
