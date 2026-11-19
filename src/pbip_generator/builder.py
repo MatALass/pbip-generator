@@ -27,6 +27,8 @@ def render_project(project: Project) -> dict[str, str]:
     }
     for rel, content in pbir.render_report_definition(project, pages).items():
         files[f"{report_dir}/definition/{rel}"] = content
+    for rel, content in pbir.render_static_resources(project).items():
+        files[f"{report_dir}/StaticResources/{rel}"] = content
     for rel, content in tmdl.render_definition(project).items():
         files[f"{model_dir}/definition/{rel}"] = content
     return files

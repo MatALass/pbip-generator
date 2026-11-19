@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from typing import Any
 
 from .ids import stable_name, stable_uuid
@@ -90,8 +91,32 @@ def _projection(ref: FieldRef) -> dict:
     }
 
 
+# Version of Power BI Desktop recorded with an imported theme. Desktop only uses it to
+# migrate very old themes, any recent value works.
+THEME_REPORT_VERSION = "5.55"
+
+
+def theme_file_name(project: Project) -> str:
+    raw = str((project.theme or {}).get("name") or project.name)
+    return re.sub(r"[^A-Za-z0-9_-]+", "_", raw).strip("_") + ".json"
+
+
+def render_static_resources(project: Project) -> dict[str, str]:
+    """Files of ``<Name>.Report/StaticResources`` (the custom theme, if any)."""
+    if not project.theme:
+        return {}
+    return {f"RegisteredResources/{theme_file_name(project)}": dumps(project.theme)}
+
+
+def _textbox(v: Visual) -> dict[str, Any]:
+    run = {"value": v.text or "", "textStyle": {"fontWeight": "bold", "fontSize": f"{v.text_size}pt"}}
+    return {"visualType": "textbox", "objects": {"general": [{"properties": {"paragraphs": [{"textRuns": [run]}]}}]}}
+
+
 def render_visual(project: Project, page_id: str, index: int, v: Visual) -> tuple[str, str]:
     name = stable_name(project.name, page_id, str(index), v.visual_type)
+    if v.visual_type == "textbox":
+        return name, dumps(_container(name, index, v, _textbox(v)))
     query: dict[str, Any] = {
         "queryState": {role: {"projections": [_projection(r) for r in refs]} for role, refs in v.roles.items()}
     }
@@ -114,7 +139,11 @@ def render_visual(project: Project, page_id: str, index: int, v: Visual) -> tupl
         visual["visualContainerObjects"] = {
             "title": [{"properties": {"show": _literal(True), "text": _literal(v.title)}}]
         }
-    container = {
+    return name, dumps(_container(name, index, v, visual))
+
+
+def _container(name: str, index: int, v: Visual, visual: dict[str, Any]) -> dict[str, Any]:
+    return {
         "$schema": SCHEMAS["visual"],
         "name": name,
         "position": {
@@ -127,24 +156,37 @@ def render_visual(project: Project, page_id: str, index: int, v: Visual) -> tupl
         },
         "visual": visual,
     }
-    return name, dumps(container)
+
+
+def render_report_json(project: Project) -> dict[str, Any]:
+    report: dict[str, Any] = {"$schema": SCHEMAS["report"], "themeCollection": {}}
+    if project.theme:
+        file_name = theme_file_name(project)
+        report["themeCollection"]["customTheme"] = {
+            "name": file_name,
+            "reportVersionAtImport": THEME_REPORT_VERSION,
+            "type": "RegisteredResources",
+        }
+        report["resourcePackages"] = [
+            {
+                "name": "RegisteredResources",
+                "type": "RegisteredResources",
+                "items": [{"name": file_name, "path": file_name, "type": "CustomTheme"}],
+            }
+        ]
+    report["settings"] = {
+        "useStylableVisualContainerHeader": True,
+        "defaultDrillFilterOtherVisuals": True,
+        "allowChangeFilterTypes": True,
+        "useEnhancedTooltips": True,
+    }
+    return report
 
 
 def render_report_definition(project: Project, pages: list[Page]) -> dict[str, str]:
     files = {
         "version.json": dumps({"$schema": SCHEMAS["version"], "version": "2.0.0"}),
-        "report.json": dumps(
-            {
-                "$schema": SCHEMAS["report"],
-                "themeCollection": {},
-                "settings": {
-                    "useStylableVisualContainerHeader": True,
-                    "defaultDrillFilterOtherVisuals": True,
-                    "allowChangeFilterTypes": True,
-                    "useEnhancedTooltips": True,
-                },
-            }
-        ),
+        "report.json": dumps(render_report_json(project)),
     }
     page_ids = []
     for page_index, page in enumerate(pages):

@@ -66,7 +66,7 @@ def _row(n: int, y: float, h: float) -> list[tuple[float, float, float, float]]:
 def _slicers(project: Project, categories: list[FieldRef]) -> list[Visual]:
     fields: list[FieldRef] = []
     cal = project.date_table
-    if cal is not None:
+    if cal is not None and cal.source.kind == "date":
         fields.append(FieldRef(cal.name, "Année"))
     fields += categories[: 3 - len(fields)]
     if not fields:
@@ -100,7 +100,7 @@ def build_pages(project: Project) -> list[Page]:
     chart_h = (PAGE_H - charts_top - MARGIN - GAP) / 2
     slots = _row(2, charts_top, chart_h) + _row(2, charts_top + chart_h + GAP, chart_h)
     charts: list[Visual] = []
-    if cal is not None:
+    if cal is not None and cal.source.kind == "date":
         month = FieldRef(cal.name, "Année-Mois")
         charts.append(
             Visual(

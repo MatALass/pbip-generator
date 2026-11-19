@@ -4,13 +4,17 @@ Example (every key is optional)::
 
     name: Ventes
     culture: fr-FR
+    theme: theme.json             # Power BI theme, path relative to this file
     data_folder: 'C:\\Users\\me\\Projets\\ventes\\data\\'
     date_table: true
     auto_measures: true
     auto_relationships: true
     tables:
+      Calendrier:
+        role: date                # your own date table, marked as date table
+        key: Date                 # its unique date column
       Ventes:
-        role: fact                # fact | dimension
+        role: fact                # fact | dimension | date
         types: {CodePostal: string}
         hide: [Commentaire]
         measures:
@@ -30,6 +34,7 @@ Example (every key is optional)::
 
 from __future__ import annotations
 
+import json
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -63,6 +68,8 @@ class ProjectConfig:
     auto_relationships: bool = True
     tables: dict[str, dict[str, Any]] = field(default_factory=dict)
     relationships: dict[str, list[dict[str, Any]]] = field(default_factory=dict)
+    theme: str | None = None
+    base_dir: Path | None = field(default=None, repr=False)  # folder of the YAML, for relative paths
 
     # ------------------------------------------------------------------ #
     @classmethod
@@ -73,10 +80,10 @@ class ProjectConfig:
         if not isinstance(raw, dict):
             raise ConfigError("The config root must be a mapping")
         known = set(cls.__dataclass_fields__)
-        unknown = set(raw) - known
+        unknown = set(raw) - (known - {"base_dir"})
         if unknown:
             raise ConfigError(f"Unknown config keys: {sorted(unknown)}")
-        return cls(**raw)
+        return cls(**raw, base_dir=Path(path).resolve().parent)
 
     # ------------------------------------------------------------------ #
     def apply_structure(self, project: Project) -> None:
@@ -105,6 +112,11 @@ class ProjectConfig:
                     col.is_date_only, col.format_string = True, "dd/mm/yyyy"
             for cname in opts.get("hide") or []:
                 table.column(cname).is_hidden = True
+            if "key" in opts:
+                key = table.column(opts["key"])
+                key.is_key = key.is_unique = True
+            if table.role == TableRole.DATE and not any(c.is_key for c in table.columns):
+                raise ConfigError(f"Date table '{tname}' needs a 'key' column (its unique date column)")
 
         for item in self.relationships.get("remove") or []:
             ft, fc = _parse_ref(item.get("from"))
@@ -123,6 +135,20 @@ class ProjectConfig:
             if project.table(ft).role == TableRole.DIMENSION and "role" not in self.tables.get(ft, {}):
                 if not any(r.to_table == ft for r in project.relationships):
                     project.table(ft).role = TableRole.FACT
+
+    def apply_theme(self, project: Project) -> None:
+        if not self.theme:
+            return
+        path = Path(self.theme)
+        if not path.is_absolute() and self.base_dir is not None:
+            path = self.base_dir / path
+        try:
+            theme = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            raise ConfigError(f"Cannot read theme '{path}': {exc}") from exc
+        if not isinstance(theme, dict) or "name" not in theme:
+            raise ConfigError(f"Theme '{path}' must be a JSON object with a 'name'")
+        project.theme = theme
 
     def apply_measures(self, project: Project) -> None:
         for tname, opts in self.tables.items():

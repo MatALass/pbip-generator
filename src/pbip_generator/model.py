@@ -116,6 +116,8 @@ class Visual:
     title: str | None = None
     sort_by: FieldRef | None = None
     sort_descending: bool = True
+    text: str | None = None  # textbox content (visual_type "textbox")
+    text_size: int = 20  # textbox font size, in points
 
 
 @dataclass
@@ -135,6 +137,7 @@ class Project:
     culture: str = "fr-FR"
     data_folder: str = ""  # value of the DataFolder Power Query parameter
     source_dir: Path | None = None
+    theme: dict | None = None  # Power BI report theme (the JSON you would import in Desktop)
 
     def table(self, name: str) -> Table:
         for t in self.tables:
