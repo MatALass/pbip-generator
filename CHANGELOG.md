@@ -20,7 +20,15 @@ All notable changes to this project. The format follows
 - Spec options `totals` (table total row) and `single_select` (slicer with exactly one value).
 - Amounts carry their currency (from the report culture).
 - Large files: inference reads the first 200,000 rows and counts the rest.
-- `CHANGELOG.md`, CI and license badges.
+- Proof of output: a CI job on Windows loads every generated semantic model with TOM (the library
+  Power BI uses), golden files freeze the generated files of the examples, trap datasets cover
+  empty files, duplicate or blank headers, accents, cp1252, multi-sheet workbooks, keys around the
+  90 % match threshold and a one-million-row file (time-limited).
+- Duplicate column names (also differing only by case) and blank headers are reported: Power Query
+  would not find the columns pandas renamed.
+- Manual checklist for Power BI Desktop (`docs/manual-check.md`), MCP walkthrough (`docs/mcp-demo.md`).
+- Release workflow publishing to PyPI with trusted publishing; package metadata.
+- README: screenshot, *Why* and *Out of scope* sections, CI, coverage and license badges.
 
 - MCP server: `PBIP_ALLOWED_ROOTS` limits the folders the tools may read and write. Every path the
   model passes is resolved and checked; with the variable unset, every call is refused.

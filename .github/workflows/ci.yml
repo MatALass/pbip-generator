@@ -53,3 +53,12 @@ jobs:
             Where-Object { $_.Parent.Name -like "*.SemanticModel" } | ForEach-Object FullName)
           if ($folders.Count -eq 0) { throw "no semantic model found" }
           dotnet run --project tools/tmdl-check -c Release -- @folders
+      - name: The check fails on a broken model
+        shell: pwsh
+        run: |
+          Copy-Item tests/golden/ventes-auto/Ventes.SemanticModel/definition broken -Recurse
+          (Get-Content broken/relationships.tmdl -Raw).Replace("toColumn: Clients.ClientID", "toColumn: Clients.Nope") |
+            Set-Content broken/relationships.tmdl -NoNewline
+          dotnet run --project tools/tmdl-check -c Release -- broken
+          if ($LASTEXITCODE -ne 1) { throw "a model with an unknown column was accepted" }
+          $global:LASTEXITCODE = 0
