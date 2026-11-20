@@ -10,7 +10,7 @@ from pathlib import Path
 import pytest
 import yaml
 
-from pbip_generator import SpecError, build_project_from_spec, check_project, parse_spec, render_project
+from pbip_generator import SpecError, build_project_from_spec, check_project, infer_project, parse_spec, render_project
 from pbip_generator.cli import main
 from pbip_generator.spec import TEMPLATE_SLOTS
 from pbip_generator.templates import body_slots
@@ -172,3 +172,31 @@ def test_cli_prints_schema(capsys):
     assert main(["spec-schema"]) == 0
     schema = json.loads(capsys.readouterr().out)
     assert "pages" in schema["required"] and "PageSpec" in schema["$defs"]
+
+
+def test_crowded_chart_suggests_charts_that_fit(example_data, raw_spec):
+    raw_spec["pages"][0]["visuals"][1]["category"] = "Produits[Produit]"  # 25 products in a bar chart
+    (issue,) = _issues(example_data, raw_spec)
+    assert issue.endswith("use a tableEx or a column with fewer values")
+    raw_spec["pages"][0]["visuals"][1]["category"] = "Clients[Région]"
+    raw_spec["pages"][0]["visuals"][2]["category"] = "Calendrier[Mois]"  # 12 months in a donut
+    (issue,) = _issues(example_data, raw_spec)
+    assert "use a clusteredColumnChart or a clusteredBarChart or a tableEx" in issue
+
+
+def test_calendar_columns_count_their_values(example_data, raw_spec):
+    project = build_project_from_spec(example_data, parse_spec(raw_spec))
+    cal = project.table("Calendrier")
+    assert cal.column("Année").distinct_count == 3  # orders in 2024-2025, a few deliveries in 2026
+    assert cal.column("Année-Mois").distinct_count == 36
+    raw_spec["pages"][0]["visuals"][2]["category"] = "Calendrier[Année-Mois]"
+    assert any("has 36 values" in i for i in _issues(example_data, raw_spec))
+
+
+def test_technical_keys_are_hidden(example_data):
+    project = infer_project(example_data, "Ventes")
+    assert project.table("Clients").column("ClientID").is_hidden
+    assert project.table("Produits").column("ProduitID").is_hidden
+    assert project.table("Ventes").column("VenteID").is_hidden
+    assert not project.table("Calendrier").column("Date").is_hidden
+    assert not project.table("Clients").column("Nom client").is_hidden

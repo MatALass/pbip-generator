@@ -13,10 +13,12 @@ authors = [{ name = "Mathieu" }]
 dependencies = ["pandas>=2.0", "openpyxl>=3.1", "PyYAML>=6.0", "pydantic>=2.6"]
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "jsonschema>=4.21", "referencing>=0.35", "ruff>=0.5"]
+mcp = ["mcp>=2.3,<3"]
+dev = ["mcp>=2.3,<3", "pytest>=8", "jsonschema>=4.21", "referencing>=0.35", "ruff>=0.5"]
 
 [project.scripts]
 pbip-generator = "pbip_generator.cli:main"
+pbip-generator-mcp = "pbip_generator.mcp_server:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/pbip_generator"]

@@ -118,6 +118,44 @@ tables, columns and measures (with close-name suggestions), DAX references, a co
 measure is expected, hidden key columns, charts with too many categories, and the number of visuals
 of each template. All issues are reported at once, so the spec can be fixed in one pass.
 
+### MCP server: let Claude write the spec
+
+`pbip-generator-mcp` is a local [MCP](https://modelcontextprotocol.io) server (stdio) for Claude
+Desktop, Claude Code or any MCP client. Claude decides what the report shows; this code writes
+every file. Tools:
+
+| Tool | Does |
+|---|---|
+| `profile_data` | Tables, columns (type, number of values, hidden keys), relationships and automatic measures of a data folder |
+| `get_spec_schema` | JSON schema of the report spec, the template slots and the writing guide |
+| `validate_spec` | Every issue of a spec against the data, without writing anything |
+| `generate_report` | Writes `<output_dir>/<name>/<name>.pbip`, data copied next to it by default |
+
+```bash
+pip install -e ".[mcp]"
+```
+
+Claude Code, from the folder you work in (use the full path of the executable of your environment):
+
+```bash
+claude mcp add pbip-generator -- "C:\path\to\pbip-generator\.venv\Scripts\pbip-generator-mcp.exe"
+```
+
+Claude Desktop: *Settings > Developer > Edit config*, then in `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "pbip-generator": {
+      "command": "C:\\path\\to\\pbip-generator\\.venv\\Scripts\\pbip-generator-mcp.exe"
+    }
+  }
+}
+```
+
+Restart Claude Desktop, then ask for a report: *"Here is my billing data in C:\data\facturation,
+build a monthly invoicing report for a CFO in C:\pbip"*.
+
 ### Writing the pages yourself
 
 Automatic pages are a starting point. For a real report, build the `Project` in Python and set

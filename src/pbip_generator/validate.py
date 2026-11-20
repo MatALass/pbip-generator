@@ -104,6 +104,12 @@ def _field(project: Project, where: str, text: str, kind: str | None = None) -> 
     return ref, []
 
 
+def _readable_alternative(visual_type: str, count: int) -> str:
+    """Charts that still show ``count`` categories, then the fallbacks."""
+    charts = [t for t, n in CHART_MAX_CATEGORIES.items() if t != visual_type and n >= count]
+    return " or ".join([f"a {t}" for t in charts] + ["a tableEx", "a column with fewer values"])
+
+
 def _check_visual(project: Project, where: str, v: VisualSpec) -> list[str]:
     issues: list[str] = []
     if v.type == "textbox":
@@ -129,8 +135,8 @@ def _check_visual(project: Project, where: str, v: VisualSpec) -> list[str]:
                 count = project.table(cat.table).column(cat.name).distinct_count
                 if count > limit:
                     issues.append(
-                        f"{where}: '{v.category}' has {count} values, a {v.type} stays readable up to {limit} "
-                        "(use a clusteredBarChart, a coarser column or a table)"
+                        f"{where}: '{v.category}' has {count} values, a {v.type} stays readable up to {limit}, "
+                        f"use {_readable_alternative(v.type, count)}"
                     )
         if v.type == "donutChart" and len(v.values) > 1:
             issues.append(f"{where}: a donutChart shows a single measure")

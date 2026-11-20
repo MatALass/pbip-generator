@@ -201,6 +201,16 @@ def _infer_typed_series(values: pd.Series) -> tuple[DataType, bool]:
     return _infer_text_series(s.astype(str), "en-US")
 
 
+def _year_span(values: pd.Series, source: Source) -> tuple[int, int] | None:
+    if pd.api.types.is_datetime64_any_dtype(values):
+        dates = values
+    else:
+        dates = _parse_dates(values.astype(str).str.strip(), source.culture)
+    if dates is None or dates.empty:
+        return None
+    return int(dates.min().year), int(dates.max().year)
+
+
 def _build_columns(frame: pd.DataFrame, source: Source) -> list[Column]:
     columns: list[Column] = []
     for name in frame.columns:
@@ -224,6 +234,7 @@ def _build_columns(frame: pd.DataFrame, source: Source) -> list[Column]:
             col.format_string = "#,##0" if data_type == DataType.INT64 else "#,##0.00"
         if data_type == DataType.DATETIME:
             col.format_string = "dd/mm/yyyy" if date_only else "dd/mm/yyyy hh:nn"
+            col.years = _year_span(non_empty, source)
         columns.append(col)
     return columns
 
@@ -334,6 +345,15 @@ def _add_date_table(project: Project) -> None:
             Column("Jour semaine", DataType.STRING, sort_by_column="Jour semaine numéro"),
         ],
     )
+    spans = [c.years for _, c in date_cols if c.years is not None]
+    if spans:
+        # The calendar spans the full years of the data (see mquery.date_table_query): its number
+        # of values per column is known, so readability limits apply to it too.
+        n_years = max(y for _, y in spans) - min(y for y, _ in spans) + 1
+        counts = {"Date": 365 * n_years, "Année": n_years, "Trimestre": 4, "Mois numéro": 12, "Mois": 12,
+                  "Année-Mois": 12 * n_years, "Jour semaine numéro": 7, "Jour semaine": 7}  # fmt: skip
+        for col in cal.columns:
+            col.distinct_count = counts[col.name]
     project.tables.append(cal)
     active_done: set[str] = set()
     for table, col in date_cols:
@@ -507,7 +527,14 @@ def infer_project(
         many = project.table(rel.from_table).column(rel.from_column)
         many.is_hidden = True
         many.summarize_by = "none"
-        project.table(rel.to_table).column(rel.to_column).summarize_by = "none"
+        one = project.table(rel.to_table).column(rel.to_column)
+        one.summarize_by = "none"
+        if project.table(rel.to_table).role != TableRole.DATE:
+            one.is_hidden = True  # a dimension key: readers use its labels, never the ID
+    for fact in project.facts:
+        for col in fact.columns:
+            if col.is_unique and is_key_like(col.name):
+                col.is_hidden = True  # a row ID of the fact table
     _apply_currency(project)
     if config.date_table:
         _add_date_table(project)
