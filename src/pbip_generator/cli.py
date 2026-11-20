@@ -37,6 +37,11 @@ def _parser() -> argparse.ArgumentParser:
     )
     build.add_argument("--copy-data", action="store_true", help="Copy the source files into <project>/data")
     build.add_argument("--overwrite", action="store_true")
+    build.add_argument(
+        "--strict",
+        action="store_true",
+        help="Fail instead of warning when visuals overlap, leave the page or are too small",
+    )
 
     init = sub.add_parser("init-config", help="Write the inferred config as editable YAML")
     init.add_argument("data_dir", type=Path)
@@ -58,7 +63,9 @@ def main(argv: list[str] | None = None) -> int:
             config = ProjectConfig.load(args.config)
             name = args.name or config.name or _default_name(args.data_dir)
             project = infer_project(args.data_dir, name, args.data_folder, config)
-            root = write_project(project, args.output, overwrite=args.overwrite, copy_data=args.copy_data)
+            root = write_project(
+                project, args.output, overwrite=args.overwrite, copy_data=args.copy_data, strict=args.strict
+            )
             _summary(project, root)
         else:
             name = args.name or _default_name(args.data_dir)
