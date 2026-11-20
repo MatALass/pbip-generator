@@ -1,0 +1,99 @@
+table Calendrier
+	dataCategory: Time
+	lineageTag: adef0db1-bd00-5a24-aa1e-0e9cd66d23c4
+
+	column Date
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		isKey
+		lineageTag: 9446a3a8-fbbe-50ee-9cc9-2adb44845590
+		summarizeBy: none
+		sourceColumn: Date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Année'
+		dataType: int64
+		formatString: 0
+		lineageTag: 99cd3e0b-510f-5843-8cb6-265deec199d2
+		summarizeBy: none
+		sourceColumn: Année
+
+		annotation SummarizationSetBy = Automatic
+
+	column Trimestre
+		dataType: string
+		lineageTag: f008d001-60bb-53c1-b49c-abc06a9d7f0a
+		summarizeBy: none
+		sourceColumn: Trimestre
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Mois numéro'
+		dataType: int64
+		formatString: 0
+		isHidden
+		lineageTag: 31e66221-49d7-59f5-8307-29c12eff9ba3
+		summarizeBy: none
+		sourceColumn: Mois numéro
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mois
+		dataType: string
+		lineageTag: 158f988d-d6d0-5168-ae79-b9690c549a41
+		summarizeBy: none
+		sourceColumn: Mois
+		sortByColumn: 'Mois numéro'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Année-Mois'
+		dataType: string
+		lineageTag: 1766df38-845e-56d7-92b1-f45b76d98a99
+		summarizeBy: none
+		sourceColumn: Année-Mois
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Jour semaine numéro'
+		dataType: int64
+		formatString: 0
+		isHidden
+		lineageTag: 4d004af1-ed63-5899-9bed-536976400ef4
+		summarizeBy: none
+		sourceColumn: Jour semaine numéro
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Jour semaine'
+		dataType: string
+		lineageTag: 274b17ff-c69e-5c46-920b-808c3418c526
+		summarizeBy: none
+		sourceColumn: Jour semaine
+		sortByColumn: 'Jour semaine numéro'
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Calendrier = m
+		mode: import
+		source =
+				let
+				    StartDate = Date.StartOfYear(List.Min({Date.From(List.Min(Ventes[#"Date commande"])), Date.From(List.Max(Ventes[#"Date commande"])), Date.From(List.Min(Ventes[#"Date livraison"])), Date.From(List.Max(Ventes[#"Date livraison"]))})),
+				    EndDate = Date.EndOfYear(List.Max({Date.From(List.Min(Ventes[#"Date commande"])), Date.From(List.Max(Ventes[#"Date commande"])), Date.From(List.Min(Ventes[#"Date livraison"])), Date.From(List.Max(Ventes[#"Date livraison"]))})),
+				    Dates = List.Dates(StartDate, Duration.Days(EndDate - StartDate) + 1, #duration(1, 0, 0, 0)),
+				    AsTable = Table.FromList(Dates, Splitter.SplitByNothing(), {"Date"}),
+				    Typed = Table.TransformColumnTypes(AsTable, {{"Date", type date}}),
+				    AddYear = Table.AddColumn(Typed, "Année", each Date.Year([Date]), Int64.Type),
+				    AddQuarter = Table.AddColumn(AddYear, "Trimestre", each "T" & Text.From(Date.QuarterOfYear([Date])), type text),
+				    AddMonthNum = Table.AddColumn(AddQuarter, "Mois numéro", each Date.Month([Date]), Int64.Type),
+				    AddMonth = Table.AddColumn(AddMonthNum, "Mois", each Text.Proper(Date.MonthName([Date], "fr-FR")), type text),
+				    AddYearMonth = Table.AddColumn(AddMonth, "Année-Mois", each Text.From(Date.Year([Date])) & "-" & Text.PadStart(Text.From(Date.Month([Date])), 2, "0"), type text),
+				    AddDayNum = Table.AddColumn(AddYearMonth, "Jour semaine numéro", each Date.DayOfWeek([Date], Day.Monday) + 1, Int64.Type),
+				    AddDay = Table.AddColumn(AddDayNum, "Jour semaine", each Text.Proper(Date.DayOfWeekName([Date], "fr-FR")), type text)
+				in
+				    AddDay
+
+	annotation PBI_ResultType = Table

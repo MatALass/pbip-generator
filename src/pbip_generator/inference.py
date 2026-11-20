@@ -161,13 +161,48 @@ def _read_excel(path: Path) -> list[tuple[str, pd.DataFrame, int, Source]]:
     return out
 
 
+def _raw_headers(path: Path, source: Source) -> list[str]:
+    """Header row as written in the file: pandas renames duplicates ('A.1') and blanks ('Unnamed: 2'),
+    Power Query does not, so the model would point at columns the refresh never finds."""
+    if source.kind == "excel":
+        first = pd.read_excel(path, sheet_name=source.sheet, header=None, nrows=1, engine="openpyxl")
+        return ["" if pd.isna(v) else str(v) for v in first.iloc[0]] if len(first) else []
+    _, encoding, _ = _sniff_csv(path)
+    with path.open(encoding=encoding, newline="") as f:
+        return next(csv.reader(f, delimiter=source.delimiter), [])
+
+
+def _check_headers(path: Path, source: Source) -> None:
+    where = path.name + (f" (sheet {source.sheet})" if source.sheet else "")
+    headers = [h.strip() for h in _raw_headers(path, source)]
+    while headers and not headers[-1]:  # trailing separators or empty Excel cells
+        headers.pop()
+    blank = [i + 1 for i, h in enumerate(headers) if not h]
+    if blank:
+        raise DataError(f"{where}: column {blank[0]} has no header, name it in the file")
+    seen: dict[str, str] = {}
+    for h in headers:
+        # Power BI column names are case-insensitive: 'Montant' and 'montant' clash.
+        if h.lower() in seen:
+            raise DataError(f"{where}: columns '{seen[h.lower()]}' and '{h}' have the same name, rename one")
+        seen[h.lower()] = h
+
+
 def _read_source(path: Path) -> list[tuple[str, pd.DataFrame, int, Source]]:
     try:
         if path.suffix.lower() in (".csv", ".txt"):
+            if path.stat().st_size == 0:
+                raise DataError(f"{path.name} is empty")
             frame, rows, source = _read_csv(path)
-            return [(table_name_from(path.stem), frame, rows, source)]
-        return _read_excel(path)
+            loaded = [(table_name_from(path.stem), frame, rows, source)]
+        else:
+            loaded = _read_excel(path)
+        for _, _, _, source in loaded:
+            _check_headers(path, source)
+        return loaded
     except (ValueError, UnicodeError, zipfile.BadZipFile) as exc:  # pandas parser errors are ValueErrors
+        if isinstance(exc, DataError):
+            raise
         raise DataError(f"Cannot read {path.name}: {exc}") from exc
 
 

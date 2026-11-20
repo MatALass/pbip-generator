@@ -1,0 +1,48 @@
+table Produits
+	lineageTag: af4cb470-531b-585b-b522-50f03d23c43d
+
+	column ProduitID
+		dataType: int64
+		isHidden
+		lineageTag: 646724bf-ea47-59a2-ab82-f68d1e8fa9b7
+		summarizeBy: none
+		sourceColumn: ProduitID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Produit
+		dataType: string
+		lineageTag: aec7bcdc-536b-5928-a058-f4a5378d2c3a
+		summarizeBy: none
+		sourceColumn: Produit
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Catégorie'
+		dataType: string
+		lineageTag: 3416bf2a-e089-5c1c-974c-f4cfe9e21bd3
+		summarizeBy: none
+		sourceColumn: Catégorie
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Prix unitaire'
+		dataType: double
+		formatString: #,##0.00 €
+		lineageTag: 9994933e-8b80-5f32-83f4-ca0f36510c40
+		summarizeBy: sum
+		sourceColumn: Prix unitaire
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Produits = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "produits.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers", {{"ProduitID", Int64.Type}, {"Produit", type text}, {"Catégorie", type text}, {"Prix unitaire", type number}}, "en-US")
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table

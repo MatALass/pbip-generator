@@ -1,0 +1,152 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "name": "181a216e2d34c14c93fd",
+  "position": {
+    "x": 648.0,
+    "y": 208,
+    "z": 5000,
+    "width": 616.0,
+    "height": 496,
+    "tabOrder": 5000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Produits"
+                    }
+                  },
+                  "Property": "Produit"
+                }
+              },
+              "queryRef": "Produits.Produit",
+              "nativeQueryRef": "Produit"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Ventes"
+                    }
+                  },
+                  "Property": "Total Montant"
+                }
+              },
+              "queryRef": "Ventes.Total Montant",
+              "nativeQueryRef": "Total Montant"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Ventes"
+                    }
+                  },
+                  "Property": "Total Quantité"
+                }
+              },
+              "queryRef": "Ventes.Total Quantité",
+              "nativeQueryRef": "Total Quantité"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Ventes"
+                  }
+                },
+                "Property": "Total Montant"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "objects": {
+      "columnWidth": [
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "192.0D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Produits.Produit"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "192.0D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Ventes.Total Montant"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "192.0D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Ventes.Total Quantité"
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Ventes par produit'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
