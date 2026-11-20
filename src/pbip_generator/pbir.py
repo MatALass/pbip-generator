@@ -132,14 +132,32 @@ def render_visual(project: Project, page_id: str, index: int, v: Visual) -> tupl
         }
     visual: dict[str, Any] = {"visualType": v.visual_type, "query": query}
     if v.visual_type == "slicer":
-        visual["objects"] = {"data": [{"properties": {"mode": _literal("Dropdown")}}]}
-    else:
-        visual["drillFilterOtherVisuals"] = True
+        visual["objects"] = _slicer_objects(v)
+        # The label lives in the slicer header (see _slicer_objects). A container title on top
+        # of it, which themes often switch on for every visual, would push the dropdown box out
+        # of a short slicer: only the title and the column name would be drawn.
+        visual["visualContainerObjects"] = {"title": [{"properties": {"show": _literal(False)}}]}
+        return name, dumps(_container(name, index, v, visual))
+    visual["drillFilterOtherVisuals"] = True
+    if v.visual_type == "card" and v.title:
+        # The title already names the measure: the category label under the value would repeat
+        # it and squeeze the value in a short card.
+        visual["objects"] = {"categoryLabels": [{"properties": {"show": _literal(False)}}]}
     if v.title:
         visual["visualContainerObjects"] = {
             "title": [{"properties": {"show": _literal(True), "text": _literal(v.title)}}]
         }
     return name, dumps(_container(name, index, v, visual))
+
+
+def _slicer_objects(v: Visual) -> dict[str, Any]:
+    header: dict[str, Any] = {"show": _literal(True)}
+    if v.title:
+        header["text"] = _literal(v.title)
+    return {
+        "data": [{"properties": {"mode": _literal("Dropdown")}}],
+        "header": [{"properties": header}],
+    }
 
 
 def _container(name: str, index: int, v: Visual, visual: dict[str, Any]) -> dict[str, Any]:

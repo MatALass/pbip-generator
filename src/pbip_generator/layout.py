@@ -58,6 +58,24 @@ def _measure_refs(project: Project) -> tuple[list[FieldRef], FieldRef | None, Fi
     return base, primary, variation
 
 
+# Most categories a chart can show before its labels overlap and become unreadable.
+CHART_MAX_CATEGORIES = {"clusteredColumnChart": 12, "clusteredBarChart": 20, "donutChart": 6}
+
+
+def _chart_categories(project: Project, categories: list[FieldRef]) -> list[tuple[str, FieldRef]]:
+    """(visual type, category) pairs, each category used once and only where it stays readable."""
+    pairs: list[tuple[str, FieldRef]] = []
+    used: set[tuple[str, str]] = set()
+    for kind, limit in CHART_MAX_CATEGORIES.items():
+        for cat in categories:
+            key = (cat.table, cat.name)
+            if key not in used and project.table(cat.table).column(cat.name).distinct_count <= limit:
+                pairs.append((kind, cat))
+                used.add(key)
+                break
+    return pairs
+
+
 def _row(n: int, y: float, h: float) -> list[tuple[float, float, float, float]]:
     w = (PAGE_W - 2 * MARGIN - (n - 1) * GAP) / n
     return [(MARGIN + i * (w + GAP), y, w, h) for i in range(n)]
@@ -115,8 +133,7 @@ def build_pages(project: Project) -> list[Page]:
                 sort_descending=False,
             )
         )
-    kinds = ["clusteredColumnChart", "clusteredBarChart", "donutChart"]
-    for kind, cat in zip(kinds, categories, strict=False):
+    for kind, cat in _chart_categories(project, categories):
         charts.append(
             Visual(
                 kind,

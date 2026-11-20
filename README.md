@@ -94,6 +94,22 @@ visual takes `text` and `text_size` for page titles:
 Visual("textbox", {}, 16, 16, 600, 56, text="Stock & Reallocation", text_size=24)
 ```
 
+### Layout checks
+
+Before writing, every page is checked: visuals that overlap, go past the page edge, have no field,
+or are smaller than the size their data needs (a dropdown slicer under 56 px only draws its header,
+for example). Issues are printed as warnings; `--strict` (or `write_project(..., strict=True)`)
+turns them into an error. `check_project(project)` returns the list, to assert on it in a test:
+
+```python
+from pbip_generator import check_project
+assert check_project(build_project()) == []
+```
+
+Slicers carry their label in the slicer header and hide the container title, so a theme that
+switches titles on for every visual cannot push the dropdown out of the slicer. Titled cards hide
+their category label, which would repeat the title.
+
 ## Opening the project in Power BI Desktop
 
 1. In *File > Options and settings > Options > Preview features*, enable **Power BI Project (.pbip) save option**,
@@ -134,6 +150,7 @@ src/pbip_generator/
 ├── mquery.py      # Power Query (M) expressions
 ├── tmdl.py        # semantic model writer (TMDL)
 ├── layout.py      # automatic report layout
+├── checks.py      # layout checks (overlaps, sizes, page bounds)
 ├── pbir.py        # report writer (PBIR) and PBIP wrapper files
 ├── builder.py     # assemble and write the project folder
 └── cli.py
