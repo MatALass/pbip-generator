@@ -59,6 +59,14 @@ def _visual(project: Project, spec: VisualSpec, rect: Rect, colors: dict[int, Fi
         if project.table(category.table).role == TableRole.DATE:
             # A time axis reads left to right, whatever the measure does.
             sort_by, descending = category, False
+    elif spec.type == "pivotTable":
+        rows = [_ref(project, r) for r in spec.rows]
+        roles = {"Rows": rows, "Columns": [_ref(project, c) for c in spec.columns], "Values": values}
+        if not roles["Columns"]:
+            del roles["Columns"]
+        # Ranked by the first measure, unless the rows are a time axis.
+        time_rows = project.table(rows[0].table).role == TableRole.DATE
+        sort_by, descending = (rows[0], False) if time_rows else (values[0], True)
     else:
         roles = {"Values": values}
         sort_by = next((v for v in values if v.is_measure), None)

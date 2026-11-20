@@ -20,6 +20,7 @@ from .builder import write_project
 from .checks import check_pages
 from .errors import AccessError, PbipGeneratorError
 from .inference import infer_project
+from .labels import labels
 from .model import Project, TableRole
 from .spec import TEMPLATE_SLOTS, SpecError, build_project_from_spec, parse_spec, spec_json_schema
 
@@ -38,6 +39,10 @@ Build Power BI reports (PBIP projects) from a folder of CSV/Excel files.
      a format such as '#,##0 €' or '0.0 %', a description a business reader understands);
    - charts take a readable column as category (never an ID) and measures as values;
    - donut: 6 categories at most; column chart: 12; bar chart: 20; otherwise a table;
+   - a measure across two dimensions (agent x map, product x month) is a pivotTable (matrix):
+     'rows' (1 to 3 columns), 'columns' (one column, 12 values at most), 'values' (measures);
+   - set 'language' to the reader's language (fr or en): it names the calendar and the automatic
+     measures, so profile the data again after changing it;
    - pick a theme for the audience (theme.preset light or dark, optional accent color);
    - color the measure a reader must notice with 'highlights' (thresholds -> good/neutral/bad...),
      turn 'totals' off on tables whose columns are ratios, and use 'single_select' for a slicer
@@ -128,11 +133,20 @@ def profile(project: Project) -> dict[str, Any]:
             "sampled tables were read on their first rows only: their distinct counts are lower bounds.",
         ]
         + (
-            ["Calendrier is generated: use Calendrier[Année] for slicers, Calendrier[Année-Mois] for monthly trends."]
+            [_calendar_note(project)]
             if any(t.role == TableRole.DATE and t.source.kind == "date" for t in project.tables)
             else []
         ),
     }
+
+
+def _calendar_note(project: Project) -> str:
+    w = labels(project.language)
+    cal = w["calendar"]
+    return (
+        f"{cal} is generated: use {cal}[{w['year']}] for slicers, {cal}[{w['year_month']}] for monthly trends, "
+        f"{cal}[{w['month']}] for seasonality."
+    )
 
 
 def profile_data(data_dir: str) -> dict[str, Any]:
@@ -180,6 +194,7 @@ def generate_report(
         "data_folder_parameter": project.data_folder,
         "pages": [p.display_name for p in project.pages],
         "measures": [m.name for _, m in project.all_measures()],
+        "dictionary_file": str(root / "DATA_DICTIONARY.md"),
         "next_steps": "Open the .pbip in Power BI Desktop, then click Refresh (the project opens without data).",
     }
 

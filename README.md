@@ -43,6 +43,7 @@ data/                         output/Ventes/
 | Calendar | `Calendrier` table spanning the data's full years, month/weekday sort orders, marked as date table |
 | Measures | `Total <column>` per numeric column, `Nb <table>`, and N-1, variation % and year-to-date for the main measure |
 | Report | *Vue d'ensemble* page (slicers, KPI cards, line, column, bar and donut charts) and a *Détail* page (table) |
+| Documentation | `DATA_DICTIONARY.md`: tables, columns, relationships and measures (with their DAX), generated with the model |
 
 Everything inferred can be corrected or extended with a YAML file (roles, types, relationships,
 hidden columns, custom DAX measures). Output is deterministic: same input, same files, clean git diffs.
@@ -74,6 +75,7 @@ Useful options:
 |---|---|
 | `--data-folder "C:\Users\me\data\"` | Folder Power BI reads from, on the machine that opens the project. Defaults to the absolute path of the input folder. Can also be changed later in Power BI (*Transform data > Edit parameters*). |
 | `--copy-data` | Copy the source files into `<project>/data`, to ship the project as a single folder |
+| `-l en` | Generated names in English: `Calendar` (`Year`, `Quarter`, `Month`...), `Sales Count`, `PY`, `YoY %`, `YTD`, *Overview* / *Detail* pages, en-US formats. Default `fr` |
 | `-c config.yaml` | Overrides (see [`examples/ventes/config.yaml`](examples/ventes/config.yaml) and the docstring of `config.py`) |
 
 ### Config example
@@ -134,6 +136,18 @@ pages:
 
 Every page gets a title, up to 3 slicers and up to 4 KPI cards on top, then the template's slots
 (`kpis_2x2`: 4, `kpis_1_2`: 1 wide + 2, `kpis_2`: 2, `kpis_table` and `table`: 1 full width).
+
+Visuals: `card`, `lineChart`, `clusteredColumnChart`, `clusteredBarChart`, `donutChart`, `tableEx`,
+`textbox`, and `pivotTable`, the matrix: a measure across two dimensions.
+
+```yaml
+      - type: pivotTable
+        title: Chiffre d'affaires par produit et par année
+        rows: ['Produits[Catégorie]', 'Produits[Produit]']   # 1 to 3 levels
+        columns: ['Calendrier[Année]']                       # one column, up to 12 values
+        values: ['[Total Montant]']
+```
+
 Before anything is written, the spec is checked against the inferred model: unknown keys, unknown
 tables, columns and measures (with close-name suggestions), DAX references, a column where a
 measure is expected, hidden key columns, charts with too many categories, and the number of visuals
@@ -183,6 +197,17 @@ while writing leaves the previous project untouched.
 
 Restart Claude Desktop, then ask for a report: *"Here is my billing data in C:\data\facturation,
 build a monthly invoicing report for a CFO in C:\pbip"*.
+
+### Data dictionary
+
+Every project gets a `DATA_DICTIONARY.md` next to its `.pbip`: tables with their role, source and row
+count, columns with type, format and visibility, relationships, and measures with their folder, format,
+description and DAX. It is generated from the same model as the TMDL, so it never drifts. To write it
+alone:
+
+```bash
+pbip-generator dictionary examples/ventes/data --spec examples/ventes/report.yaml -o DATA_DICTIONARY.md
+```
 
 ### Writing the pages yourself
 
@@ -264,6 +289,8 @@ src/pbip_generator/
 ├── validate.py    # checks of a spec against the model
 ├── templates.py   # page templates
 ├── themes.py      # built-in light and dark themes
+├── labels.py      # generated names in French and English
+├── dictionary.py  # data dictionary (Markdown)
 ├── mcp_server.py  # MCP server for Claude Desktop / Claude Code
 ├── errors.py      # input errors, reported without traceback
 └── cli.py
@@ -274,9 +301,8 @@ src/pbip_generator/
 - Import mode only, CSV/Excel sources only (no database connectors yet).
 - 1:1 relationships are not created automatically (direction is ambiguous): add them in the config.
 - PBIP, TMDL and PBIR are evolving formats; files target the schema versions listed in `pbir.py`.
-- Generated labels are in French: the `Calendrier` table and its columns (`Année`, `Mois`...), automatic
-  measures (`Total ...`, `Nb ...`, `N-1`, `Cumul annuel`), default page names. Report specs can use any
-  language for their own pages and measures. A language option is planned.
+- Generated names exist in French (default) and English (`--language en`, or `language: en` in a config
+  or a spec). Names from the data and from a spec are kept as they are.
 - Project names must be plain folder names (no `/`, `\`, `..`): `overwrite` deletes `<output>/<name>`.
 
 ## Out of scope

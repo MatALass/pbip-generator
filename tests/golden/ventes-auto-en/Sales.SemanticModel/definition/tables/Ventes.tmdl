@@ -1,0 +1,120 @@
+table Ventes
+	lineageTag: 07bb5bc0-d4ed-5750-af92-2cde5947455b
+
+	measure 'Total Montant' = SUM(Ventes[Montant])
+		formatString: $#,##0
+		displayFolder: Base
+		lineageTag: 478e5f46-f6fe-5dc0-899e-b32e6f15dc65
+
+	measure 'Total Quantité' = SUM(Ventes[Quantité])
+		formatString: #,##0
+		displayFolder: Base
+		lineageTag: 9844d516-884b-5186-bee6-67328dc00fe5
+
+	measure 'Ventes Count' = COUNTROWS(Ventes)
+		formatString: #,##0
+		displayFolder: Base
+		lineageTag: aec39641-f265-5cee-9d4f-31b5d61a17ab
+
+	measure 'Total Montant PY' =
+			IF(
+			    DATEDIFF(MIN(Calendar[Date]), MAX(Calendar[Date]), DAY) < 366,
+			    CALCULATE([Total Montant], SAMEPERIODLASTYEAR(Calendar[Date]))
+			)
+		formatString: $#,##0
+		displayFolder: Time
+		lineageTag: ef802ca8-bf20-57d4-8df3-77787eb7321b
+
+	measure 'Total Montant YoY %' =
+			VAR _n = [Total Montant]
+			VAR _n1 = [Total Montant PY]
+			RETURN DIVIDE(_n - _n1, _n1)
+		formatString: 0.0 %;-0.0 %;0.0 %
+		displayFolder: Time
+		lineageTag: 89906326-dc98-5c22-850c-fa20a71509cb
+
+	measure 'Total Montant YTD' = TOTALYTD([Total Montant], Calendar[Date])
+		formatString: $#,##0
+		displayFolder: Time
+		lineageTag: df6f96f6-68ac-5905-9059-5d3bf5bda3a3
+
+	column VenteID
+		dataType: int64
+		isHidden
+		lineageTag: d8220b3c-6c92-5f90-8c34-9948d79cc9cb
+		summarizeBy: none
+		sourceColumn: VenteID
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Date commande'
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		isHidden
+		lineageTag: d6186822-2bfb-59ef-941c-4a6d4526d9e1
+		summarizeBy: none
+		sourceColumn: Date commande
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Date livraison'
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		isHidden
+		lineageTag: 722d0ac3-f9b6-5b0d-a562-31c2eb938c71
+		summarizeBy: none
+		sourceColumn: Date livraison
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column ClientID
+		dataType: int64
+		isHidden
+		lineageTag: 951e564d-aedc-5a2a-8a5f-cbb7da718270
+		summarizeBy: none
+		sourceColumn: ClientID
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProduitID
+		dataType: int64
+		isHidden
+		lineageTag: e2c1840d-b2fd-52ad-acec-104539901e63
+		summarizeBy: none
+		sourceColumn: ProduitID
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Quantité'
+		dataType: int64
+		formatString: #,##0
+		lineageTag: 6aec8cfc-83a7-56c5-9e15-80db48dc3516
+		summarizeBy: sum
+		sourceColumn: Quantité
+
+		annotation SummarizationSetBy = Automatic
+
+	column Montant
+		dataType: double
+		formatString: $#,##0.00
+		lineageTag: 93ebab1b-eb12-5faf-a59e-ba883c7ffb50
+		summarizeBy: sum
+		sourceColumn: Montant
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Ventes = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "ventes.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers", {{"VenteID", Int64.Type}, {"Date commande", type date}, {"Date livraison", type date}, {"ClientID", Int64.Type}, {"ProduitID", Int64.Type}, {"Quantité", Int64.Type}, {"Montant", type number}}, "en-US")
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table

@@ -1,19 +1,19 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
-  "name": "181a216e2d34c14c93fd",
+  "name": "f39c471a0246927ffba0",
   "position": {
-    "x": 648.0,
-    "y": 208,
-    "z": 5000,
+    "x": 16.0,
+    "y": 472.0,
+    "z": 9000,
     "width": 616.0,
-    "height": 496,
-    "tabOrder": 5000
+    "height": 232.0,
+    "tabOrder": 9000
   },
   "visual": {
-    "visualType": "tableEx",
+    "visualType": "clusteredBarChart",
     "query": {
       "queryState": {
-        "Values": {
+        "Category": {
           "projections": [
             {
               "field": {
@@ -23,12 +23,16 @@
                       "Entity": "Produits"
                     }
                   },
-                  "Property": "Produit"
+                  "Property": "Catégorie"
                 }
               },
-              "queryRef": "Produits.Produit",
-              "nativeQueryRef": "Produit"
-            },
+              "queryRef": "Produits.Catégorie",
+              "nativeQueryRef": "Catégorie"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
             {
               "field": {
                 "Measure": {
@@ -42,20 +46,6 @@
               },
               "queryRef": "Ventes.Total Montant",
               "nativeQueryRef": "Total Montant"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "Ventes"
-                    }
-                  },
-                  "Property": "Total Quantité"
-                }
-              },
-              "queryRef": "Ventes.Total Quantité",
-              "nativeQueryRef": "Total Quantité"
             }
           ]
         }
@@ -80,52 +70,6 @@
       }
     },
     "drillFilterOtherVisuals": true,
-    "objects": {
-      "columnWidth": [
-        {
-          "properties": {
-            "value": {
-              "expr": {
-                "Literal": {
-                  "Value": "192.0D"
-                }
-              }
-            }
-          },
-          "selector": {
-            "metadata": "Produits.Produit"
-          }
-        },
-        {
-          "properties": {
-            "value": {
-              "expr": {
-                "Literal": {
-                  "Value": "192.0D"
-                }
-              }
-            }
-          },
-          "selector": {
-            "metadata": "Ventes.Total Montant"
-          }
-        },
-        {
-          "properties": {
-            "value": {
-              "expr": {
-                "Literal": {
-                  "Value": "192.0D"
-                }
-              }
-            }
-          },
-          "selector": {
-            "metadata": "Ventes.Total Quantité"
-          }
-        }
-      ]
-    },
     "visualContainerObjects": {
       "title": [
         {
@@ -140,7 +84,25 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Ventes par produit'"
+                  "Value": "'Total Montant by Catégorie'"
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#252423'"
+                    }
+                  }
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
                 }
               }
             }

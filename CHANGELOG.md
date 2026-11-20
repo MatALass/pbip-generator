@@ -29,7 +29,13 @@ All notable changes to this project. The format follows
 - Manual checklist for Power BI Desktop (`docs/manual-check.md`), MCP walkthrough (`docs/mcp-demo.md`).
 - Release workflow publishing to PyPI with trusted publishing; package metadata.
 - README: screenshot, *Why* and *Out of scope* sections, CI, coverage and license badges.
-
+- **Matrix** visual (`pivotTable`): `rows` (1 to 3 levels), `columns` (one column, up to 12 values),
+  `values`, with highlights and `totals` (subtotals).
+- **French or English generated names** (`--language en`, `language` in a config or a spec): calendar
+  table and columns, automatic measures, display folders, default pages and titles, color measures.
+  The culture follows the language unless set.
+- **Data dictionary**: `DATA_DICTIONARY.md` written with every project, and
+  `pbip-generator dictionary` to write it alone.
 - MCP server: `PBIP_ALLOWED_ROOTS` limits the folders the tools may read and write. Every path the
   model passes is resolved and checked; with the variable unset, every call is refused.
 

@@ -44,9 +44,11 @@ pages:
         title: Chiffre d'affaires par catégorie
         category: Produits[Catégorie]
         values: ['[Total Montant]']
-      - type: tableEx
-        title: Ventes par produit
-        values: ['Produits[Produit]', '[Total Montant]', '[Total Quantité]']
+      - type: pivotTable
+        title: Chiffre d'affaires par produit et par année
+        rows: ['Produits[Catégorie]', 'Produits[Produit]']
+        columns: ['Calendrier[Année]']
+        values: ['[Total Montant]']
   - name: Clients
     purpose: Retrouver le détail des ventes de chaque client
     template: table

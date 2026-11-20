@@ -1,0 +1,16 @@
+relationship 21dd0c6f-820e-5018-8168-b0016b690162
+	fromColumn: Ventes.ClientID
+	toColumn: Clients.ClientID
+
+relationship a62ceeee-d451-5f8b-ae19-e6568aee4ced
+	fromColumn: Ventes.ProduitID
+	toColumn: Produits.ProduitID
+
+relationship 3662e796-7ac0-56e4-b735-c405201f4ced
+	fromColumn: Ventes.'Date commande'
+	toColumn: Calendar.Date
+
+relationship f8f32272-72de-5a06-8276-34663716e0a6
+	isActive: false
+	fromColumn: Ventes.'Date livraison'
+	toColumn: Calendar.Date

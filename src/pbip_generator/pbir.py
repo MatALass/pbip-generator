@@ -151,6 +151,8 @@ def render_visual(project: Project, page_id: str, index: int, v: Visual) -> tupl
         objects["columnWidth"] = _column_widths(v)
         if not v.totals:
             objects["total"] = [{"properties": {"totals": _literal(False)}}]
+    if v.visual_type == "pivotTable" and not v.totals:
+        objects["subTotals"] = [{"properties": {"rowSubtotals": _literal(False), "columnSubtotals": _literal(False)}}]
     if v.visual_type in ("donutChart", "pieChart"):
         # A donut is read in shares: label each slice with its category and percentage, which
         # makes the legend redundant.

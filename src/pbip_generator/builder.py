@@ -10,6 +10,7 @@ from pathlib import Path
 
 from . import pbir, tmdl
 from .checks import LayoutError, check_pages
+from .dictionary import render_dictionary
 from .errors import ProjectNameError
 from .layout import build_pages
 from .model import Page, Project
@@ -35,6 +36,7 @@ def render_project(project: Project, strict: bool = False) -> dict[str, str]:
     files: dict[str, str] = {
         f"{project.name}.pbip": pbir.render_pbip(project),
         ".gitignore": GITIGNORE,
+        "DATA_DICTIONARY.md": render_dictionary(project),
         f"{report_dir}/definition.pbir": pbir.render_pbir(project),
         f"{report_dir}/.platform": pbir.render_platform(project, "Report"),
         f"{model_dir}/definition.pbism": pbir.render_pbism(),

@@ -1,34 +1,38 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
-  "name": "181a216e2d34c14c93fd",
+  "name": "a413a8e362f3e87794be",
   "position": {
     "x": 648.0,
-    "y": 208,
-    "z": 5000,
+    "y": 472.0,
+    "z": 10000,
     "width": 616.0,
-    "height": 496,
-    "tabOrder": 5000
+    "height": 232.0,
+    "tabOrder": 10000
   },
   "visual": {
-    "visualType": "tableEx",
+    "visualType": "donutChart",
     "query": {
       "queryState": {
-        "Values": {
+        "Category": {
           "projections": [
             {
               "field": {
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Produits"
+                      "Entity": "Clients"
                     }
                   },
-                  "Property": "Produit"
+                  "Property": "Région"
                 }
               },
-              "queryRef": "Produits.Produit",
-              "nativeQueryRef": "Produit"
-            },
+              "queryRef": "Clients.Région",
+              "nativeQueryRef": "Région"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
             {
               "field": {
                 "Measure": {
@@ -42,20 +46,6 @@
               },
               "queryRef": "Ventes.Total Montant",
               "nativeQueryRef": "Total Montant"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "Ventes"
-                    }
-                  },
-                  "Property": "Total Quantité"
-                }
-              },
-              "queryRef": "Ventes.Total Quantité",
-              "nativeQueryRef": "Total Quantité"
             }
           ]
         }
@@ -81,47 +71,36 @@
     },
     "drillFilterOtherVisuals": true,
     "objects": {
-      "columnWidth": [
+      "labels": [
         {
           "properties": {
-            "value": {
+            "show": {
               "expr": {
                 "Literal": {
-                  "Value": "192.0D"
+                  "Value": "true"
+                }
+              }
+            },
+            "labelStyle": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Category, percent of total'"
                 }
               }
             }
-          },
-          "selector": {
-            "metadata": "Produits.Produit"
           }
-        },
+        }
+      ],
+      "legend": [
         {
           "properties": {
-            "value": {
+            "show": {
               "expr": {
                 "Literal": {
-                  "Value": "192.0D"
+                  "Value": "false"
                 }
               }
             }
-          },
-          "selector": {
-            "metadata": "Ventes.Total Montant"
-          }
-        },
-        {
-          "properties": {
-            "value": {
-              "expr": {
-                "Literal": {
-                  "Value": "192.0D"
-                }
-              }
-            }
-          },
-          "selector": {
-            "metadata": "Ventes.Total Quantité"
           }
         }
       ]
@@ -140,7 +119,25 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Ventes par produit'"
+                  "Value": "'Total Montant by Région'"
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#252423'"
+                    }
+                  }
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
                 }
               }
             }

@@ -40,7 +40,12 @@ def _spec_dark() -> dict[str, str]:
     return render_project(build_project_from_spec(EXAMPLE / "data", spec, "Ventes", DATA_FOLDER), strict=True)
 
 
-CASES = {"ventes-auto": _auto, "ventes-spec": _spec, "ventes-spec-dark": _spec_dark}
+def _auto_english() -> dict[str, str]:
+    config = ProjectConfig(language="en")
+    return render_project(infer_project(EXAMPLE / "data", "Sales", DATA_FOLDER, config), strict=True)
+
+
+CASES = {"ventes-auto": _auto, "ventes-auto-en": _auto_english, "ventes-spec": _spec, "ventes-spec-dark": _spec_dark}
 
 
 @pytest.mark.parametrize("case", sorted(CASES))

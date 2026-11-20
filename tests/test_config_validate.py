@@ -155,7 +155,7 @@ CA = "[Total Montant]"
         (_visual(2, {"type": "tableEx", "values": [CA], "totals": False, **TITLE}), None),
         (
             _visual(2, {"type": "card", "values": [CA], "totals": False, **TITLE}),
-            "'totals' applies to a tableEx only",
+            "'totals' applies to a tableEx or a pivotTable only",
         ),
         (
             _visual(
@@ -168,7 +168,7 @@ CA = "[Total Montant]"
                     **TITLE,
                 },
             ),
-            "highlights apply to a tableEx or a card",
+            "highlights apply to a tableEx, a pivotTable or a card",
         ),
         (
             _visual(
