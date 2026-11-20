@@ -84,6 +84,40 @@ relationships:
 It is written to `<Name>.Report/StaticResources/RegisteredResources/` and registered in
 `report.json`, so the report opens already styled.
 
+### Report spec: describe the pages, not their pixels
+
+A report spec (YAML or JSON) holds the model overrides of the config *and* the pages. Each page
+picks a template and lists its slicers, KPIs and visuals by name; the code computes every position.
+
+```bash
+pbip-generator build examples/ventes/data --spec examples/ventes/report.yaml -o output --strict
+pbip-generator spec-schema -o report-spec.schema.json   # JSON schema, e.g. for a language model
+```
+
+```yaml
+business_question: Où se fait le chiffre d'affaires et comment évolue-t-il ?
+audience: direction                 # daf | direction | commercial | operationnel
+measures:
+  - {table: Ventes, name: Panier moyen, expression: 'DIVIDE([Total Montant], [Nb Ventes])',
+     format: '#,##0.00 €', description: Montant moyen d'une vente}
+pages:
+  - name: Synthèse
+    purpose: Voir en 10 secondes le CA, sa tendance et où il se fait
+    template: kpis_1_2               # kpis_2x2 | kpis_1_2 | kpis_2 | kpis_table | table
+    slicers: ['Calendrier[Année]', 'Clients[Région]']
+    kpis: ['[Total Montant]', '[Panier moyen]']
+    visuals:
+      - {type: lineChart, title: CA par mois, category: 'Calendrier[Année-Mois]', values: ['[Total Montant]']}
+      - ...
+```
+
+Every page gets a title, up to 3 slicers and up to 4 KPI cards on top, then the template's slots
+(`kpis_2x2`: 4, `kpis_1_2`: 1 wide + 2, `kpis_2`: 2, `kpis_table` and `table`: 1 full width).
+Before anything is written, the spec is checked against the inferred model: unknown keys, unknown
+tables, columns and measures (with close-name suggestions), DAX references, a column where a
+measure is expected, hidden key columns, charts with too many categories, and the number of visuals
+of each template. All issues are reported at once, so the spec can be fixed in one pass.
+
 ### Writing the pages yourself
 
 Automatic pages are a starting point. For a real report, build the `Project` in Python and set

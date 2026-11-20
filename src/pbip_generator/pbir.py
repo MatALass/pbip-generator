@@ -143,11 +143,39 @@ def render_visual(project: Project, page_id: str, index: int, v: Visual) -> tupl
         # The title already names the measure: the category label under the value would repeat
         # it and squeeze the value in a short card.
         visual["objects"] = {"categoryLabels": [{"properties": {"show": _literal(False)}}]}
-    if v.title:
-        visual["visualContainerObjects"] = {
-            "title": [{"properties": {"show": _literal(True), "text": _literal(v.title)}}]
+    if v.visual_type == "tableEx":
+        visual["objects"] = {"columnWidth": _column_widths(v)}
+    if v.visual_type in ("donutChart", "pieChart"):
+        # A donut is read in shares: label each slice with its category and percentage, which
+        # makes the legend redundant.
+        visual["objects"] = {
+            "labels": [{"properties": {"show": _literal(True), "labelStyle": _literal("Category, percent of total")}}],
+            "legend": [{"properties": {"show": _literal(False)}}],
         }
+    if v.title:
+        title: dict[str, Any] = {"show": _literal(True), "text": _literal(v.title)}
+        if project.theme is None:
+            # The default theme draws titles in light grey, too pale to read at a glance.
+            title["fontColor"] = {"solid": {"color": _literal(TITLE_COLOR)}}
+            title["fontSize"] = _literal(TITLE_SIZE)
+        visual["visualContainerObjects"] = {"title": [{"properties": title}]}
     return name, dumps(_container(name, index, v, visual))
+
+
+TITLE_COLOR, TITLE_SIZE = "#252423", 12
+# Room taken by the table's borders and vertical scrollbar, not available to the columns.
+TABLE_CHROME = 40
+
+
+def _column_widths(v: Visual) -> list[dict[str, Any]]:
+    """Share the table's width between its columns, so it fills its slot instead of leaving it
+    mostly empty (Power BI sizes columns to their content by default)."""
+    refs = [r for refs in v.roles.values() for r in refs]
+    width = max(v.width - TABLE_CHROME, 0) / max(len(refs), 1)
+    return [
+        {"properties": {"value": _literal(round(width, 1))}, "selector": {"metadata": f"{r.table}.{r.name}"}}
+        for r in refs
+    ]
 
 
 def _slicer_objects(v: Visual) -> dict[str, Any]:
