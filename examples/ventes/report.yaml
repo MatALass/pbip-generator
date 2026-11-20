@@ -1,0 +1,57 @@
+# Report spec for the sample "ventes" dataset: model overrides and pages in one file.
+# Usage: pbip-generator build examples/ventes/data --spec examples/ventes/report.yaml -o output
+# Schema: pbip-generator spec-schema
+name: Ventes
+business_question: Où se fait le chiffre d'affaires, comment évolue-t-il et qui l'apporte ?
+audience: direction
+measures:
+  - table: Ventes
+    name: Panier moyen
+    expression: DIVIDE([Total Montant], [Nb Ventes])
+    format: '#,##0.00 €'
+    description: Montant moyen d'une vente
+  - table: Ventes
+    name: Clients actifs
+    expression: DISTINCTCOUNT(Ventes[ClientID])
+    format: '#,##0'
+    description: Nombre de clients ayant acheté sur la période
+pages:
+  - name: Synthèse
+    purpose: Voir en 10 secondes le chiffre d'affaires, sa tendance et où il se fait
+    template: kpis_1_2
+    slicers: ['Calendrier[Année]', 'Clients[Région]']
+    kpis: ['[Total Montant]', '[Total Montant Var % N-1]', '[Panier moyen]', '[Clients actifs]']
+    visuals:
+      - type: lineChart
+        title: Chiffre d'affaires par mois
+        category: Calendrier[Année-Mois]
+        values: ['[Total Montant]']
+      - type: clusteredBarChart
+        title: Chiffre d'affaires par région
+        category: Clients[Région]
+        values: ['[Total Montant]']
+      - type: donutChart
+        title: Répartition par segment
+        category: Clients[Segment]
+        values: ['[Total Montant]']
+  - name: Produits
+    purpose: Savoir quelles catégories et quels produits portent les ventes
+    template: kpis_2
+    slicers: ['Calendrier[Année]']
+    kpis: ['[Total Montant]', '[Total Quantité]']
+    visuals:
+      - type: clusteredColumnChart
+        title: Chiffre d'affaires par catégorie
+        category: Produits[Catégorie]
+        values: ['[Total Montant]']
+      - type: tableEx
+        title: Ventes par produit
+        values: ['Produits[Produit]', '[Total Montant]', '[Total Quantité]']
+  - name: Clients
+    purpose: Retrouver le détail des ventes de chaque client
+    template: table
+    slicers: ['Calendrier[Année]', 'Clients[Région]', 'Clients[Segment]']
+    visuals:
+      - type: tableEx
+        title: Détail par client
+        values: ['Clients[Nom client]', 'Clients[Région]', '[Total Montant]', '[Nb Ventes]', '[Panier moyen]']

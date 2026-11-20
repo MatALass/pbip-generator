@@ -51,6 +51,12 @@ _AMOUNT_HINTS = (
     "marge",
     "margin",
 )
+# Words of a column name that make it an amount of money (whole words, after normalization).
+_MONEY_WORDS = {
+    "montant", "montants", "ca", "chiffre", "prix", "cout", "couts", "marge", "ht", "ttc", "tarif", "solde",
+    "budget", "encaissement", "facture", "revenue", "revenues", "sales", "amount", "price", "cost", "costs", "margin",
+}  # fmt: skip
+_EURO_LANGUAGES = {"fr", "de", "es", "it", "nl", "pt", "fi", "el", "sk", "sl", "et", "lv", "lt"}
 
 
 # --------------------------------------------------------------------------- #
@@ -349,6 +355,30 @@ def _is_year_like(col: Column) -> bool:
     return any(h in normalize(col.name) for h in _YEAR_HINTS)
 
 
+def is_money_like(name: str) -> bool:
+    words = (normalize(w) for w in re.split(r"[\s_\-/.()]+", name))
+    return any(w in _MONEY_WORDS for w in words)
+
+
+def currency_format(culture: str, decimals: bool) -> str:
+    """Format string of an amount: '#,##0 €' in euro countries, '$#,##0' in the US, else no symbol."""
+    number = "#,##0.00" if decimals else "#,##0"
+    language = culture.split("-")[0].lower()
+    if language in _EURO_LANGUAGES:
+        return f"{number} €"
+    if culture == "en-US":
+        return f"${number}"
+    return number
+
+
+def _apply_currency(project: Project) -> None:
+    """Show amounts of money with their currency, columns with cents, measures without."""
+    for table in project.tables:
+        for col in table.columns:
+            if col.summarize_by == "sum" and is_money_like(col.name):
+                col.format_string = currency_format(project.culture, col.data_type == DataType.DOUBLE)
+
+
 def _add_measures(project: Project) -> None:
     cal = project.date_table
     for fact in project.facts:
@@ -360,11 +390,12 @@ def _add_measures(project: Project) -> None:
             key=lambda c: (not any(h in normalize(c.name) for h in _AMOUNT_HINTS), c.data_type != DataType.DOUBLE)
         )
         for col in numeric:
+            money = is_money_like(col.name)
             measures.append(
                 Measure(
                     name=f"Total {col.name}",
                     expression=f"SUM({ref}[{col.name}])",
-                    format_string=col.format_string,
+                    format_string=currency_format(project.culture, False) if money else col.format_string,
                     display_folder="Base",
                 )
             )
@@ -381,10 +412,16 @@ def _add_measures(project: Project) -> None:
             key = next((c.name for c in cal.columns if c.is_key), "Date")
             date_ref = f"{quote_dax_table(cal.name)}[{key}]"
             base = f"[{primary.name}]"
+            # Over more than a year (no year selected), "last year" has no meaning: blank instead of
+            # a misleading figure. The variation inherits the blank.
+            last_year = (
+                f"IF(\n    DATEDIFF(MIN({date_ref}), MAX({date_ref}), DAY) < 366,\n"
+                f"    CALCULATE({base}, SAMEPERIODLASTYEAR({date_ref}))\n)"
+            )
             measures += [
                 Measure(
                     f"{primary.name} N-1",
-                    f"CALCULATE({base}, SAMEPERIODLASTYEAR({date_ref}))",
+                    last_year,
                     primary.format_string,
                     "Temps",
                 ),
@@ -471,6 +508,7 @@ def infer_project(
         many.is_hidden = True
         many.summarize_by = "none"
         project.table(rel.to_table).column(rel.to_column).summarize_by = "none"
+    _apply_currency(project)
     if config.date_table:
         _add_date_table(project)
     if config.auto_measures:
