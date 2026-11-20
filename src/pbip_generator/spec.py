@@ -42,11 +42,13 @@ import yaml
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from .config import ConfigError, ProjectConfig
+from .errors import PbipGeneratorError
+from .labels import labels
 from .model import FieldRef, Measure, Project
 from .themes import build_theme, palette_for
 
 VisualType = Literal[
-    "card", "lineChart", "clusteredColumnChart", "clusteredBarChart", "donutChart", "tableEx", "textbox"
+    "card", "lineChart", "clusteredColumnChart", "clusteredBarChart", "donutChart", "tableEx", "pivotTable", "textbox"
 ]
 Template = Literal["kpis_2x2", "kpis_1_2", "kpis_2", "kpis_table", "table"]
 
@@ -110,6 +112,8 @@ class VisualSpec(_Strict):
     title: str | None = Field(None, description="Required, except for textbox")
     category: str | None = Field(None, description="Axis column of a chart, 'Table[Column]'")
     values: list[str] = Field(default=[], description="Measures (charts, cards) or columns and measures (tableEx)")
+    rows: list[str] = Field(default=[], description="pivotTable (matrix) only: row columns, outer level first")
+    columns: list[str] = Field(default=[], description="pivotTable (matrix) only: column headers, one column")
     sort_by: str | None = Field(None, description="One of the visual's fields")
     sort_descending: bool = True
     text: str | None = Field(None, description="Content of a textbox")
@@ -117,7 +121,7 @@ class VisualSpec(_Strict):
     highlights: list[HighlightSpec] = Field(
         default=[], description="Color a measure by thresholds: table cells (tableEx) or the value (card)"
     )
-    totals: bool = Field(True, description="Total row of a tableEx; turn off when its columns are ratios")
+    totals: bool = Field(True, description="Totals of a tableEx or pivotTable; turn off when values are ratios")
 
 
 class PageSpec(_Strict):
@@ -137,7 +141,10 @@ class ReportSpec(_Strict):
     name: str | None = None
     business_question: str = Field(min_length=1, description="What the report is for, in one sentence")
     audience: Literal["daf", "direction", "commercial", "operationnel"]
-    culture: str = "fr-FR"
+    language: Literal["fr", "en"] = Field(
+        "fr", description="Language of generated names: calendar table, automatic measures, color measures"
+    )
+    culture: str | None = Field(None, description="Number and date formats; default fr-FR (fr) or en-US (en)")
     date_table: bool = True
     auto_measures: bool = True
     auto_relationships: bool = True
@@ -170,6 +177,7 @@ class ReportSpec(_Strict):
         return ProjectConfig(
             name=self.name,
             culture=self.culture,
+            language=self.language,
             date_table=self.date_table,
             auto_measures=self.auto_measures,
             auto_relationships=self.auto_relationships,
@@ -178,7 +186,7 @@ class ReportSpec(_Strict):
         )
 
 
-class SpecError(ValueError):
+class SpecError(PbipGeneratorError, ValueError):
     """The spec cannot be read, or does not match the data."""
 
     def __init__(self, issues: list[str]) -> None:
@@ -195,7 +203,10 @@ def parse_spec(data: dict[str, Any]) -> ReportSpec:
 
 def load_spec(path: Path) -> ReportSpec:
     """Read a spec from a YAML or JSON file (YAML is a superset of JSON)."""
-    raw = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
+    try:
+        raw = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
+    except yaml.YAMLError as exc:
+        raise SpecError([f"invalid YAML/JSON in {path}: {exc}"]) from exc
     if not isinstance(raw, dict):
         raise SpecError(["spec: the root must be a mapping"])
     return parse_spec(raw)
@@ -216,9 +227,8 @@ def build_project_from_spec(
     name = name or spec.name or Path(data_dir).resolve().name
     try:
         project = infer_project(Path(data_dir), name, data_folder, spec.to_config())
-    except (ConfigError, KeyError) as exc:
-        message = exc.args[0] if exc.args else str(exc)
-        raise SpecError([f"{message} (tables: {', '.join(_table_names(data_dir))})"]) from exc
+    except ConfigError as exc:
+        raise SpecError([f"{exc} (tables: {', '.join(_table_names(data_dir))})"]) from exc
     issues = validate_spec(spec, project)
     if issues:
         raise SpecError(issues)
@@ -244,6 +254,7 @@ def _add_color_measures(project: Project, spec: ReportSpec) -> dict[int, FieldRe
 
     palette = project.palette
     assert palette is not None
+    words = labels(project.language)
     out: dict[int, FieldRef] = {}
     defined: dict[str, str] = {}
     for page in spec.pages:
@@ -256,19 +267,19 @@ def _add_color_measures(project: Project, spec: ReportSpec) -> dict[int, FieldRe
                     f"VAR _v = [{target.name}]\nRETURN SWITCH(\n    TRUE(),\n    ISBLANK(_v), BLANK(),\n"
                     f'{cases}    "{palette.color(h.otherwise)}"\n)'
                 )
-                name, n = f"Couleur {target.name}", 1
+                name, n = words["color"].format(measure=target.name), 1
                 while name in defined and defined[name] != expression:
                     n += 1
-                    name = f"Couleur {target.name} {n}"
+                    name = f"{words['color'].format(measure=target.name)} {n}"
                 if name not in defined:
                     defined[name] = expression
                     project.table(target.table).measures.append(
                         Measure(
                             name,
                             expression,
-                            display_folder="Couleurs",
+                            display_folder=words["folder_colors"],
                             is_hidden=True,
-                            description=f"Couleur de mise en évidence de {target.name}",
+                            description=words["color_description"].format(measure=target.name),
                         )
                     )
                 out[id(h)] = FieldRef(target.table, name, is_measure=True)

@@ -1,0 +1,208 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "name": "a33f69c3b7325976be45",
+  "position": {
+    "x": 16.0,
+    "y": 96,
+    "z": 4000,
+    "width": 1248.0,
+    "height": 608,
+    "tabOrder": 4000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Clients"
+                    }
+                  },
+                  "Property": "Nom client"
+                }
+              },
+              "queryRef": "Clients.Nom client",
+              "nativeQueryRef": "Nom client"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Clients"
+                    }
+                  },
+                  "Property": "Région"
+                }
+              },
+              "queryRef": "Clients.Région",
+              "nativeQueryRef": "Région"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Ventes"
+                    }
+                  },
+                  "Property": "Total Montant"
+                }
+              },
+              "queryRef": "Ventes.Total Montant",
+              "nativeQueryRef": "Total Montant"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Ventes"
+                    }
+                  },
+                  "Property": "Nb Ventes"
+                }
+              },
+              "queryRef": "Ventes.Nb Ventes",
+              "nativeQueryRef": "Nb Ventes"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Ventes"
+                    }
+                  },
+                  "Property": "Panier moyen"
+                }
+              },
+              "queryRef": "Ventes.Panier moyen",
+              "nativeQueryRef": "Panier moyen"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Ventes"
+                  }
+                },
+                "Property": "Total Montant"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "objects": {
+      "columnWidth": [
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "241.6D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Clients.Nom client"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "241.6D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Clients.Région"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "241.6D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Ventes.Total Montant"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "241.6D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Ventes.Nb Ventes"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "241.6D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Ventes.Panier moyen"
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Détail par client'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

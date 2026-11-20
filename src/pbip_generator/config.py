@@ -34,6 +34,7 @@ Example (every key is optional)::
 
 from __future__ import annotations
 
+import functools
 import json
 import re
 from dataclasses import dataclass, field
@@ -42,13 +43,28 @@ from typing import Any
 
 import yaml
 
+from .errors import PbipGeneratorError
+from .labels import DEFAULT_CULTURE, LANGUAGES, labels
 from .model import DataType, Measure, Project, Relationship, TableRole
 
 _REF = re.compile(r"^\s*(?P<table>.+?)\s*\[(?P<column>.+)\]\s*$")
 
 
-class ConfigError(ValueError):
+class ConfigError(PbipGeneratorError, ValueError):
     pass
+
+
+def _config_errors(method):
+    """An unknown table or column in the config is the user's error: report it as such."""
+
+    @functools.wraps(method)
+    def wrapper(*args, **kwargs):
+        try:
+            return method(*args, **kwargs)
+        except KeyError as exc:
+            raise ConfigError(exc.args[0] if exc.args else str(exc)) from exc
+
+    return wrapper
 
 
 def _parse_ref(text: str) -> tuple[str, str]:
@@ -61,7 +77,8 @@ def _parse_ref(text: str) -> tuple[str, str]:
 @dataclass
 class ProjectConfig:
     name: str | None = None
-    culture: str = "fr-FR"
+    culture: str | None = None  # default: fr-FR for French, en-US for English
+    language: str = "fr"
     data_folder: str | None = None
     date_table: bool = True
     auto_measures: bool = True
@@ -71,12 +88,23 @@ class ProjectConfig:
     theme: str | None = None
     base_dir: Path | None = field(default=None, repr=False)  # folder of the YAML, for relative paths
 
+    def __post_init__(self) -> None:
+        if self.language not in LANGUAGES:
+            raise ConfigError(f"Invalid language '{self.language}', expected one of {', '.join(LANGUAGES)}")
+
+    @property
+    def resolved_culture(self) -> str:
+        return self.culture or DEFAULT_CULTURE[self.language]
+
     # ------------------------------------------------------------------ #
     @classmethod
     def load(cls, path: Path | None) -> ProjectConfig:
         if path is None:
             return cls()
-        raw = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
+        try:
+            raw = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
+        except yaml.YAMLError as exc:
+            raise ConfigError(f"Invalid YAML in {path}: {exc}") from exc
         if not isinstance(raw, dict):
             raise ConfigError("The config root must be a mapping")
         known = set(cls.__dataclass_fields__)
@@ -86,6 +114,7 @@ class ProjectConfig:
         return cls(**raw, base_dir=Path(path).resolve().parent)
 
     # ------------------------------------------------------------------ #
+    @_config_errors
     def apply_structure(self, project: Project) -> None:
         """Roles, column types, hidden columns and relationships."""
         for tname, opts in self.tables.items():
@@ -150,6 +179,7 @@ class ProjectConfig:
             raise ConfigError(f"Theme '{path}' must be a JSON object with a 'name'")
         project.theme = theme
 
+    @_config_errors
     def apply_measures(self, project: Project) -> None:
         for tname, opts in self.tables.items():
             table = project.table(tname)
@@ -162,7 +192,7 @@ class ProjectConfig:
                         name=spec["name"],
                         expression=str(spec["expression"]).strip(),
                         format_string=spec.get("format"),
-                        display_folder=spec.get("folder", "Personnalisées"),
+                        display_folder=spec.get("folder", labels(project.language)["folder_custom"]),
                         description=spec.get("description"),
                     )
                 )
@@ -173,6 +203,7 @@ def dump_inferred(project: Project) -> str:
     doc: dict[str, Any] = {
         "name": project.name,
         "culture": project.culture,
+        "language": project.language,
         "data_folder": project.data_folder,
         "date_table": project.date_table is not None,
         "tables": {},

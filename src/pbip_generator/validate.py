@@ -115,14 +115,43 @@ def _readable_alternative(visual_type: str, count: int) -> str:
     return " or ".join([f"a {t}" for t in charts] + ["a tableEx", "a column with fewer values"])
 
 
+# Most column headers a matrix shows before it needs a horizontal scroll bar.
+MATRIX_MAX_COLUMNS = 12
+
+
+def _check_matrix(project: Project, where: str, v: VisualSpec) -> list[str]:
+    issues: list[str] = []
+    if v.category:
+        issues.append(f"{where}: a pivotTable takes 'rows' and 'columns', not 'category'")
+    if not v.rows:
+        issues.append(f"{where}: a pivotTable needs at least one column in 'rows'")
+    if len(v.rows) > 3:
+        issues.append(f"{where}: a pivotTable reads well with 3 row levels at most, got {len(v.rows)}")
+    if len(v.columns) > 1:
+        issues.append(f"{where}: a pivotTable takes one column in 'columns', got {len(v.columns)}")
+    for i, text in enumerate(v.rows):
+        issues += _field(project, f"{where}.rows[{i}]", text, "column")[1]
+    for i, text in enumerate(v.columns):
+        ref, errors = _field(project, f"{where}.columns[{i}]", text, "column")
+        issues += errors
+        if ref is not None and not errors:
+            count = project.table(ref.table).column(ref.name).distinct_count
+            if count > MATRIX_MAX_COLUMNS:
+                issues.append(
+                    f"{where}: '{text}' has {count} values, too many column headers for a pivotTable "
+                    f"(up to {MATRIX_MAX_COLUMNS}): put it in 'rows'"
+                )
+    return issues
+
+
 def _check_highlights(project: Project, where: str, v: VisualSpec) -> list[str]:
     from .themes import PRESETS
 
     issues: list[str] = []
-    if v.highlights and v.type not in ("tableEx", "card"):
-        return [f"{where}: highlights apply to a tableEx or a card, not a {v.type}"]
-    if not v.totals and v.type != "tableEx":
-        issues.append(f"{where}: 'totals' applies to a tableEx only")
+    if v.highlights and v.type not in ("tableEx", "pivotTable", "card"):
+        return [f"{where}: highlights apply to a tableEx, a pivotTable or a card, not a {v.type}"]
+    if not v.totals and v.type not in ("tableEx", "pivotTable"):
+        issues.append(f"{where}: 'totals' applies to a tableEx or a pivotTable only")
     palette = PRESETS["light"]  # color names are the same in every preset
     for i, h in enumerate(v.highlights):
         at = f"{where}.highlights[{i}]"
@@ -173,6 +202,9 @@ def _check_visual(project: Project, where: str, v: VisualSpec) -> list[str]:
                     )
         if v.type == "donutChart" and len(v.values) > 1:
             issues.append(f"{where}: a donutChart shows a single measure")
+    elif v.type == "pivotTable":
+        issues += _check_matrix(project, where, v)
+        fields += v.rows + v.columns
     elif v.category:
         issues.append(f"{where}: a {v.type} takes no 'category', put every field in 'values'")
     if v.type == "card" and len(v.values) > 1:

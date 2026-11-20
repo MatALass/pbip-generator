@@ -9,11 +9,14 @@ from __future__ import annotations
 import csv
 import re
 import unicodedata
+import zipfile
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pandas as pd
 
+from .errors import DataError
+from .labels import labels
 from .model import (
     Column,
     DataType,
@@ -29,7 +32,10 @@ if TYPE_CHECKING:
     from .config import ProjectConfig
 
 SUPPORTED_SUFFIXES = {".csv", ".txt", ".xlsx", ".xlsm"}
-DATE_TABLE_NAME = "Calendrier"
+# Rows read to infer types, keys and relationships. Bigger files are only counted: Power BI
+# loads them in full at refresh, inference does not need every row.
+SAMPLE_ROWS = 200_000
+CHUNK_ROWS = 500_000
 _INT_RE = re.compile(r"^[+-]?\d+$")
 _BOOL_VALUES = {"true", "false", "vrai", "faux", "yes", "no", "oui", "non"}
 _YEAR_HINTS = ("annee", "year", "exercice")
@@ -113,9 +119,16 @@ def _sniff_csv(path: Path) -> tuple[str, str, int]:
     return delimiter, encoding, code_page
 
 
-def _read_csv(path: Path) -> tuple[pd.DataFrame, Source]:
+def _read_csv(path: Path) -> tuple[pd.DataFrame, int, Source]:
+    """(the first SAMPLE_ROWS rows, the file's row count, its source)."""
     delimiter, encoding, code_page = _sniff_csv(path)
-    frame = pd.read_csv(path, sep=delimiter, encoding=encoding, dtype=str, keep_default_na=False)
+    options = {"sep": delimiter, "encoding": encoding, "dtype": str, "keep_default_na": False}
+    frame = pd.read_csv(path, nrows=SAMPLE_ROWS, **options)
+    rows = len(frame)
+    if rows == SAMPLE_ROWS:
+        # Count the rest one column at a time, without holding the file in memory.
+        chunks = pd.read_csv(path, usecols=[0], chunksize=CHUNK_ROWS, **options)
+        rows = sum(len(chunk) for chunk in chunks)
     # A ';' separator usually means French-style numbers ("12,5") and dates.
     culture = "fr-FR" if delimiter == ";" else "en-US"
     source = Source(
@@ -125,20 +138,72 @@ def _read_csv(path: Path) -> tuple[pd.DataFrame, Source]:
         encoding=code_page,
         culture=culture,
     )
-    return frame, source
+    return frame, rows, source
 
 
-def _read_excel(path: Path) -> list[tuple[str, pd.DataFrame, Source]]:
-    sheets = pd.read_excel(path, sheet_name=None, engine="openpyxl")
+def _read_excel(path: Path) -> list[tuple[str, pd.DataFrame, int, Source]]:
+    sheets = pd.read_excel(path, sheet_name=None, engine="openpyxl", nrows=SAMPLE_ROWS)
     out = []
     for sheet_name, frame in sheets.items():
+        rows = len(frame)
+        if rows == SAMPLE_ROWS:
+            from openpyxl import load_workbook
+
+            workbook = load_workbook(path, read_only=True)
+            rows = max(workbook[str(sheet_name)].max_row - 1, rows)  # minus the header row
+            workbook.close()
         frame = frame.dropna(axis=1, how="all").dropna(axis=0, how="all")
         if frame.empty:
             continue
         frame.columns = [str(c) for c in frame.columns]
         name = table_name_from(path.stem if len(sheets) == 1 else str(sheet_name))
-        out.append((name, frame, Source(kind="excel", file_name=path.name, sheet=str(sheet_name))))
+        out.append((name, frame, rows, Source(kind="excel", file_name=path.name, sheet=str(sheet_name))))
     return out
+
+
+def _raw_headers(path: Path, source: Source) -> list[str]:
+    """Header row as written in the file: pandas renames duplicates ('A.1') and blanks ('Unnamed: 2'),
+    Power Query does not, so the model would point at columns the refresh never finds."""
+    if source.kind == "excel":
+        first = pd.read_excel(path, sheet_name=source.sheet, header=None, nrows=1, engine="openpyxl")
+        return ["" if pd.isna(v) else str(v) for v in first.iloc[0]] if len(first) else []
+    _, encoding, _ = _sniff_csv(path)
+    with path.open(encoding=encoding, newline="") as f:
+        return next(csv.reader(f, delimiter=source.delimiter), [])
+
+
+def _check_headers(path: Path, source: Source) -> None:
+    where = path.name + (f" (sheet {source.sheet})" if source.sheet else "")
+    headers = [h.strip() for h in _raw_headers(path, source)]
+    while headers and not headers[-1]:  # trailing separators or empty Excel cells
+        headers.pop()
+    blank = [i + 1 for i, h in enumerate(headers) if not h]
+    if blank:
+        raise DataError(f"{where}: column {blank[0]} has no header, name it in the file")
+    seen: dict[str, str] = {}
+    for h in headers:
+        # Power BI column names are case-insensitive: 'Montant' and 'montant' clash.
+        if h.lower() in seen:
+            raise DataError(f"{where}: columns '{seen[h.lower()]}' and '{h}' have the same name, rename one")
+        seen[h.lower()] = h
+
+
+def _read_source(path: Path) -> list[tuple[str, pd.DataFrame, int, Source]]:
+    try:
+        if path.suffix.lower() in (".csv", ".txt"):
+            if path.stat().st_size == 0:
+                raise DataError(f"{path.name} is empty")
+            frame, rows, source = _read_csv(path)
+            loaded = [(table_name_from(path.stem), frame, rows, source)]
+        else:
+            loaded = _read_excel(path)
+        for _, _, _, source in loaded:
+            _check_headers(path, source)
+        return loaded
+    except (ValueError, UnicodeError, zipfile.BadZipFile) as exc:  # pandas parser errors are ValueErrors
+        if isinstance(exc, DataError):
+            raise
+        raise DataError(f"Cannot read {path.name}: {exc}") from exc
 
 
 # --------------------------------------------------------------------------- #
@@ -254,7 +319,31 @@ def _values(frame: pd.DataFrame, column: str) -> set[str]:
 # --------------------------------------------------------------------------- #
 # Relationships and roles
 # --------------------------------------------------------------------------- #
-def _detect_relationships(tables: list[Table], frames: dict[str, pd.DataFrame]) -> list[Relationship]:
+def _full_column(path: Path, source: Source, column: str) -> pd.DataFrame:
+    """One column of a whole file, read by chunks (the key of a sampled dimension)."""
+    if source.kind == "excel":
+        return pd.read_excel(path, sheet_name=source.sheet, usecols=[column], engine="openpyxl")
+    delimiter, encoding, _ = _sniff_csv(path)
+    options = {"sep": delimiter, "encoding": encoding, "dtype": str, "keep_default_na": False}
+    chunks = pd.read_csv(path, usecols=[column], chunksize=CHUNK_ROWS, **options)
+    return pd.concat(chunks, ignore_index=True)
+
+
+def _detect_relationships(
+    tables: list[Table], frames: dict[str, pd.DataFrame], data_dir: Path | None = None
+) -> list[Relationship]:
+    """Many-to-one links. The many side can be a sample (its values are a subset); the one side of a
+    sampled table is read in full for the candidate column, or its keys would look missing."""
+    full: dict[tuple[str, str], set[str]] = {}
+
+    def one_values(table: Table, column: str) -> set[str]:
+        if not table.sampled or data_dir is None:
+            return _values(frames[table.name], column)
+        if (table.name, column) not in full:
+            frame = _full_column(data_dir / table.source.file_name, table.source, column)
+            full[(table.name, column)] = _values(frame, column)
+        return full[(table.name, column)]
+
     candidates: list[tuple[float, Relationship]] = []
     for one in tables:
         for one_col in one.columns:
@@ -275,9 +364,9 @@ def _detect_relationships(tables: list[Table], frames: dict[str, pd.DataFrame]) 
                     if many_col.data_type != one_col.data_type:
                         continue
                     many_vals = _values(frames[many.name], many_col.name)
-                    one_vals = _values(frames[one.name], one_col.name)
                     if not many_vals:
                         continue
+                    one_vals = one_values(one, one_col.name)
                     coverage = len(many_vals & one_vals) / len(many_vals)
                     if coverage < 0.9:
                         continue
@@ -331,23 +420,24 @@ def _assign_roles(tables: list[Table], rels: list[Relationship]) -> None:
 # --------------------------------------------------------------------------- #
 def _add_date_table(project: Project) -> None:
     date_cols = [(t, c) for t in project.facts for c in t.columns if c.data_type == DataType.DATETIME]
-    if not date_cols or project.has_table(DATE_TABLE_NAME) or project.date_table is not None:
+    words = labels(project.language)
+    if not date_cols or project.has_table(words["calendar"]) or project.date_table is not None:
         return
     cal = Table(
-        name=DATE_TABLE_NAME,
+        name=words["calendar"],
         role=TableRole.DATE,
         source=Source(kind="date"),
         columns=[
             Column(
                 "Date", DataType.DATETIME, is_date_only=True, is_key=True, format_string="dd/mm/yyyy", is_unique=True
             ),
-            Column("Année", DataType.INT64, format_string="0"),
-            Column("Trimestre", DataType.STRING),
-            Column("Mois numéro", DataType.INT64, is_hidden=True, format_string="0"),
-            Column("Mois", DataType.STRING, sort_by_column="Mois numéro"),
-            Column("Année-Mois", DataType.STRING),
-            Column("Jour semaine numéro", DataType.INT64, is_hidden=True, format_string="0"),
-            Column("Jour semaine", DataType.STRING, sort_by_column="Jour semaine numéro"),
+            Column(words["year"], DataType.INT64, format_string="0"),
+            Column(words["quarter"], DataType.STRING),
+            Column(words["month_number"], DataType.INT64, is_hidden=True, format_string="0"),
+            Column(words["month"], DataType.STRING, sort_by_column=words["month_number"]),
+            Column(words["year_month"], DataType.STRING),
+            Column(words["weekday_number"], DataType.INT64, is_hidden=True, format_string="0"),
+            Column(words["weekday"], DataType.STRING, sort_by_column=words["weekday_number"]),
         ],
     )
     spans = [c.years for _, c in date_cols if c.years is not None]
@@ -355,10 +445,10 @@ def _add_date_table(project: Project) -> None:
         # The calendar spans the full years of the data (see mquery.date_table_query): its number
         # of values per column is known, so readability limits apply to it too.
         n_years = max(y for _, y in spans) - min(y for y, _ in spans) + 1
-        counts = {"Date": 365 * n_years, "Année": n_years, "Trimestre": 4, "Mois numéro": 12, "Mois": 12,
-                  "Année-Mois": 12 * n_years, "Jour semaine numéro": 7, "Jour semaine": 7}  # fmt: skip
-        for col in cal.columns:
-            col.distinct_count = counts[col.name]
+        # Date, year, quarter, month number, month, year-month, weekday number, weekday.
+        counts = [365 * n_years, n_years, 4, 12, 12, 12 * n_years, 7, 7]
+        for col, count in zip(cal.columns, counts, strict=True):
+            col.distinct_count = count
     project.tables.append(cal)
     active_done: set[str] = set()
     for table, col in date_cols:
@@ -366,7 +456,7 @@ def _add_date_table(project: Project) -> None:
             Relationship(
                 from_table=table.name,
                 from_column=col.name,
-                to_table=DATE_TABLE_NAME,
+                to_table=cal.name,
                 to_column="Date",
                 is_active=table.name not in active_done,
                 date_part_only=not col.is_date_only,
@@ -406,6 +496,7 @@ def _apply_currency(project: Project) -> None:
 
 def _add_measures(project: Project) -> None:
     cal = project.date_table
+    words = labels(project.language)
     for fact in project.facts:
         ref = quote_dax_table(fact.name)
         measures: list[Measure] = []
@@ -418,18 +509,18 @@ def _add_measures(project: Project) -> None:
             money = is_money_like(col.name)
             measures.append(
                 Measure(
-                    name=f"Total {col.name}",
+                    name=words["total"].format(column=col.name),
                     expression=f"SUM({ref}[{col.name}])",
                     format_string=currency_format(project.culture, False) if money else col.format_string,
-                    display_folder="Base",
+                    display_folder=words["folder_base"],
                 )
             )
         measures.append(
             Measure(
-                name=f"Nb {fact.name}",
+                name=words["count"].format(table=fact.name),
                 expression=f"COUNTROWS({ref})",
                 format_string="#,##0",
-                display_folder="Base",
+                display_folder=words["folder_base"],
             )
         )
         if cal is not None:
@@ -443,21 +534,21 @@ def _add_measures(project: Project) -> None:
                 f"IF(\n    DATEDIFF(MIN({date_ref}), MAX({date_ref}), DAY) < 366,\n"
                 f"    CALCULATE({base}, SAMEPERIODLASTYEAR({date_ref}))\n)"
             )
+            previous = words["previous_year"].format(measure=primary.name)
+            time = words["folder_time"]
             measures += [
+                Measure(previous, last_year, primary.format_string, time),
                 Measure(
-                    f"{primary.name} N-1",
-                    last_year,
-                    primary.format_string,
-                    "Temps",
-                ),
-                Measure(
-                    f"{primary.name} Var % N-1",
-                    f"VAR _n = {base}\nVAR _n1 = [{primary.name} N-1]\nRETURN DIVIDE(_n - _n1, _n1)",
+                    words["variation"].format(measure=primary.name),
+                    f"VAR _n = {base}\nVAR _n1 = [{previous}]\nRETURN DIVIDE(_n - _n1, _n1)",
                     "0.0 %;-0.0 %;0.0 %",
-                    "Temps",
+                    time,
                 ),
                 Measure(
-                    f"{primary.name} Cumul annuel", f"TOTALYTD({base}, {date_ref})", primary.format_string, "Temps"
+                    words["year_to_date"].format(measure=primary.name),
+                    f"TOTALYTD({base}, {date_ref})",
+                    primary.format_string,
+                    time,
                 ),
             ]
         existing = {m.name for m in fact.measures}
@@ -496,22 +587,17 @@ def infer_project(
 
     tables: list[Table] = []
     frames: dict[str, pd.DataFrame] = {}
-    loaded: list[tuple[str, pd.DataFrame, Source]] = []
-    for path in files:
-        if path.suffix.lower() in (".csv", ".txt"):
-            frame, source = _read_csv(path)
-            loaded.append((table_name_from(path.stem), frame, source))
-        else:
-            loaded.extend(_read_excel(path))
+    loaded = [source for path in files for source in _read_source(path)]
 
-    for tname, frame, source in loaded:
+    for tname, frame, rows, source in loaded:
         if tname in frames:
-            raise ValueError(f"Two sources produce the same table name '{tname}'")
+            raise DataError(f"Two sources produce the same table name '{tname}'")
         frames[tname] = frame
-        table = Table(name=tname, columns=_build_columns(frame, source), source=source, row_count=len(frame))
+        columns = _build_columns(frame, source)
+        table = Table(name=tname, columns=columns, source=source, row_count=rows, sampled=rows > len(frame))
         tables.append(table)
 
-    rels = _detect_relationships(tables, frames) if config.auto_relationships else []
+    rels = _detect_relationships(tables, frames, data_dir) if config.auto_relationships else []
     _assign_roles(tables, rels)
 
     data_folder = data_folder or config.data_folder or str(data_dir.resolve())
@@ -524,7 +610,8 @@ def infer_project(
         tables=tables,
         relationships=rels,
         data_folder=data_folder,
-        culture=config.culture,
+        culture=config.resolved_culture,
+        language=config.language,
         source_dir=data_dir,
     )
     config.apply_structure(project)

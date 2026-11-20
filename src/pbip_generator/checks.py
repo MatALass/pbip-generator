@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from .errors import PbipGeneratorError
 from .model import Page, Project, Visual
 
 # Smallest size (width, height) at which a visual still shows its data, title included.
@@ -41,7 +42,7 @@ class LayoutIssue:
         return f"[{self.page}] {self.visual}: {self.message}"
 
 
-class LayoutError(ValueError):
+class LayoutError(PbipGeneratorError, ValueError):
     """Raised by strict generation when the report layout has issues."""
 
     def __init__(self, issues: list[LayoutIssue]) -> None:

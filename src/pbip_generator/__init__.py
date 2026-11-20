@@ -2,15 +2,21 @@
 
 from .builder import render_project, write_project
 from .checks import LayoutError, LayoutIssue, check_project
-from .config import ProjectConfig
+from .config import ConfigError, ProjectConfig
+from .errors import AccessError, DataError, PbipGeneratorError, ProjectNameError
 from .inference import infer_project
 from .spec import ReportSpec, SpecError, build_project_from_spec, load_spec, parse_spec
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 __all__ = [
+    "AccessError",
+    "ConfigError",
+    "DataError",
     "LayoutError",
     "LayoutIssue",
+    "PbipGeneratorError",
     "ProjectConfig",
+    "ProjectNameError",
     "ReportSpec",
     "SpecError",
     "build_project_from_spec",

@@ -17,7 +17,10 @@ from pathlib import Path
 from . import __version__
 from .builder import write_project
 from .config import ConfigError, ProjectConfig, dump_inferred
+from .dictionary import render_dictionary
+from .errors import PbipGeneratorError
 from .inference import infer_project
+from .labels import LANGUAGES
 from .spec import build_project_from_spec, load_spec, spec_json_schema
 
 
@@ -45,6 +48,12 @@ def _parser() -> argparse.ArgumentParser:
     build.add_argument("--copy-data", action="store_true", help="Copy the source files into <project>/data")
     build.add_argument("--overwrite", action="store_true")
     build.add_argument(
+        "-l",
+        "--language",
+        choices=LANGUAGES,
+        help="Language of generated names (calendar, automatic measures, default pages): fr (default) or en",
+    )
+    build.add_argument(
         "--strict",
         action="store_true",
         help="Fail instead of warning when visuals overlap, leave the page or are too small",
@@ -54,6 +63,20 @@ def _parser() -> argparse.ArgumentParser:
     init.add_argument("data_dir", type=Path)
     init.add_argument("-o", "--output", type=Path, default=Path("pbip-config.yaml"))
     init.add_argument("-n", "--name")
+    init.add_argument(
+        "-l",
+        "--language",
+        choices=LANGUAGES,
+        help="Language of generated names (calendar, automatic measures, default pages): fr (default) or en",
+    )
+
+    dictionary = sub.add_parser("dictionary", help="Write the data dictionary (Markdown) of the model")
+    dictionary.add_argument("data_dir", type=Path)
+    dictionary.add_argument("-c", "--config", type=Path, help="YAML config with overrides")
+    dictionary.add_argument("-s", "--spec", type=Path, help="Report spec, instead of --config")
+    dictionary.add_argument("-n", "--name")
+    dictionary.add_argument("-l", "--language", choices=LANGUAGES)
+    dictionary.add_argument("-o", "--output", type=Path, help="Write to a file instead of stdout")
 
     schema = sub.add_parser("spec-schema", help="Print the JSON schema of the report spec")
     schema.add_argument("-o", "--output", type=Path, help="Write to a file instead of stdout")
@@ -69,37 +92,48 @@ def _default_name(data_dir: Path) -> str:
 def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     try:
-        if args.command == "build":
+        if args.command in ("build", "dictionary"):
             if args.spec is not None:
                 if args.config is not None:
                     raise ConfigError("--spec and --config cannot be used together (the spec holds the overrides)")
                 spec = load_spec(args.spec)
+                if args.language:
+                    spec = spec.model_copy(update={"language": args.language})
                 name = args.name or spec.name or _default_name(args.data_dir)
-                project = build_project_from_spec(args.data_dir, spec, name, args.data_folder)
+                project = build_project_from_spec(args.data_dir, spec, name, getattr(args, "data_folder", None))
             else:
                 config = ProjectConfig.load(args.config)
+                if args.language:
+                    config.language = args.language
                 name = args.name or config.name or _default_name(args.data_dir)
-                project = infer_project(args.data_dir, name, args.data_folder, config)
+                project = infer_project(args.data_dir, name, getattr(args, "data_folder", None), config)
+            if args.command == "dictionary":
+                _write_or_print(render_dictionary(project), args.output, "Dictionary")
+                return 0
             root = write_project(
                 project, args.output, overwrite=args.overwrite, copy_data=args.copy_data, strict=args.strict
             )
             _summary(project, root)
         elif args.command == "spec-schema":
             text = json.dumps(spec_json_schema(), indent=2, ensure_ascii=False) + "\n"
-            if args.output is None:
-                sys.stdout.write(text)
-            else:
-                args.output.write_text(text, encoding="utf-8")
-                print(f"Schema written to {args.output}")
+            _write_or_print(text, args.output, "Schema")
         else:
             name = args.name or _default_name(args.data_dir)
-            project = infer_project(args.data_dir, name)
+            project = infer_project(args.data_dir, name, config=ProjectConfig(language=args.language or "fr"))
             args.output.write_text(dump_inferred(project), encoding="utf-8")
             print(f"Config written to {args.output}")
-    except (ConfigError, FileNotFoundError, FileExistsError, KeyError, ValueError) as exc:
+    except (PbipGeneratorError, OSError) as exc:  # anything else is a bug: keep its traceback
         print(f"error: {exc}", file=sys.stderr)
         return 1
     return 0
+
+
+def _write_or_print(text: str, output: Path | None, what: str) -> None:
+    if output is None:
+        sys.stdout.write(text)
+    else:
+        output.write_text(text, encoding="utf-8")
+        print(f"{what} written to {output}")
 
 
 def _summary(project, root: Path) -> None:

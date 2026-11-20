@@ -81,6 +81,7 @@ class Table:
     role: TableRole = TableRole.DIMENSION
     measures: list[Measure] = field(default_factory=list)
     row_count: int = 0
+    sampled: bool = False  # types and value counts inferred from the first SAMPLE_ROWS rows only
 
     def column(self, name: str) -> Column:
         for col in self.columns:
@@ -153,6 +154,7 @@ class Project:
     relationships: list[Relationship] = field(default_factory=list)
     pages: list[Page] = field(default_factory=list)
     culture: str = "fr-FR"
+    language: str = "fr"  # generated names: calendar, automatic measures, default pages
     data_folder: str = ""  # value of the DataFolder Power Query parameter
     source_dir: Path | None = None
     theme: dict | None = None  # Power BI report theme (the JSON you would import in Desktop)

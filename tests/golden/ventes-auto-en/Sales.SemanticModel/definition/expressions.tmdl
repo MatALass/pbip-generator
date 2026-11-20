@@ -1,0 +1,4 @@
+expression DataFolder = "C:\pbip\Ventes\data\" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 49c66d51-f255-5fe5-90f6-360d301fecb4
+
+	annotation PBI_ResultType = Text

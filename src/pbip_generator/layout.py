@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from .inference import is_key_like
+from .labels import labels
 from .model import DataType, FieldRef, Page, Project, Table, TableRole, Visual
 
 PAGE_W, PAGE_H = 1280, 720
@@ -44,14 +45,16 @@ def _measure_refs(project: Project) -> tuple[list[FieldRef], FieldRef | None, Fi
     are none, for example with ``auto_measures: false`` and every custom measure in its own
     folder, the custom measures are used instead, so the report is never left without pages.
     """
+    words = labels(project.language)
+    variation_suffix = words["variation"].format(measure="")
     base, custom, variation = [], [], None
     for t, m in project.all_measures():
         ref = FieldRef(t.name, m.name, is_measure=True)
-        if m.display_folder == "Base" or m.display_folder is None:
+        if m.display_folder == words["folder_base"] or m.display_folder is None:
             base.append(ref)
-        elif m.name.endswith("Var % N-1"):
+        elif m.name.endswith(variation_suffix):
             variation = variation or ref
-        elif m.display_folder != "Temps":
+        elif m.display_folder != words["folder_time"]:
             custom.append(ref)
     base = base or custom
     primary = base[0] if base else None
@@ -85,7 +88,7 @@ def _slicers(project: Project, categories: list[FieldRef]) -> list[Visual]:
     fields: list[FieldRef] = []
     cal = project.date_table
     if cal is not None and cal.source.kind == "date":
-        fields.append(FieldRef(cal.name, "Année"))
+        fields.append(FieldRef(cal.name, labels(project.language)["year"]))
     fields += categories[: 3 - len(fields)]
     if not fields:
         return []
@@ -105,7 +108,8 @@ def build_pages(project: Project) -> list[Page]:
     slicers = _slicers(project, categories)
     top = MARGIN + (64 + GAP if slicers else 0)
 
-    overview = Page("Vue d'ensemble")
+    words = labels(project.language)
+    overview = Page(words["overview"])
     overview.visuals += slicers
 
     kpis = base[:4]
@@ -119,7 +123,7 @@ def build_pages(project: Project) -> list[Page]:
     slots = _row(2, charts_top, chart_h) + _row(2, charts_top + chart_h + GAP, chart_h)
     charts: list[Visual] = []
     if cal is not None and cal.source.kind == "date":
-        month = FieldRef(cal.name, "Année-Mois")
+        month = FieldRef(cal.name, words["year_month"])
         charts.append(
             Visual(
                 "lineChart",
@@ -128,7 +132,7 @@ def build_pages(project: Project) -> list[Page]:
                 0,
                 0,
                 0,
-                title=f"{primary.name} par mois",
+                title=words["by_month"].format(measure=primary.name),
                 sort_by=month,
                 sort_descending=False,
             )
@@ -142,7 +146,7 @@ def build_pages(project: Project) -> list[Page]:
                 0,
                 0,
                 0,
-                title=f"{primary.name} par {cat.name}",
+                title=words["by"].format(measure=primary.name, category=cat.name),
                 sort_by=primary,
             )
         )
@@ -150,7 +154,7 @@ def build_pages(project: Project) -> list[Page]:
         visual.x, visual.y, visual.width, visual.height = x, y, w, h
         overview.visuals.append(visual)
 
-    detail = Page("Détail")
+    detail = Page(words["detail"])
     detail.visuals += [Visual(v.visual_type, v.roles, v.x, v.y, v.width, v.height, title=v.title) for v in slicers]
     table_fields = _label_columns(project)[:4] + base[:4]
     detail.visuals.append(
@@ -161,7 +165,7 @@ def build_pages(project: Project) -> list[Page]:
             top,
             PAGE_W - 2 * MARGIN,
             PAGE_H - top - MARGIN,
-            title="Détail",
+            title=words["detail"],
             sort_by=primary,
         )
     )

@@ -24,6 +24,41 @@ jobs:
       - run: pip install -e ".[dev]"
       - run: ruff check src tests
       - run: ruff format --check src tests
-      - run: pytest -v
+      - run: pytest -v --cov=pbip_generator --cov-report=term-missing --cov-fail-under=95
       - name: Build the example project
         run: pbip-generator build examples/ventes/data -c examples/ventes/config.yaml -o output
+
+  # The JSON schemas check the report; TOM, the library Power BI uses, checks that the semantic
+  # model (TMDL) loads. It catches TMDL syntax and reference errors no schema sees.
+  tmdl:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+      - run: pip install -e .
+      - name: Generate projects from the examples
+        shell: pwsh
+        run: |
+          pbip-generator build examples/ventes/data -c examples/ventes/config.yaml -o output/auto -n Ventes
+          pbip-generator build examples/ventes/data --spec examples/ventes/report.yaml -o output/spec -n Ventes
+      - name: Load every semantic model with TOM
+        shell: pwsh
+        run: |
+          $folders = @(Get-ChildItem output, tests/golden -Recurse -Directory -Filter definition |
+            Where-Object { $_.Parent.Name -like "*.SemanticModel" } | ForEach-Object FullName)
+          if ($folders.Count -eq 0) { throw "no semantic model found" }
+          dotnet run --project tools/tmdl-check -c Release -- @folders
+      - name: The check fails on a broken model
+        shell: pwsh
+        run: |
+          Copy-Item tests/golden/ventes-auto/Ventes.SemanticModel/definition broken -Recurse
+          (Get-Content broken/relationships.tmdl -Raw).Replace("toColumn: Clients.ClientID", "toColumn: Clients.Nope") |
+            Set-Content broken/relationships.tmdl -NoNewline
+          dotnet run --project tools/tmdl-check -c Release -- broken
+          if ($LASTEXITCODE -ne 1) { throw "a model with an unknown column was accepted" }
+          $global:LASTEXITCODE = 0

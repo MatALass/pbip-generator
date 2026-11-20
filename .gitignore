@@ -8,3 +8,5 @@ dist/
 output/
 .schemas/
 .schemas-src/
+.coverage
+htmlcov/

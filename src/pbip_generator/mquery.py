@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 
+from .labels import labels
 from .model import Column, DataType, Project, Table
 
 PARAMETER_NAME = "DataFolder"
@@ -88,6 +89,7 @@ def date_table_expression(project: Project) -> str:
     else:  # pragma: no cover - date table only exists when dates exist
         start, end = "#date(2020, 1, 1)", "Date.EndOfYear(DateTime.Date(DateTime.LocalNow()))"
     culture = m_string(project.culture)
+    w = {k: m_string(v) for k, v in labels(project.language).items()}
     return "\n".join(
         [
             "let",
@@ -96,18 +98,18 @@ def date_table_expression(project: Project) -> str:
             "    Dates = List.Dates(StartDate, Duration.Days(EndDate - StartDate) + 1, #duration(1, 0, 0, 0)),",
             '    AsTable = Table.FromList(Dates, Splitter.SplitByNothing(), {"Date"}),',
             '    Typed = Table.TransformColumnTypes(AsTable, {{"Date", type date}}),',
-            '    AddYear = Table.AddColumn(Typed, "Année", each Date.Year([Date]), Int64.Type),',
-            '    AddQuarter = Table.AddColumn(AddYear, "Trimestre", '
-            'each "T" & Text.From(Date.QuarterOfYear([Date])), type text),',
-            '    AddMonthNum = Table.AddColumn(AddQuarter, "Mois numéro", each Date.Month([Date]), Int64.Type),',
-            f'    AddMonth = Table.AddColumn(AddMonthNum, "Mois", '
+            f"    AddYear = Table.AddColumn(Typed, {w['year']}, each Date.Year([Date]), Int64.Type),",
+            f"    AddQuarter = Table.AddColumn(AddYear, {w['quarter']}, "
+            f"each {w['quarter_prefix']} & Text.From(Date.QuarterOfYear([Date])), type text),",
+            f"    AddMonthNum = Table.AddColumn(AddQuarter, {w['month_number']}, each Date.Month([Date]), Int64.Type),",
+            f"    AddMonth = Table.AddColumn(AddMonthNum, {w['month']}, "
             f"each Text.Proper(Date.MonthName([Date], {culture})), type text),",
-            '    AddYearMonth = Table.AddColumn(AddMonth, "Année-Mois", '
+            f"    AddYearMonth = Table.AddColumn(AddMonth, {w['year_month']}, "
             'each Text.From(Date.Year([Date])) & "-" & Text.PadStart(Text.From(Date.Month([Date])), 2, "0"), '
             "type text),",
-            '    AddDayNum = Table.AddColumn(AddYearMonth, "Jour semaine numéro", '
+            f"    AddDayNum = Table.AddColumn(AddYearMonth, {w['weekday_number']}, "
             "each Date.DayOfWeek([Date], Day.Monday) + 1, Int64.Type),",
-            f'    AddDay = Table.AddColumn(AddDayNum, "Jour semaine", '
+            f"    AddDay = Table.AddColumn(AddDayNum, {w['weekday']}, "
             f"each Text.Proper(Date.DayOfWeekName([Date], {culture})), type text)",
             "in",
             "    AddDay",
