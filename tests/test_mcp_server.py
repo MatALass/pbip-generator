@@ -96,7 +96,11 @@ def test_server_turns_expected_failures_into_tool_errors(example_data, tmp_path)
     result = _call(create_server(), "profile_data", {"data_dir": str(tmp_path / "missing")})
     assert result.is_error and "Data folder not found" in result.content[0].text
     bad = {**SPEC, "pages": [{**SPEC["pages"][0], "template": "kpis_2"}]}
-    result = _call(create_server(), "generate_report", {"data_dir": str(example_data), "spec": bad, "output_dir": "x"})
+    result = _call(
+        create_server(),
+        "generate_report",
+        {"data_dir": str(example_data), "spec": bad, "output_dir": str(tmp_path / "x")},
+    )
     assert result.is_error and "holds 2 visual(s), got 3" in result.content[0].text
 
 

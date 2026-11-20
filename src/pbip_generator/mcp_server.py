@@ -10,14 +10,15 @@ Typical loop: ``profile_data`` -> write a spec -> ``validate_spec`` until it ret
 from __future__ import annotations
 
 import functools
+import os
 from pathlib import Path
 from typing import Annotated, Any
 
 from pydantic import Field
 
 from .builder import write_project
-from .checks import LayoutError, check_pages
-from .config import ConfigError
+from .checks import check_pages
+from .errors import AccessError, PbipGeneratorError
 from .inference import infer_project
 from .model import Project, TableRole
 from .spec import TEMPLATE_SLOTS, SpecError, build_project_from_spec, parse_spec, spec_json_schema
@@ -47,8 +48,38 @@ Never write TMDL or PBIR yourself.
 """
 
 
+ALLOWED_ROOTS_VAR = "PBIP_ALLOWED_ROOTS"
+
+
+def allowed_roots() -> list[Path]:
+    """Folders the server may read from and write to, from PBIP_ALLOWED_ROOTS (os.pathsep-separated)."""
+    raw = os.environ.get(ALLOWED_ROOTS_VAR, "")
+    return [Path(p).expanduser().resolve() for p in raw.split(os.pathsep) if p.strip()]
+
+
+def _allowed(path: str, purpose: str) -> Path:
+    """The resolved path, if it lies inside an allowed root.
+
+    The model chooses every path it passes to the tools: without this check it could read any file
+    of the machine (profile_data) or write anywhere (generate_report). Symlinks and '..' are resolved
+    before the check, and nothing is allowed until PBIP_ALLOWED_ROOTS is set.
+    """
+    roots = allowed_roots()
+    if not roots:
+        raise AccessError(
+            f"{ALLOWED_ROOTS_VAR} is not set: no folder is allowed. Set it in the MCP server configuration "
+            f"to the folders holding your data and reports (separated by '{os.pathsep}')."
+        )
+    resolved = Path(path).expanduser().resolve()
+    if not any(resolved.is_relative_to(root) for root in roots):
+        raise AccessError(
+            f"The {purpose} {resolved} is outside the allowed folders: {', '.join(str(r) for r in roots)}"
+        )
+    return resolved
+
+
 def _data_dir(path: str) -> Path:
-    folder = Path(path).expanduser()
+    folder = _allowed(path, "data folder")
     if not folder.is_dir():
         raise FileNotFoundError(f"Data folder not found: {folder}")
     return folder
@@ -63,6 +94,7 @@ def profile(project: Project) -> dict[str, Any]:
                 "name": t.name,
                 "role": t.role.value,
                 "rows": t.row_count,
+                **({"sampled": True} if t.sampled else {}),
                 "columns": [
                     {
                         "name": c.name,
@@ -93,6 +125,7 @@ def profile(project: Project) -> dict[str, Any]:
             "Reference columns as 'Table[Column]' and measures as '[Measure]'.",
             "Hidden columns are technical keys: do not show them.",
             "distinct is the number of values of the column (chart readability).",
+            "sampled tables were read on their first rows only: their distinct counts are lower bounds.",
         ]
         + (
             ["Calendrier is generated: use Calendrier[Année] for slicers, Calendrier[Année-Mois] for monthly trends."]
@@ -134,7 +167,7 @@ def generate_report(
 ) -> dict[str, Any]:
     folder = _data_dir(data_dir)
     report = parse_spec(spec)
-    output = Path(output_dir).expanduser().resolve()
+    output = _allowed(output_dir, "output folder")
     name = name or report.name or folder.resolve().name
     if copy_data and data_folder is None:
         # Power BI reads the copy shipped with the project, not the original folder.
@@ -157,7 +190,7 @@ def create_server():
     from mcp.server.mcpserver.exceptions import ToolError
 
     server = MCPServer(name="pbip-generator", instructions=INSTRUCTIONS)
-    expected = (SpecError, ConfigError, LayoutError, FileNotFoundError, FileExistsError, KeyError, ValueError)
+    expected = (PbipGeneratorError, OSError)  # input errors; anything else is a bug and keeps its traceback
 
     def safe(func):
         @functools.wraps(func)
@@ -165,7 +198,7 @@ def create_server():
             try:
                 return func(*args, **kwargs)
             except expected as exc:
-                raise ToolError(str(exc.args[0]) if isinstance(exc, KeyError) and exc.args else str(exc)) from exc
+                raise ToolError(str(exc)) from exc
 
         return wrapper
 

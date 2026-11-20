@@ -42,6 +42,7 @@ import yaml
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from .config import ConfigError, ProjectConfig
+from .errors import PbipGeneratorError
 from .model import FieldRef, Measure, Project
 from .themes import build_theme, palette_for
 
@@ -178,7 +179,7 @@ class ReportSpec(_Strict):
         )
 
 
-class SpecError(ValueError):
+class SpecError(PbipGeneratorError, ValueError):
     """The spec cannot be read, or does not match the data."""
 
     def __init__(self, issues: list[str]) -> None:
@@ -195,7 +196,10 @@ def parse_spec(data: dict[str, Any]) -> ReportSpec:
 
 def load_spec(path: Path) -> ReportSpec:
     """Read a spec from a YAML or JSON file (YAML is a superset of JSON)."""
-    raw = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
+    try:
+        raw = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
+    except yaml.YAMLError as exc:
+        raise SpecError([f"invalid YAML/JSON in {path}: {exc}"]) from exc
     if not isinstance(raw, dict):
         raise SpecError(["spec: the root must be a mapping"])
     return parse_spec(raw)
@@ -216,9 +220,8 @@ def build_project_from_spec(
     name = name or spec.name or Path(data_dir).resolve().name
     try:
         project = infer_project(Path(data_dir), name, data_folder, spec.to_config())
-    except (ConfigError, KeyError) as exc:
-        message = exc.args[0] if exc.args else str(exc)
-        raise SpecError([f"{message} (tables: {', '.join(_table_names(data_dir))})"]) from exc
+    except ConfigError as exc:
+        raise SpecError([f"{exc} (tables: {', '.join(_table_names(data_dir))})"]) from exc
     issues = validate_spec(spec, project)
     if issues:
         raise SpecError(issues)

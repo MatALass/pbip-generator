@@ -17,6 +17,7 @@ from pathlib import Path
 from . import __version__
 from .builder import write_project
 from .config import ConfigError, ProjectConfig, dump_inferred
+from .errors import PbipGeneratorError
 from .inference import infer_project
 from .spec import build_project_from_spec, load_spec, spec_json_schema
 
@@ -96,7 +97,7 @@ def main(argv: list[str] | None = None) -> int:
             project = infer_project(args.data_dir, name)
             args.output.write_text(dump_inferred(project), encoding="utf-8")
             print(f"Config written to {args.output}")
-    except (ConfigError, FileNotFoundError, FileExistsError, KeyError, ValueError) as exc:
+    except (PbipGeneratorError, OSError) as exc:  # anything else is a bug: keep its traceback
         print(f"error: {exc}", file=sys.stderr)
         return 1
     return 0

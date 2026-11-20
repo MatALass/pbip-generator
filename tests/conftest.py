@@ -55,3 +55,9 @@ def example_data(tmp_path: Path) -> Path:
     target = tmp_path / "data"
     shutil.copytree(EXAMPLE_DATA, target)
     return target
+
+
+@pytest.fixture(autouse=True)
+def _allow_test_folders(monkeypatch, tmp_path_factory):
+    """The MCP tools only touch PBIP_ALLOWED_ROOTS: allow the pytest temporary folders."""
+    monkeypatch.setenv("PBIP_ALLOWED_ROOTS", str(tmp_path_factory.getbasetemp()))

@@ -9,11 +9,13 @@ from __future__ import annotations
 import csv
 import re
 import unicodedata
+import zipfile
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pandas as pd
 
+from .errors import DataError
 from .model import (
     Column,
     DataType,
@@ -29,6 +31,10 @@ if TYPE_CHECKING:
     from .config import ProjectConfig
 
 SUPPORTED_SUFFIXES = {".csv", ".txt", ".xlsx", ".xlsm"}
+# Rows read to infer types, keys and relationships. Bigger files are only counted: Power BI
+# loads them in full at refresh, inference does not need every row.
+SAMPLE_ROWS = 200_000
+CHUNK_ROWS = 500_000
 DATE_TABLE_NAME = "Calendrier"
 _INT_RE = re.compile(r"^[+-]?\d+$")
 _BOOL_VALUES = {"true", "false", "vrai", "faux", "yes", "no", "oui", "non"}
@@ -113,9 +119,16 @@ def _sniff_csv(path: Path) -> tuple[str, str, int]:
     return delimiter, encoding, code_page
 
 
-def _read_csv(path: Path) -> tuple[pd.DataFrame, Source]:
+def _read_csv(path: Path) -> tuple[pd.DataFrame, int, Source]:
+    """(the first SAMPLE_ROWS rows, the file's row count, its source)."""
     delimiter, encoding, code_page = _sniff_csv(path)
-    frame = pd.read_csv(path, sep=delimiter, encoding=encoding, dtype=str, keep_default_na=False)
+    options = {"sep": delimiter, "encoding": encoding, "dtype": str, "keep_default_na": False}
+    frame = pd.read_csv(path, nrows=SAMPLE_ROWS, **options)
+    rows = len(frame)
+    if rows == SAMPLE_ROWS:
+        # Count the rest one column at a time, without holding the file in memory.
+        chunks = pd.read_csv(path, usecols=[0], chunksize=CHUNK_ROWS, **options)
+        rows = sum(len(chunk) for chunk in chunks)
     # A ';' separator usually means French-style numbers ("12,5") and dates.
     culture = "fr-FR" if delimiter == ";" else "en-US"
     source = Source(
@@ -125,20 +138,37 @@ def _read_csv(path: Path) -> tuple[pd.DataFrame, Source]:
         encoding=code_page,
         culture=culture,
     )
-    return frame, source
+    return frame, rows, source
 
 
-def _read_excel(path: Path) -> list[tuple[str, pd.DataFrame, Source]]:
-    sheets = pd.read_excel(path, sheet_name=None, engine="openpyxl")
+def _read_excel(path: Path) -> list[tuple[str, pd.DataFrame, int, Source]]:
+    sheets = pd.read_excel(path, sheet_name=None, engine="openpyxl", nrows=SAMPLE_ROWS)
     out = []
     for sheet_name, frame in sheets.items():
+        rows = len(frame)
+        if rows == SAMPLE_ROWS:
+            from openpyxl import load_workbook
+
+            workbook = load_workbook(path, read_only=True)
+            rows = max(workbook[str(sheet_name)].max_row - 1, rows)  # minus the header row
+            workbook.close()
         frame = frame.dropna(axis=1, how="all").dropna(axis=0, how="all")
         if frame.empty:
             continue
         frame.columns = [str(c) for c in frame.columns]
         name = table_name_from(path.stem if len(sheets) == 1 else str(sheet_name))
-        out.append((name, frame, Source(kind="excel", file_name=path.name, sheet=str(sheet_name))))
+        out.append((name, frame, rows, Source(kind="excel", file_name=path.name, sheet=str(sheet_name))))
     return out
+
+
+def _read_source(path: Path) -> list[tuple[str, pd.DataFrame, int, Source]]:
+    try:
+        if path.suffix.lower() in (".csv", ".txt"):
+            frame, rows, source = _read_csv(path)
+            return [(table_name_from(path.stem), frame, rows, source)]
+        return _read_excel(path)
+    except (ValueError, UnicodeError, zipfile.BadZipFile) as exc:  # pandas parser errors are ValueErrors
+        raise DataError(f"Cannot read {path.name}: {exc}") from exc
 
 
 # --------------------------------------------------------------------------- #
@@ -254,7 +284,31 @@ def _values(frame: pd.DataFrame, column: str) -> set[str]:
 # --------------------------------------------------------------------------- #
 # Relationships and roles
 # --------------------------------------------------------------------------- #
-def _detect_relationships(tables: list[Table], frames: dict[str, pd.DataFrame]) -> list[Relationship]:
+def _full_column(path: Path, source: Source, column: str) -> pd.DataFrame:
+    """One column of a whole file, read by chunks (the key of a sampled dimension)."""
+    if source.kind == "excel":
+        return pd.read_excel(path, sheet_name=source.sheet, usecols=[column], engine="openpyxl")
+    delimiter, encoding, _ = _sniff_csv(path)
+    options = {"sep": delimiter, "encoding": encoding, "dtype": str, "keep_default_na": False}
+    chunks = pd.read_csv(path, usecols=[column], chunksize=CHUNK_ROWS, **options)
+    return pd.concat(chunks, ignore_index=True)
+
+
+def _detect_relationships(
+    tables: list[Table], frames: dict[str, pd.DataFrame], data_dir: Path | None = None
+) -> list[Relationship]:
+    """Many-to-one links. The many side can be a sample (its values are a subset); the one side of a
+    sampled table is read in full for the candidate column, or its keys would look missing."""
+    full: dict[tuple[str, str], set[str]] = {}
+
+    def one_values(table: Table, column: str) -> set[str]:
+        if not table.sampled or data_dir is None:
+            return _values(frames[table.name], column)
+        if (table.name, column) not in full:
+            frame = _full_column(data_dir / table.source.file_name, table.source, column)
+            full[(table.name, column)] = _values(frame, column)
+        return full[(table.name, column)]
+
     candidates: list[tuple[float, Relationship]] = []
     for one in tables:
         for one_col in one.columns:
@@ -275,9 +329,9 @@ def _detect_relationships(tables: list[Table], frames: dict[str, pd.DataFrame]) 
                     if many_col.data_type != one_col.data_type:
                         continue
                     many_vals = _values(frames[many.name], many_col.name)
-                    one_vals = _values(frames[one.name], one_col.name)
                     if not many_vals:
                         continue
+                    one_vals = one_values(one, one_col.name)
                     coverage = len(many_vals & one_vals) / len(many_vals)
                     if coverage < 0.9:
                         continue
@@ -496,22 +550,17 @@ def infer_project(
 
     tables: list[Table] = []
     frames: dict[str, pd.DataFrame] = {}
-    loaded: list[tuple[str, pd.DataFrame, Source]] = []
-    for path in files:
-        if path.suffix.lower() in (".csv", ".txt"):
-            frame, source = _read_csv(path)
-            loaded.append((table_name_from(path.stem), frame, source))
-        else:
-            loaded.extend(_read_excel(path))
+    loaded = [source for path in files for source in _read_source(path)]
 
-    for tname, frame, source in loaded:
+    for tname, frame, rows, source in loaded:
         if tname in frames:
-            raise ValueError(f"Two sources produce the same table name '{tname}'")
+            raise DataError(f"Two sources produce the same table name '{tname}'")
         frames[tname] = frame
-        table = Table(name=tname, columns=_build_columns(frame, source), source=source, row_count=len(frame))
+        columns = _build_columns(frame, source)
+        table = Table(name=tname, columns=columns, source=source, row_count=rows, sampled=rows > len(frame))
         tables.append(table)
 
-    rels = _detect_relationships(tables, frames) if config.auto_relationships else []
+    rels = _detect_relationships(tables, frames, data_dir) if config.auto_relationships else []
     _assign_roles(tables, rels)
 
     data_folder = data_folder or config.data_folder or str(data_dir.resolve())

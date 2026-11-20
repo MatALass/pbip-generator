@@ -1,5 +1,9 @@
 # pbip-generator
 
+[![CI](https://github.com/MatALass/pbip-generator/actions/workflows/ci.yml/badge.svg)](https://github.com/MatALass/pbip-generator/actions/workflows/ci.yml)
+![Python](https://img.shields.io/badge/python-3.10%20%7C%203.12%20%7C%203.13-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+
 Generate a complete, ready-to-open **Power BI project** from a folder of CSV or Excel files.
 
 It writes a [Power BI Project (PBIP)](https://learn.microsoft.com/power-bi/developer/projects/projects-overview):
@@ -29,7 +33,7 @@ hidden columns, custom DAX measures). Output is deterministic: same input, same 
 ## Install
 
 ```bash
-pip install git+https://github.com/<you>/pbip-generator
+pip install git+https://github.com/MatALass/pbip-generator
 # or, from a clone
 pip install -e ".[dev]"
 ```
@@ -138,7 +142,7 @@ pip install -e ".[mcp]"
 Claude Code, from the folder you work in (use the full path of the executable of your environment):
 
 ```bash
-claude mcp add pbip-generator -- "C:\path\to\pbip-generator\.venv\Scripts\pbip-generator-mcp.exe"
+claude mcp add pbip-generator -e "PBIP_ALLOWED_ROOTS=C:\data;C:\pbip" -- "C:\path\to\pbip-generator\.venv\Scripts\pbip-generator-mcp.exe"
 ```
 
 Claude Desktop: *Settings > Developer > Edit config*, then in `claude_desktop_config.json`:
@@ -147,11 +151,18 @@ Claude Desktop: *Settings > Developer > Edit config*, then in `claude_desktop_co
 {
   "mcpServers": {
     "pbip-generator": {
-      "command": "C:\\path\\to\\pbip-generator\\.venv\\Scripts\\pbip-generator-mcp.exe"
+      "command": "C:\\path\\to\\pbip-generator\\.venv\\Scripts\\pbip-generator-mcp.exe",
+      "env": { "PBIP_ALLOWED_ROOTS": "C:\\data;C:\\pbip" }
     }
   }
 }
 ```
+
+**`PBIP_ALLOWED_ROOTS` is required.** The model chooses every path it passes to the tools, so the
+server only reads data and writes projects inside these folders (separated by `;` on Windows, `:`
+elsewhere). Paths are resolved first (`..`, symlinks), and with the variable unset every call is
+refused. Projects are written to a temporary folder next to the target, then swapped in: a failure
+while writing leaves the previous project untouched.
 
 Restart Claude Desktop, then ask for a report: *"Here is my billing data in C:\data\facturation,
 build a monthly invoicing report for a CFO in C:\pbip"*.
@@ -201,6 +212,9 @@ their category label, which would repeat the title.
 - **Roles**: a table only on the many side is a fact; with no relationship, the table with the most
   numeric columns is the fact.
 - **Main measure**: amounts (`montant`, `CA`, `sales`, `prix`...) first, then decimals, then integers.
+- **Large files**: types, keys and relationships are inferred from the first 200,000 rows of each file;
+  the rest is only counted. Power BI loads every row at refresh. On a sampled table, value counts are
+  lower bounds and keys are checked on the sample (`profile_data` flags the table as `sampled`).
 
 ## Development
 
@@ -208,7 +222,7 @@ their category label, which would repeat the title.
 pip install -e ".[dev]"
 git clone --depth=1 --filter=blob:none --sparse https://github.com/microsoft/json-schemas.git .schemas-src
 git -C .schemas-src sparse-checkout set fabric
-PBIP_SCHEMAS_DIR=.schemas-src/fabric pytest
+PBIP_SCHEMAS_DIR=.schemas-src/fabric pytest --cov=pbip_generator
 ruff check src tests && ruff format --check src tests
 ```
 
@@ -225,6 +239,12 @@ src/pbip_generator/
 ├── checks.py      # layout checks (overlaps, sizes, page bounds)
 ├── pbir.py        # report writer (PBIR) and PBIP wrapper files
 ├── builder.py     # assemble and write the project folder
+├── spec.py        # report spec (pages, measures, theme) and its compilation
+├── validate.py    # checks of a spec against the model
+├── templates.py   # page templates
+├── themes.py      # built-in light and dark themes
+├── mcp_server.py  # MCP server for Claude Desktop / Claude Code
+├── errors.py      # input errors, reported without traceback
 └── cli.py
 ```
 
@@ -233,6 +253,10 @@ src/pbip_generator/
 - Import mode only, CSV/Excel sources only (no database connectors yet).
 - 1:1 relationships are not created automatically (direction is ambiguous): add them in the config.
 - PBIP, TMDL and PBIR are evolving formats; files target the schema versions listed in `pbir.py`.
+- Generated labels are in French: the `Calendrier` table and its columns (`Année`, `Mois`...), automatic
+  measures (`Total ...`, `Nb ...`, `N-1`, `Cumul annuel`), default page names. Report specs can use any
+  language for their own pages and measures. A language option is planned.
+- Project names must be plain folder names (no `/`, `\`, `..`): `overwrite` deletes `<output>/<name>`.
 
 ## License
 

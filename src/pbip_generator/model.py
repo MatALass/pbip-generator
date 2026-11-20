@@ -81,6 +81,7 @@ class Table:
     role: TableRole = TableRole.DIMENSION
     measures: list[Measure] = field(default_factory=list)
     row_count: int = 0
+    sampled: bool = False  # types and value counts inferred from the first SAMPLE_ROWS rows only
 
     def column(self, name: str) -> Column:
         for col in self.columns:

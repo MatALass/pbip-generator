@@ -34,6 +34,7 @@ Example (every key is optional)::
 
 from __future__ import annotations
 
+import functools
 import json
 import re
 from dataclasses import dataclass, field
@@ -42,13 +43,27 @@ from typing import Any
 
 import yaml
 
+from .errors import PbipGeneratorError
 from .model import DataType, Measure, Project, Relationship, TableRole
 
 _REF = re.compile(r"^\s*(?P<table>.+?)\s*\[(?P<column>.+)\]\s*$")
 
 
-class ConfigError(ValueError):
+class ConfigError(PbipGeneratorError, ValueError):
     pass
+
+
+def _config_errors(method):
+    """An unknown table or column in the config is the user's error: report it as such."""
+
+    @functools.wraps(method)
+    def wrapper(*args, **kwargs):
+        try:
+            return method(*args, **kwargs)
+        except KeyError as exc:
+            raise ConfigError(exc.args[0] if exc.args else str(exc)) from exc
+
+    return wrapper
 
 
 def _parse_ref(text: str) -> tuple[str, str]:
@@ -76,7 +91,10 @@ class ProjectConfig:
     def load(cls, path: Path | None) -> ProjectConfig:
         if path is None:
             return cls()
-        raw = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
+        try:
+            raw = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
+        except yaml.YAMLError as exc:
+            raise ConfigError(f"Invalid YAML in {path}: {exc}") from exc
         if not isinstance(raw, dict):
             raise ConfigError("The config root must be a mapping")
         known = set(cls.__dataclass_fields__)
@@ -86,6 +104,7 @@ class ProjectConfig:
         return cls(**raw, base_dir=Path(path).resolve().parent)
 
     # ------------------------------------------------------------------ #
+    @_config_errors
     def apply_structure(self, project: Project) -> None:
         """Roles, column types, hidden columns and relationships."""
         for tname, opts in self.tables.items():
@@ -150,6 +169,7 @@ class ProjectConfig:
             raise ConfigError(f"Theme '{path}' must be a JSON object with a 'name'")
         project.theme = theme
 
+    @_config_errors
     def apply_measures(self, project: Project) -> None:
         for tname, opts in self.tables.items():
             table = project.table(tname)
