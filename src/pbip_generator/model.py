@@ -40,6 +40,7 @@ class Column:
     sort_by_column: str | None = None
     distinct_count: int = 0
     is_unique: bool = False
+    years: tuple[int, int] | None = None  # first and last year of a dateTime column
 
     def __post_init__(self) -> None:
         if self.source_column is None:

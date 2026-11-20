@@ -1,0 +1,218 @@
+"""MCP server: lets Claude (Desktop, Code) profile data, write a report spec and generate the PBIP.
+
+The model decides *what* the report shows (the spec); this code does everything else. Run with
+``pbip-generator-mcp`` (stdio). Each tool is a plain function, so it can be tested without MCP.
+
+Typical loop: ``profile_data`` -> write a spec -> ``validate_spec`` until it returns no issue ->
+``generate_report``.
+"""
+
+from __future__ import annotations
+
+import functools
+from pathlib import Path
+from typing import Annotated, Any
+
+from pydantic import Field
+
+from .builder import write_project
+from .checks import LayoutError, check_pages
+from .config import ConfigError
+from .inference import infer_project
+from .model import Project, TableRole
+from .spec import TEMPLATE_SLOTS, SpecError, build_project_from_spec, parse_spec, spec_json_schema
+
+# Tool parameter types, at module level: the MCP SDK resolves annotations against this module.
+DataDir = Annotated[str, Field(description="Absolute path of the folder holding the CSV/Excel files")]
+Spec = Annotated[dict[str, Any], Field(description="Report spec, as described by get_spec_schema")]
+
+INSTRUCTIONS = """\
+Build Power BI reports (PBIP projects) from a folder of CSV/Excel files.
+
+1. Call profile_data on the folder: it returns the tables, columns, relationships and the measures
+   created automatically. Use only these names.
+2. Write a report spec for the reader's question (see get_spec_schema). Rules of thumb:
+   - one question per page, written in 'purpose'; 2 to 4 pages;
+   - KPIs at the top are measures; add the measures you need in 'measures' (DAX, DIVIDE for ratios,
+     a format such as '#,##0 €' or '0.0 %', a description a business reader understands);
+   - charts take a readable column as category (never an ID) and measures as values;
+   - donut: 6 categories at most; column chart: 12; bar chart: 20; otherwise a table.
+3. Call validate_spec until it returns no issue: each issue says what is available instead.
+4. Call generate_report. The user opens the .pbip in Power BI Desktop and clicks Refresh.
+Never write TMDL or PBIR yourself.
+"""
+
+
+def _data_dir(path: str) -> Path:
+    folder = Path(path).expanduser()
+    if not folder.is_dir():
+        raise FileNotFoundError(f"Data folder not found: {folder}")
+    return folder
+
+
+def profile(project: Project) -> dict[str, Any]:
+    """What a spec can refer to: tables, visible columns, relationships, measures."""
+    tables = []
+    for t in project.tables:
+        tables.append(
+            {
+                "name": t.name,
+                "role": t.role.value,
+                "rows": t.row_count,
+                "columns": [
+                    {
+                        "name": c.name,
+                        "type": c.data_type.value,
+                        "distinct": c.distinct_count,
+                        **({"format": c.format_string} if c.format_string else {}),
+                        **({"hidden": True} if c.is_hidden else {}),
+                    }
+                    for c in t.columns
+                ],
+                "measures": [
+                    {"name": m.name, "expression": m.expression, "format": m.format_string, "folder": m.display_folder}
+                    for m in t.measures
+                ],
+            }
+        )
+    return {
+        "tables": tables,
+        "relationships": [
+            {
+                "from": f"{r.from_table}[{r.from_column}]",
+                "to": f"{r.to_table}[{r.to_column}]",
+                **({} if r.is_active else {"active": False}),
+            }
+            for r in project.relationships
+        ],
+        "notes": [
+            "Reference columns as 'Table[Column]' and measures as '[Measure]'.",
+            "Hidden columns are technical keys: do not show them.",
+            "distinct is the number of values of the column (chart readability).",
+        ]
+        + (
+            ["Calendrier is generated: use Calendrier[Année] for slicers, Calendrier[Année-Mois] for monthly trends."]
+            if any(t.role == TableRole.DATE and t.source.kind == "date" for t in project.tables)
+            else []
+        ),
+    }
+
+
+def profile_data(data_dir: str) -> dict[str, Any]:
+    return profile(infer_project(_data_dir(data_dir), "Profile"))
+
+
+def get_spec_schema() -> dict[str, Any]:
+    return {"schema": spec_json_schema(), "template_slots": TEMPLATE_SLOTS, "guide": INSTRUCTIONS}
+
+
+def validate_spec(data_dir: str, spec: dict[str, Any]) -> dict[str, Any]:
+    try:
+        project = build_project_from_spec(_data_dir(data_dir), parse_spec(spec))
+    except SpecError as exc:
+        return {"valid": False, "issues": exc.issues}
+    layout = [str(i) for i in check_pages(project.pages)]
+    return {
+        "valid": not layout,
+        "issues": layout,
+        "pages": [{"name": p.display_name, "visuals": len(p.visuals)} for p in project.pages],
+    }
+
+
+def generate_report(
+    data_dir: str,
+    spec: dict[str, Any],
+    output_dir: str,
+    name: str | None = None,
+    data_folder: str | None = None,
+    copy_data: bool = True,
+    overwrite: bool = False,
+) -> dict[str, Any]:
+    folder = _data_dir(data_dir)
+    report = parse_spec(spec)
+    output = Path(output_dir).expanduser().resolve()
+    name = name or report.name or folder.resolve().name
+    if copy_data and data_folder is None:
+        # Power BI reads the copy shipped with the project, not the original folder.
+        data_folder = str(output / name / "data")
+    project = build_project_from_spec(folder, report, name, data_folder)
+    root = write_project(project, output, overwrite=overwrite, copy_data=copy_data, strict=True)
+    return {
+        "project_folder": str(root),
+        "pbip_file": str(root / f"{project.name}.pbip"),
+        "data_folder_parameter": project.data_folder,
+        "pages": [p.display_name for p in project.pages],
+        "measures": [m.name for _, m in project.all_measures()],
+        "next_steps": "Open the .pbip in Power BI Desktop, then click Refresh (the project opens without data).",
+    }
+
+
+def create_server():
+    """Build the MCP server. Imported lazily: ``mcp`` is an optional dependency."""
+    from mcp.server.mcpserver import MCPServer
+    from mcp.server.mcpserver.exceptions import ToolError
+
+    server = MCPServer(name="pbip-generator", instructions=INSTRUCTIONS)
+    expected = (SpecError, ConfigError, LayoutError, FileNotFoundError, FileExistsError, KeyError, ValueError)
+
+    def safe(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except expected as exc:
+                raise ToolError(str(exc.args[0]) if isinstance(exc, KeyError) and exc.args else str(exc)) from exc
+
+        return wrapper
+
+    @server.tool(
+        name="profile_data",
+        description="Profile a folder of CSV/Excel files: tables, columns, relationships, automatic measures.",
+    )
+    @safe
+    def profile_data_tool(data_dir: DataDir) -> dict[str, Any]:
+        return profile_data(data_dir)
+
+    @server.tool(
+        name="get_spec_schema",
+        description="JSON schema of the report spec, the visuals each page template holds and how to write it.",
+    )
+    def get_spec_schema_tool() -> dict[str, Any]:
+        return get_spec_schema()
+
+    @server.tool(
+        name="validate_spec",
+        description="Check a report spec against the data without writing anything. Returns every issue.",
+    )
+    @safe
+    def validate_spec_tool(data_dir: DataDir, spec: Spec) -> dict[str, Any]:
+        return validate_spec(data_dir, spec)
+
+    @server.tool(
+        name="generate_report",
+        description="Generate the Power BI project (PBIP) from a valid report spec, in <output_dir>/<name>.",
+    )
+    @safe
+    def generate_report_tool(
+        data_dir: DataDir,
+        spec: Spec,
+        output_dir: Annotated[str, Field(description="Absolute path of the folder the project is written in")],
+        name: Annotated[str | None, Field(description="Project name, short, no spaces (default: spec name)")] = None,
+        data_folder: Annotated[
+            str | None,
+            Field(description="Folder Power BI reads the files from (default: the copied data, or data_dir)"),
+        ] = None,
+        copy_data: Annotated[bool, Field(description="Copy the source files into <project>/data")] = True,
+        overwrite: Annotated[bool, Field(description="Replace an existing project of the same name")] = False,
+    ) -> dict[str, Any]:
+        return generate_report(data_dir, spec, output_dir, name, data_folder, copy_data, overwrite)
+
+    return server
+
+
+def main() -> None:  # pragma: no cover - entry point
+    create_server().run("stdio")
+
+
+if __name__ == "__main__":  # pragma: no cover
+    main()
