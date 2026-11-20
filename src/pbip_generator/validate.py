@@ -9,6 +9,7 @@ from __future__ import annotations
 import re
 from difflib import get_close_matches
 
+from .inference import quote_dax_table
 from .layout import CHART_MAX_CATEGORIES
 from .model import FieldRef, Project
 from .spec import CHART_TYPES, TEMPLATE_SLOTS, ReportSpec, VisualSpec
@@ -61,6 +62,10 @@ def _check_dax(project: Project, expression: str) -> list[str]:
     for quoted, plain, name in _DAX_QUALIFIED.findall(code):
         tname = quoted.replace("''", "'") if quoted else plain
         if project.has_table(tname):
+            if not quoted and quote_dax_table(tname) != tname:
+                errors.append(
+                    f"write {quote_dax_table(tname)}[{name}]: a table name with accents or spaces is quoted in DAX"
+                )
             table = project.table(tname)
             if not table.has_column(name) and not any(m.name == name for m in table.measures):
                 errors.append(f"{tname}[{name}] does not exist")
@@ -110,6 +115,34 @@ def _readable_alternative(visual_type: str, count: int) -> str:
     return " or ".join([f"a {t}" for t in charts] + ["a tableEx", "a column with fewer values"])
 
 
+def _check_highlights(project: Project, where: str, v: VisualSpec) -> list[str]:
+    from .themes import PRESETS
+
+    issues: list[str] = []
+    if v.highlights and v.type not in ("tableEx", "card"):
+        return [f"{where}: highlights apply to a tableEx or a card, not a {v.type}"]
+    if not v.totals and v.type != "tableEx":
+        issues.append(f"{where}: 'totals' applies to a tableEx only")
+    palette = PRESETS["light"]  # color names are the same in every preset
+    for i, h in enumerate(v.highlights):
+        at = f"{where}.highlights[{i}]"
+        if h.field not in v.values:
+            issues.append(f"{at}: '{h.field}' must be one of the visual's values")
+            continue
+        ref, error = resolve(project, h.field)
+        if ref is None or not ref.is_measure:
+            issues.append(f"{at}: {error or f'{h.field} is a column, highlights color a measure'}")
+        thresholds = [r.below for r in h.rules]
+        if thresholds != sorted(thresholds):
+            issues.append(f"{at}: rules must have increasing 'below' thresholds, got {thresholds}")
+        for color in [r.color for r in h.rules] + [h.otherwise]:
+            try:
+                palette.color(color)
+            except ValueError as exc:
+                issues.append(f"{at}: {exc}")
+    return issues
+
+
 def _check_visual(project: Project, where: str, v: VisualSpec) -> list[str]:
     issues: list[str] = []
     if v.type == "textbox":
@@ -147,6 +180,7 @@ def _check_visual(project: Project, where: str, v: VisualSpec) -> list[str]:
     kind = None if v.type == "tableEx" else "measure"
     for i, text in enumerate(v.values):
         issues += _field(project, f"{where}.values[{i}]", text, kind)[1]
+    issues += _check_highlights(project, where, v)
     if v.sort_by is not None and v.sort_by not in fields:
         issues.append(f"{where}: sort_by '{v.sort_by}' must be one of the visual's fields")
     return issues
@@ -162,6 +196,9 @@ def validate_spec(spec: ReportSpec, project: Project) -> list[str]:
         where = f"pages[{p}] '{page.name}'"
         for i, text in enumerate(page.slicers):
             issues += _field(project, f"{where}.slicers[{i}]", text, "column")[1]
+        for text in page.single_select:
+            if text not in page.slicers:
+                issues.append(f"{where}: single_select '{text}' must be one of the page's slicers")
         if page.template == "table":
             if page.kpis:
                 issues.append(f"{where}: template 'table' has no KPI row, use 'kpis_table' to keep the KPIs")

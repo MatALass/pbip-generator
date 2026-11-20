@@ -108,15 +108,18 @@ def render_static_resources(project: Project) -> dict[str, str]:
     return {f"RegisteredResources/{theme_file_name(project)}": dumps(project.theme)}
 
 
-def _textbox(v: Visual) -> dict[str, Any]:
-    run = {"value": v.text or "", "textStyle": {"fontWeight": "bold", "fontSize": f"{v.text_size}pt"}}
+def _textbox(project: Project, v: Visual) -> dict[str, Any]:
+    style: dict[str, Any] = {"fontWeight": "bold", "fontSize": f"{v.text_size}pt"}
+    if project.palette is not None:
+        style["color"] = project.palette.text  # text runs ignore the theme: black on a dark page otherwise
+    run = {"value": v.text or "", "textStyle": style}
     return {"visualType": "textbox", "objects": {"general": [{"properties": {"paragraphs": [{"textRuns": [run]}]}}]}}
 
 
 def render_visual(project: Project, page_id: str, index: int, v: Visual) -> tuple[str, str]:
     name = stable_name(project.name, page_id, str(index), v.visual_type)
     if v.visual_type == "textbox":
-        return name, dumps(_container(name, index, v, _textbox(v)))
+        return name, dumps(_container(name, index, v, _textbox(project, v)))
     query: dict[str, Any] = {
         "queryState": {role: {"projections": [_projection(r) for r in refs]} for role, refs in v.roles.items()}
     }
@@ -139,19 +142,39 @@ def render_visual(project: Project, page_id: str, index: int, v: Visual) -> tupl
         visual["visualContainerObjects"] = {"title": [{"properties": {"show": _literal(False)}}]}
         return name, dumps(_container(name, index, v, visual))
     visual["drillFilterOtherVisuals"] = True
+    objects: dict[str, Any] = {}
     if v.visual_type == "card" and v.title:
         # The title already names the measure: the category label under the value would repeat
         # it and squeeze the value in a short card.
-        visual["objects"] = {"categoryLabels": [{"properties": {"show": _literal(False)}}]}
+        objects["categoryLabels"] = [{"properties": {"show": _literal(False)}}]
     if v.visual_type == "tableEx":
-        visual["objects"] = {"columnWidth": _column_widths(v)}
+        objects["columnWidth"] = _column_widths(v)
+        if not v.totals:
+            objects["total"] = [{"properties": {"totals": _literal(False)}}]
     if v.visual_type in ("donutChart", "pieChart"):
         # A donut is read in shares: label each slice with its category and percentage, which
         # makes the legend redundant.
-        visual["objects"] = {
-            "labels": [{"properties": {"show": _literal(True), "labelStyle": _literal("Category, percent of total")}}],
-            "legend": [{"properties": {"show": _literal(False)}}],
-        }
+        objects["labels"] = [
+            {"properties": {"show": _literal(True), "labelStyle": _literal("Category, percent of total")}}
+        ]
+        objects["legend"] = [{"properties": {"show": _literal(False)}}]
+    for h in v.highlights:
+        color = {"solid": {"color": {"expr": _field(h.color)}}}
+        if v.visual_type == "card":
+            objects["labels"] = [{"properties": {"color": color}}]
+        else:
+            prop = "backColor" if h.apply == "background" else "fontColor"
+            objects.setdefault("values", []).append(
+                {
+                    "properties": {prop: color},
+                    "selector": {
+                        "data": [{"dataViewWildcard": {"matchingOption": 1}}],
+                        "metadata": f"{h.target.table}.{h.target.name}",
+                    },
+                }
+            )
+    if objects:
+        visual["objects"] = objects
     if v.title:
         title: dict[str, Any] = {"show": _literal(True), "text": _literal(v.title)}
         if project.theme is None:
@@ -182,10 +205,13 @@ def _slicer_objects(v: Visual) -> dict[str, Any]:
     header: dict[str, Any] = {"show": _literal(True)}
     if v.title:
         header["text"] = _literal(v.title)
-    return {
+    objects: dict[str, Any] = {
         "data": [{"properties": {"mode": _literal("Dropdown")}}],
         "header": [{"properties": header}],
     }
+    if v.single_select:
+        objects["selection"] = [{"properties": {"singleSelect": _literal(True), "strictSingleSelect": _literal(True)}}]
+    return objects
 
 
 def _container(name: str, index: int, v: Visual, visual: dict[str, Any]) -> dict[str, Any]:
@@ -223,6 +249,9 @@ def render_report_json(project: Project) -> dict[str, Any]:
     report["settings"] = {
         "useStylableVisualContainerHeader": True,
         "defaultDrillFilterOtherVisuals": True,
+        # Clicking a row filters the other visuals instead of highlighting them: a highlighted
+        # chart draws nothing when its measure is blank without the selection (rates per item).
+        "defaultFilterActionIsDataFilter": True,
         "allowChangeFilterTypes": True,
         "useEnhancedTooltips": True,
     }

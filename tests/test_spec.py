@@ -200,3 +200,29 @@ def test_technical_keys_are_hidden(example_data):
     assert project.table("Ventes").column("VenteID").is_hidden
     assert not project.table("Calendrier").column("Date").is_hidden
     assert not project.table("Clients").column("Nom client").is_hidden
+
+
+def test_text_keys_stay_visible(tmp_path):
+    (tmp_path / "Equipes.csv").write_text("Équipe,Région\nFnatic,EMEA\nLOUD,Americas\n", encoding="utf-8")
+    (tmp_path / "Matchs.csv").write_text("Équipe,Score\nFnatic,13\nLOUD,9\nFnatic,11\n", encoding="utf-8")
+    project = infer_project(tmp_path, "T")
+    assert [(r.from_table, r.to_table) for r in project.relationships] == [("Matchs", "Equipes")]
+    assert not project.table("Equipes").column("Équipe").is_hidden
+    assert project.table("Matchs").column("Équipe").is_hidden
+
+
+def test_unquoted_accented_table_in_dax_is_reported(tmp_path):
+    (tmp_path / "Équipes.csv").write_text("Équipe,Région\nFnatic,EMEA\nLOUD,Americas\n", encoding="utf-8")
+    (tmp_path / "Matchs.csv").write_text("Équipe,Score\nFnatic,13\nLOUD,9\nFnatic,11\n", encoding="utf-8")
+    measure = {"table": "Matchs", "name": "Une équipe", "description": "d", "format": "0"}
+    page = {"name": "P", "purpose": "p", "template": "table", "visuals": [{"type": "tableEx", "title": "T",
+            "values": ["Équipes[Équipe]", "[Une équipe]"]}]}  # fmt: skip
+    spec = {"business_question": "q", "audience": "daf", "pages": [page]}
+    bad = {**spec, "measures": [{**measure, "expression": "IF(HASONEVALUE(Équipes[Équipe]), 1)"}]}
+    with pytest.raises(SpecError) as exc:
+        build_project_from_spec(tmp_path, parse_spec(bad))
+    assert exc.value.issues == [
+        "measure 'Une équipe': write 'Équipes'[Équipe]: a table name with accents or spaces is quoted in DAX"
+    ]
+    good = {**spec, "measures": [{**measure, "expression": "IF(HASONEVALUE('Équipes'[Équipe]), 1)"}]}
+    build_project_from_spec(tmp_path, parse_spec(good))

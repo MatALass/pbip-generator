@@ -201,6 +201,11 @@ def _infer_typed_series(values: pd.Series) -> tuple[DataType, bool]:
     return _infer_text_series(s.astype(str), "en-US")
 
 
+def _is_technical_key(col: Column) -> bool:
+    """An ID or a code. A text key such as a team or agent name is what readers look for: it stays visible."""
+    return col.data_type != DataType.STRING or is_key_like(col.name)
+
+
 def _year_span(values: pd.Series, source: Source) -> tuple[int, int] | None:
     if pd.api.types.is_datetime64_any_dtype(values):
         dates = values
@@ -529,8 +534,8 @@ def infer_project(
         many.summarize_by = "none"
         one = project.table(rel.to_table).column(rel.to_column)
         one.summarize_by = "none"
-        if project.table(rel.to_table).role != TableRole.DATE:
-            one.is_hidden = True  # a dimension key: readers use its labels, never the ID
+        if project.table(rel.to_table).role != TableRole.DATE and _is_technical_key(one):
+            one.is_hidden = True  # an ID: readers use the dimension's labels instead
     for fact in project.facts:
         for col in fact.columns:
             if col.is_unique and is_key_like(col.name):

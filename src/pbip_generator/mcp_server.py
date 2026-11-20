@@ -36,7 +36,11 @@ Build Power BI reports (PBIP projects) from a folder of CSV/Excel files.
    - KPIs at the top are measures; add the measures you need in 'measures' (DAX, DIVIDE for ratios,
      a format such as '#,##0 €' or '0.0 %', a description a business reader understands);
    - charts take a readable column as category (never an ID) and measures as values;
-   - donut: 6 categories at most; column chart: 12; bar chart: 20; otherwise a table.
+   - donut: 6 categories at most; column chart: 12; bar chart: 20; otherwise a table;
+   - pick a theme for the audience (theme.preset light or dark, optional accent color);
+   - color the measure a reader must notice with 'highlights' (thresholds -> good/neutral/bad...),
+     turn 'totals' off on tables whose columns are ratios, and use 'single_select' for a slicer
+     the page needs exactly one value of (one team, one client).
 3. Call validate_spec until it returns no issue: each issue says what is available instead.
 4. Call generate_report. The user opens the .pbip in Power BI Desktop and clicks Refresh.
 Never write TMDL or PBIR yourself.

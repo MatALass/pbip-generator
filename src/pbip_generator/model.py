@@ -9,6 +9,10 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .themes import Palette
 
 
 class DataType(str, Enum):
@@ -54,6 +58,7 @@ class Measure:
     format_string: str | None = None
     display_folder: str | None = None
     description: str | None = None
+    is_hidden: bool = False
 
 
 @dataclass
@@ -107,6 +112,15 @@ class FieldRef:
 
 
 @dataclass
+class Highlight:
+    """Color one field of a visual with a measure returning '#RRGGBB' (a table cell, a card value)."""
+
+    target: FieldRef
+    color: FieldRef  # the color measure
+    apply: str = "background"  # "background" | "font"
+
+
+@dataclass
 class Visual:
     visual_type: str
     roles: dict[str, list[FieldRef]]
@@ -119,6 +133,9 @@ class Visual:
     sort_descending: bool = True
     text: str | None = None  # textbox content (visual_type "textbox")
     text_size: int = 20  # textbox font size, in points
+    highlights: list[Highlight] = field(default_factory=list)
+    totals: bool = True  # total row of a table
+    single_select: bool = False  # slicer that takes exactly one value
 
 
 @dataclass
@@ -139,6 +156,7 @@ class Project:
     data_folder: str = ""  # value of the DataFolder Power Query parameter
     source_dir: Path | None = None
     theme: dict | None = None  # Power BI report theme (the JSON you would import in Desktop)
+    palette: Palette | None = None  # colors of a built-in theme, for the text the theme cannot style
 
     def table(self, name: str) -> Table:
         for t in self.tables:

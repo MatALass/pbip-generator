@@ -72,6 +72,8 @@ def _render_measure(project: Project, table: Table, m: Measure) -> list[str]:
         out.append(f"{TAB * 2}formatString: {m.format_string}")
     if m.display_folder:
         out.append(f"{TAB * 2}displayFolder: {m.display_folder}")
+    if m.is_hidden:
+        out.append(f"{TAB * 2}isHidden")
     out.append(f"{TAB * 2}lineageTag: {stable_uuid(project.name, table.name, 'measure', m.name)}")
     if m.description:
         # Descriptions are written as /// comments above the object in TMDL.

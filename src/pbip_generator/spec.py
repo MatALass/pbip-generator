@@ -42,7 +42,8 @@ import yaml
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from .config import ConfigError, ProjectConfig
-from .model import Project
+from .model import FieldRef, Measure, Project
+from .themes import build_theme, palette_for
 
 VisualType = Literal[
     "card", "lineChart", "clusteredColumnChart", "clusteredBarChart", "donutChart", "tableEx", "textbox"
@@ -86,6 +87,24 @@ class MeasureSpec(_Strict):
     description: str = Field(min_length=1, description="What the measure means, for a business reader")
 
 
+class RuleSpec(_Strict):
+    below: float = Field(description="Applies when the value is below this threshold (rules are read in order)")
+    color: str = Field(description="good | neutral | bad | accent | secondary | muted | text | '#RRGGBB'")
+
+
+class HighlightSpec(_Strict):
+    field: str = Field(description="A measure of the visual's values, '[Measure]'")
+    rules: list[RuleSpec] = Field(min_length=1, description="Increasing thresholds; first match wins")
+    otherwise: str = Field(description="Color when no rule matches (same names as rules)")
+    apply: Literal["background", "font"] = Field("background", description="Cell background or text (tables)")
+
+
+class ThemeSpec(_Strict):
+    preset: Literal["light", "dark"] = "light"
+    accent: str | None = Field(None, pattern=r"^#[0-9A-Fa-f]{6}$", description="Main color: KPI values, first series")
+    secondary: str | None = Field(None, pattern=r"^#[0-9A-Fa-f]{6}$")
+
+
 class VisualSpec(_Strict):
     type: VisualType
     title: str | None = Field(None, description="Required, except for textbox")
@@ -95,6 +114,10 @@ class VisualSpec(_Strict):
     sort_descending: bool = True
     text: str | None = Field(None, description="Content of a textbox")
     text_size: int = 14
+    highlights: list[HighlightSpec] = Field(
+        default=[], description="Color a measure by thresholds: table cells (tableEx) or the value (card)"
+    )
+    totals: bool = Field(True, description="Total row of a tableEx; turn off when its columns are ratios")
 
 
 class PageSpec(_Strict):
@@ -105,6 +128,7 @@ class PageSpec(_Strict):
         "kpis_2: KPI row + 2 visuals; kpis_table: KPI row + 1 full-width visual; table: 1 full-page visual"
     )
     slicers: list[str] = Field(default=[], max_length=3, description="Columns, 'Table[Column]'")
+    single_select: list[str] = Field(default=[], description="Slicers of this page that take exactly one value")
     kpis: list[str] = Field(default=[], max_length=4, description="Measures shown as cards at the top")
     visuals: list[VisualSpec]
 
@@ -120,6 +144,7 @@ class ReportSpec(_Strict):
     tables: dict[str, TableOverride] = {}
     relationships: RelationshipChanges = RelationshipChanges()
     measures: list[MeasureSpec] = []
+    theme: ThemeSpec = Field(default_factory=ThemeSpec, description="Report look: light or dark, main colors")
     pages: list[PageSpec] = Field(min_length=1)
 
     # ------------------------------------------------------------------ #
@@ -197,8 +222,57 @@ def build_project_from_spec(
     issues = validate_spec(spec, project)
     if issues:
         raise SpecError(issues)
-    project.pages = [compile_page(project, page) for page in spec.pages]
+    project.palette = palette_for(spec.theme.preset, spec.theme.accent, spec.theme.secondary)
+    project.theme = build_theme(f"{project.name} {spec.theme.preset}", project.palette)
+    colors = _add_color_measures(project, spec)
+    project.pages = [compile_page(project, page, colors) for page in spec.pages]
     return project
+
+
+def _dax_number(value: float) -> str:
+    """0.45 -> '0.45', 20000.0 -> '20000' (no exponent, which DAX would not read)."""
+    return format(value, "f").rstrip("0").rstrip(".") or "0"
+
+
+def _add_color_measures(project: Project, spec: ReportSpec) -> dict[int, FieldRef]:
+    """One hidden DAX measure per highlight, returning the color of the current value.
+
+    Colors are computed in the model, so they follow every filter and the visual only points at
+    the measure. Returns {id(HighlightSpec): measure}.
+    """
+    from .validate import resolve
+
+    palette = project.palette
+    assert palette is not None
+    out: dict[int, FieldRef] = {}
+    defined: dict[str, str] = {}
+    for page in spec.pages:
+        for visual in page.visuals:
+            for h in visual.highlights:
+                target, _ = resolve(project, h.field)
+                assert target is not None  # checked by validate_spec
+                cases = "".join(f'    _v < {_dax_number(r.below)}, "{palette.color(r.color)}",\n' for r in h.rules)
+                expression = (
+                    f"VAR _v = [{target.name}]\nRETURN SWITCH(\n    TRUE(),\n    ISBLANK(_v), BLANK(),\n"
+                    f'{cases}    "{palette.color(h.otherwise)}"\n)'
+                )
+                name, n = f"Couleur {target.name}", 1
+                while name in defined and defined[name] != expression:
+                    n += 1
+                    name = f"Couleur {target.name} {n}"
+                if name not in defined:
+                    defined[name] = expression
+                    project.table(target.table).measures.append(
+                        Measure(
+                            name,
+                            expression,
+                            display_folder="Couleurs",
+                            is_hidden=True,
+                            description=f"Couleur de mise en évidence de {target.name}",
+                        )
+                    )
+                out[id(h)] = FieldRef(target.table, name, is_measure=True)
+    return out
 
 
 def _table_names(data_dir: Path) -> list[str]:
