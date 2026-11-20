@@ -12,7 +12,7 @@ Every page has the same frame, so a report reads the same way from page to page:
 from __future__ import annotations
 
 from .layout import GAP, MARGIN, PAGE_H, PAGE_W
-from .model import FieldRef, Page, Project, TableRole, Visual
+from .model import FieldRef, Highlight, Page, Project, TableRole, Visual
 from .spec import CHART_TYPES, PageSpec, VisualSpec
 from .validate import resolve
 
@@ -46,7 +46,7 @@ def _ref(project: Project, text: str) -> FieldRef:
     return ref
 
 
-def _visual(project: Project, spec: VisualSpec, rect: Rect) -> Visual:
+def _visual(project: Project, spec: VisualSpec, rect: Rect, colors: dict[int, FieldRef]) -> Visual:
     x, y, w, h = rect
     if spec.type == "textbox":
         return Visual("textbox", {}, x, y, w, h, text=spec.text, text_size=spec.text_size)
@@ -64,10 +64,25 @@ def _visual(project: Project, spec: VisualSpec, rect: Rect) -> Visual:
         sort_by = next((v for v in values if v.is_measure), None)
     if spec.sort_by:
         sort_by, descending = _ref(project, spec.sort_by), spec.sort_descending
-    return Visual(spec.type, roles, x, y, w, h, title=spec.title, sort_by=sort_by, sort_descending=descending)
+    highlights = [
+        Highlight(_ref(project, hl.field), colors[id(hl)], hl.apply) for hl in spec.highlights if id(hl) in colors
+    ]
+    return Visual(
+        spec.type,
+        roles,
+        x,
+        y,
+        w,
+        h,
+        title=spec.title,
+        sort_by=sort_by,
+        sort_descending=descending,
+        highlights=highlights,
+        totals=spec.totals,
+    )
 
 
-def compile_page(project: Project, spec: PageSpec) -> Page:
+def compile_page(project: Project, spec: PageSpec, colors: dict[int, FieldRef] | None = None) -> Page:
     page = Page(spec.name)
     slicers = [_ref(project, s) for s in spec.slicers]
     slicers_w = len(slicers) * (SLICER_W + GAP)
@@ -76,7 +91,10 @@ def compile_page(project: Project, spec: PageSpec) -> Page:
     )
     for i, ref in enumerate(slicers):
         x = PAGE_W - MARGIN - (len(slicers) - i) * (SLICER_W + GAP) + GAP
-        page.visuals.append(Visual("slicer", {"Values": [ref]}, x, MARGIN, SLICER_W, HEADER_H, title=ref.name))
+        single = spec.slicers[i] in spec.single_select
+        page.visuals.append(
+            Visual("slicer", {"Values": [ref]}, x, MARGIN, SLICER_W, HEADER_H, title=ref.name, single_select=single)
+        )
     top = MARGIN + HEADER_H + GAP
     if spec.template != "table":
         for text, (x, y, w, h) in zip(spec.kpis, _row(len(spec.kpis), top, KPI_H), strict=True):
@@ -84,5 +102,5 @@ def compile_page(project: Project, spec: PageSpec) -> Page:
             page.visuals.append(Visual("card", {"Values": [ref]}, x, y, w, h, title=ref.name))
         top += KPI_H + GAP
     for visual, rect in zip(spec.visuals, body_slots(spec.template, top), strict=True):
-        page.visuals.append(_visual(project, visual, rect))
+        page.visuals.append(_visual(project, visual, rect, colors or {}))
     return page
