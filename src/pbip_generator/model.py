@@ -82,6 +82,9 @@ class Table:
     measures: list[Measure] = field(default_factory=list)
     row_count: int = 0
     sampled: bool = False  # types and value counts inferred from the first SAMPLE_ROWS rows only
+    # Columns that identify a row of a fact table (its grain), [] when no such combination exists,
+    # None when not computed (dimensions, projects built by hand).
+    grain: list[str] | None = None
 
     def column(self, name: str) -> Column:
         for col in self.columns:

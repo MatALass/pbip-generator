@@ -62,6 +62,13 @@ _MONEY_WORDS = {
     "montant", "montants", "ca", "chiffre", "prix", "cout", "couts", "marge", "ht", "ttc", "tarif", "solde",
     "budget", "encaissement", "facture", "revenue", "revenues", "sales", "amount", "price", "cost", "costs", "margin",
 }  # fmt: skip
+# Words that make a number a rate, a ratio or a unit price: its sum means nothing, its average does.
+_RATE_WORDS = {
+    "taux", "ratio", "pourcentage", "pct", "percent", "percentage", "rate", "moyenne", "moyen", "average",
+    "avg", "unitaire", "unit", "unitprice",
+}  # fmt: skip
+# "Prix au litre", "Prix par nuit", "price per kg": a money word followed by au / par / per.
+_PER_WORDS = {"au", "aux", "par", "per", "a"}
 _EURO_LANGUAGES = {"fr", "de", "es", "it", "nl", "pt", "fi", "el", "sk", "sl", "et", "lv", "lt"}
 
 
@@ -300,7 +307,7 @@ def _build_columns(frame: pd.DataFrame, source: Source) -> list[Column]:
             is_unique=distinct == len(series) and len(series) > 0,
         )
         if data_type in (DataType.INT64, DataType.DOUBLE) and not is_key_like(col.name):
-            col.summarize_by = "sum"
+            col.summarize_by = "average" if is_rate_like(col.name) else "sum"
             col.format_string = "#,##0" if data_type == DataType.INT64 else "#,##0.00"
         if data_type == DataType.DATETIME:
             col.format_string = "dd/mm/yyyy" if date_only else "dd/mm/yyyy hh:nn"
@@ -410,9 +417,43 @@ def _assign_roles(tables: list[Table], rels: list[Relationship]) -> None:
     if not any(t.role == TableRole.FACT for t in tables):
         # No relationship: the table with the most numeric measures is the fact.
         def score(t: Table) -> tuple[int, int]:
-            return (sum(c.summarize_by == "sum" for c in t.columns), t.row_count)
+            return (sum(is_measurable(c) for c in t.columns), t.row_count)
 
         max(tables, key=score).role = TableRole.FACT
+
+
+def _infer_grain(table: Table, frame: pd.DataFrame, rels: list[Relationship]) -> list[str]:
+    """Smallest set of columns that identifies a row of a fact table.
+
+    A unique row ID wins (``VenteID``). Otherwise the foreign keys and the dates together, reduced
+    to the columns that are really needed (``Date relevé`` + ``StationID`` + ``Carburant``).
+    Returns [] when even all of them repeat: the table holds duplicates, or its grain needs a
+    column that is neither a key nor a date.
+    """
+    for col in table.columns:
+        if col.is_unique and is_key_like(col.name):
+            return [col.name]
+    candidates = [c for c in table.columns if c.data_type == DataType.DATETIME]
+    for rel in rels:
+        if rel.from_table == table.name and table.has_column(rel.from_column):
+            col = table.column(rel.from_column)
+            if col not in candidates:
+                candidates.append(col)
+    if not candidates:
+        return []
+
+    def unique(cols: list[Column]) -> bool:
+        return not frame.duplicated(subset=[c.source_column for c in cols]).any()
+
+    if not unique(candidates):
+        return []
+    grain = list(candidates)
+    # Drop foreign keys before dates: a transaction table is usually read "per day and per ...".
+    for col in reversed(candidates):
+        rest = [c for c in grain if c is not col]
+        if rest and unique(rest):
+            grain = rest
+    return [c.name for c in grain]
 
 
 # --------------------------------------------------------------------------- #
@@ -470,9 +511,25 @@ def _is_year_like(col: Column) -> bool:
     return any(h in normalize(col.name) for h in _YEAR_HINTS)
 
 
+def _words(name: str) -> list[str]:
+    return [normalize(w) for w in re.split(r"[\s_\-/.()']+", name) if w]
+
+
 def is_money_like(name: str) -> bool:
-    words = (normalize(w) for w in re.split(r"[\s_\-/.()]+", name))
-    return any(w in _MONEY_WORDS for w in words)
+    return any(w in _MONEY_WORDS for w in _words(name))
+
+
+def is_rate_like(name: str) -> bool:
+    """A rate, a ratio, a percentage or a unit price (``Prix au litre``, ``Taux de marge``)."""
+    words = _words(name)
+    if "%" in name or any(w in _RATE_WORDS for w in words):
+        return True
+    return any(w in _MONEY_WORDS and nxt in _PER_WORDS for w, nxt in zip(words, words[1:], strict=False))
+
+
+def is_measurable(col: Column) -> bool:
+    """A numeric column that gets an automatic measure: summed, or averaged for rates."""
+    return col.summarize_by in ("sum", "average")
 
 
 def currency_format(culture: str, decimals: bool) -> str:
@@ -490,7 +547,7 @@ def _apply_currency(project: Project) -> None:
     """Show amounts of money with their currency, columns with cents, measures without."""
     for table in project.tables:
         for col in table.columns:
-            if col.summarize_by == "sum" and is_money_like(col.name):
+            if is_measurable(col) and is_money_like(col.name):
                 col.format_string = currency_format(project.culture, col.data_type == DataType.DOUBLE)
 
 
@@ -500,18 +557,21 @@ def _add_measures(project: Project) -> None:
     for fact in project.facts:
         ref = quote_dax_table(fact.name)
         measures: list[Measure] = []
-        numeric = [c for c in fact.columns if c.summarize_by == "sum" and not _is_year_like(c)]
+        numeric = [c for c in fact.columns if is_measurable(c) and not _is_year_like(c)]
         # The first measure becomes the "primary" one used by charts: prefer amounts.
         numeric.sort(
             key=lambda c: (not any(h in normalize(c.name) for h in _AMOUNT_HINTS), c.data_type != DataType.DOUBLE)
         )
         for col in numeric:
             money = is_money_like(col.name)
+            # A sum of unit prices or rates is a classic wrong figure: those get an average.
+            average = col.summarize_by == "average"
+            fmt = currency_format(project.culture, average) if money else col.format_string
             measures.append(
                 Measure(
-                    name=words["total"].format(column=col.name),
-                    expression=f"SUM({ref}[{col.name}])",
-                    format_string=currency_format(project.culture, False) if money else col.format_string,
+                    name=words["average" if average else "total"].format(column=col.name),
+                    expression=f"{'AVERAGE' if average else 'SUM'}({ref}[{col.name}])",
+                    format_string=fmt,
                     display_folder=words["folder_base"],
                 )
             )
@@ -627,6 +687,8 @@ def infer_project(
         for col in fact.columns:
             if col.is_unique and is_key_like(col.name):
                 col.is_hidden = True  # a row ID of the fact table
+    for fact in project.facts:
+        fact.grain = _infer_grain(fact, frames[fact.name], project.relationships)
     _apply_currency(project)
     if config.date_table:
         _add_date_table(project)

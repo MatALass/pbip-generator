@@ -1,0 +1,8 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.0.0/schema.json",
+  "name": "f71b4ee96ec12e4ba3b6",
+  "displayName": "Stations",
+  "displayOption": "FitToPage",
+  "height": 720,
+  "width": 1280
+}

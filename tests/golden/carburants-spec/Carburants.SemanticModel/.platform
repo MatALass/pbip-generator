@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "Carburants"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "2817f29e-6228-5117-b9e2-d69a6225369b"
+  }
+}

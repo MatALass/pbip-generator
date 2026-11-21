@@ -1,0 +1,11 @@
+relationship a79303cd-c6b0-598e-9eb2-c76790e3e2b7
+	fromColumn: Releves.Carburant
+	toColumn: Carburants.Carburant
+
+relationship f76f377c-cd91-5217-ab90-2a7d8e87ed6f
+	fromColumn: Releves.StationID
+	toColumn: Stations.StationID
+
+relationship 77b2d9b5-5473-5885-8521-e917ae5f7b77
+	fromColumn: Releves.'Date relevé'
+	toColumn: Calendrier.Date

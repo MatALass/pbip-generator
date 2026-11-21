@@ -1,0 +1,309 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "name": "21949596370a955b8c08",
+  "position": {
+    "x": 16.0,
+    "y": 96,
+    "z": 4000,
+    "width": 1248.0,
+    "height": 608,
+    "tabOrder": 4000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Stations"
+                    }
+                  },
+                  "Property": "Commune"
+                }
+              },
+              "queryRef": "Stations.Commune",
+              "nativeQueryRef": "Commune"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Stations"
+                    }
+                  },
+                  "Property": "Adresse"
+                }
+              },
+              "queryRef": "Stations.Adresse",
+              "nativeQueryRef": "Adresse"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Stations"
+                    }
+                  },
+                  "Property": "Département"
+                }
+              },
+              "queryRef": "Stations.Département",
+              "nativeQueryRef": "Département"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Releves"
+                    }
+                  },
+                  "Property": "Prix moyen"
+                }
+              },
+              "queryRef": "Releves.Prix moyen",
+              "nativeQueryRef": "Prix moyen"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Releves"
+                    }
+                  },
+                  "Property": "Écart à la région"
+                }
+              },
+              "queryRef": "Releves.Écart à la région",
+              "nativeQueryRef": "Écart à la région"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Releves"
+                    }
+                  },
+                  "Property": "Surcoût plein 50 L"
+                }
+              },
+              "queryRef": "Releves.Surcoût plein 50 L",
+              "nativeQueryRef": "Surcoût plein 50 L"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Releves"
+                    }
+                  },
+                  "Property": "Relevés"
+                }
+              },
+              "queryRef": "Releves.Relevés",
+              "nativeQueryRef": "Relevés"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Releves"
+                  }
+                },
+                "Property": "Écart à la région"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "objects": {
+      "columnWidth": [
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "172.6D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Stations.Commune"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "172.6D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Stations.Adresse"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "172.6D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Stations.Département"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "172.6D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Releves.Prix moyen"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "172.6D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Releves.Écart à la région"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "172.6D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Releves.Surcoût plein 50 L"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "172.6D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Releves.Relevés"
+          }
+        }
+      ],
+      "total": [
+        {
+          "properties": {
+            "totals": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "values": [
+        {
+          "properties": {
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Releves"
+                        }
+                      },
+                      "Property": "Couleur Écart à la région"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "dataViewWildcard": {
+                  "matchingOption": 1
+                }
+              }
+            ],
+            "metadata": "Releves.Écart à la région"
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Prix par station, de la plus chère à la moins chère'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
