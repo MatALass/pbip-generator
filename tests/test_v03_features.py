@@ -204,3 +204,51 @@ def test_dictionary_is_written_with_the_project_and_by_the_cli(example_data, tmp
     out = tmp_path / "dico.md"
     assert main(["dictionary", str(example_data), "-l", "en", "-o", str(out)]) == 0
     assert out.read_text(encoding="utf-8").startswith("# Data dictionary: ")
+
+
+# --------------------------------------------------------------------------- #
+# Scatter chart
+# --------------------------------------------------------------------------- #
+SCATTER = {
+    "type": "scatterChart",
+    "title": "Panier moyen et nombre de ventes par client",
+    "category": "Clients[Nom client]",
+    "values": ["[Nb Ventes]", "[Panier moyen]", "[Total Montant]"],
+}
+
+
+def test_scatter_has_one_point_per_category_and_x_y_size(example_data):
+    spec = _with_matrix()
+    spec["pages"][2]["visuals"][0] = {**SCATTER, "filters": [{"field": "[Nb Ventes]", "operator": ">=", "value": 2}]}
+    files = render_project(build_project_from_spec(example_data, parse_spec(spec)))
+    (scatter,) = _visuals(files, "scatterChart")
+    state = scatter["query"]["queryState"]
+    assert [p["queryRef"] for p in state["Category"]["projections"]] == ["Clients.Nom client"]
+    assert [p["queryRef"] for p in state["X"]["projections"]] == ["Ventes.Nb Ventes"]
+    assert [p["queryRef"] for p in state["Y"]["projections"]] == ["Ventes.Panier moyen"]
+    assert [p["queryRef"] for p in state["Size"]["projections"]] == ["Ventes.Total Montant"]
+    assert "sortDefinition" not in scatter["query"]
+
+
+def test_scatter_without_size(example_data):
+    spec = _with_matrix()
+    spec["pages"][2]["visuals"][0] = {**SCATTER, "values": SCATTER["values"][:2]}
+    files = render_project(build_project_from_spec(example_data, parse_spec(spec)))
+    (scatter,) = _visuals(files, "scatterChart")
+    assert set(scatter["query"]["queryState"]) == {"Category", "X", "Y"}
+
+
+@pytest.mark.parametrize(
+    ("changes", "message"),
+    [
+        ({"category": None}, "needs a 'category' column"),
+        ({"values": ["[Nb Ventes]"]}, "takes 2 or 3 measures"),
+        ({"values": ["[Nb Ventes]", "Clients[Région]"]}, "a measure is expected"),
+        ({"category": "[Nb Ventes]"}, "a column is expected"),
+    ],
+)
+def test_scatter_spec_errors(example_data, changes, message):
+    spec = _with_matrix()
+    spec["pages"][2]["visuals"][0] = {**SCATTER, **changes}
+    with pytest.raises(SpecError, match=message):
+        build_project_from_spec(example_data, parse_spec(spec))

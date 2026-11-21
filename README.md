@@ -313,7 +313,8 @@ Every page gets a title, up to 3 slicers and up to 4 KPI cards on top, then the 
 (`kpis_2x2`: 4, `kpis_1_2`: 1 wide + 2, `kpis_2`: 2, `kpis_table` and `table`: 1 full width).
 
 Visuals: `card`, `lineChart`, `clusteredColumnChart`, `clusteredBarChart`, `donutChart`, `tableEx`,
-`textbox`, and `pivotTable`, the matrix: a measure across two dimensions.
+`textbox`, `pivotTable`, the matrix: a measure across two dimensions, and `scatterChart`: one point
+per value of a column, placed by two measures.
 
 ```yaml
       - type: pivotTable
@@ -321,6 +322,13 @@ Visuals: `card`, `lineChart`, `clusteredColumnChart`, `clusteredBarChart`, `donu
         rows: ['Produits[Catégorie]', 'Produits[Produit]']   # 1 to 3 levels
         columns: ['Calendrier[Année]']                       # one column, up to 12 values
         values: ['[Total Montant]']
+```
+
+```yaml
+      - type: scatterChart
+        title: Rating et ACS par joueur
+        category: Joueurs[Joueur]                            # one point per player
+        values: ['[ACS moyen]', '[Rating moyen]', '[Rounds joués]']   # X, Y, optional size
 ```
 
 A visual filter on a measure hides the rows (or bars) that fail a test, like the *Filters on this
@@ -419,6 +427,7 @@ turns them into an error. `check_project(project)` returns the list, to assert o
 
 ```python
 from pbip_generator import check_project
+
 assert check_project(build_project()) == []
 ```
 

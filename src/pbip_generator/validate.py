@@ -219,6 +219,15 @@ def _check_visual(project: Project, where: str, v: VisualSpec) -> list[str]:
     elif v.type == "pivotTable":
         issues += _check_matrix(project, where, v)
         fields += v.rows + v.columns
+    elif v.type == "scatterChart":
+        if not v.category:
+            issues.append(f"{where}: a scatterChart needs a 'category' column, one point per value")
+        else:
+            fields.append(v.category)
+            issues += _field(project, f"{where}.category", v.category, "column")[1]
+        if v.values and not 2 <= len(v.values) <= 3:
+            got = len(v.values)
+            issues.append(f"{where}: a scatterChart takes 2 or 3 measures in 'values' (X, Y, size), got {got}")
     elif v.category:
         issues.append(f"{where}: a {v.type} takes no 'category', put every field in 'values'")
     if v.type == "card" and len(v.values) > 1:

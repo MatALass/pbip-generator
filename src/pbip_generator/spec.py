@@ -48,7 +48,15 @@ from .model import FieldRef, Measure, Project
 from .themes import build_theme, palette_for
 
 VisualType = Literal[
-    "card", "lineChart", "clusteredColumnChart", "clusteredBarChart", "donutChart", "tableEx", "pivotTable", "textbox"
+    "card",
+    "lineChart",
+    "clusteredColumnChart",
+    "clusteredBarChart",
+    "donutChart",
+    "scatterChart",
+    "tableEx",
+    "pivotTable",
+    "textbox",
 ]
 Template = Literal["kpis_2x2", "kpis_1_2", "kpis_2", "kpis_table", "table"]
 
@@ -116,8 +124,14 @@ class ThemeSpec(_Strict):
 class VisualSpec(_Strict):
     type: VisualType
     title: str | None = Field(None, description="Required, except for textbox")
-    category: str | None = Field(None, description="Axis column of a chart, 'Table[Column]'")
-    values: list[str] = Field(default=[], description="Measures (charts, cards) or columns and measures (tableEx)")
+    category: str | None = Field(
+        None, description="Axis column of a chart, 'Table[Column]'; scatterChart: one point per value"
+    )
+    values: list[str] = Field(
+        default=[],
+        description="Measures (charts, cards), columns and measures (tableEx); "
+        "scatterChart: X measure, Y measure and an optional size measure",
+    )
     rows: list[str] = Field(default=[], description="pivotTable (matrix) only: row columns, outer level first")
     columns: list[str] = Field(default=[], description="pivotTable (matrix) only: column headers, one column")
     sort_by: str | None = Field(None, description="One of the visual's fields")

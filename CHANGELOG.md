@@ -7,6 +7,9 @@ All notable changes to this project. The format follows
 ## [0.2.0] - unreleased
 
 ### Added
+- **Scatter chart** (spec `type: scatterChart`): `category` gives one point per value, `values` the X
+  and Y measures and an optional size measure. Visual filters on measures apply, e.g. to leave out
+  the points built on too few data.
 - **Visual filters on measures** (spec `filters`: `field`, `operator`, `value`): written as an
   *Advanced* visual-level filter, the one Desktop creates from *Filters on this visual*. The fuel example
   uses it to leave out stations with fewer than 5 prices.

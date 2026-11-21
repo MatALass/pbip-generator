@@ -59,6 +59,10 @@ def _visual(project: Project, spec: VisualSpec, rect: Rect, colors: dict[int, Fi
         if project.table(category.table).role == TableRole.DATE:
             # A time axis reads left to right, whatever the measure does.
             sort_by, descending = category, False
+    elif spec.type == "scatterChart":
+        roles = {"Category": [_ref(project, spec.category or "")], "X": values[:1], "Y": values[1:2]}
+        if len(values) > 2:
+            roles["Size"] = values[2:3]
     elif spec.type == "pivotTable":
         rows = [_ref(project, r) for r in spec.rows]
         roles = {"Rows": rows, "Columns": [_ref(project, c) for c in spec.columns], "Values": values}
