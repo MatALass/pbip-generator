@@ -21,6 +21,8 @@ November 2023.
 | Generation time | 0.4 s on a laptop, every file checked against Microsoft's schemas and loaded with TOM in CI |
 | Same project by hand | about 3 hours by my estimate (breakdown below), not timed |
 
+![Synthèse page of the generated report, opened in Power BI Desktop](docs/images/carburants-synthese.webp)
+
 What the generated report shows, once refreshed in Power BI Desktop:
 
 - **A full tank of E10 costs 4.80 € more in Hauts-de-Seine than in Seine-et-Marne.** For E10, a 50 L tank is 3.17 €
@@ -146,13 +148,22 @@ from the data (smallest unique set of keys and dates) and says so when no such s
 
 ### Pages
 
-| Page | Question it answers |
-|---|---|
-| Synthèse | How much is a litre now, how did it move in 14 months, which departments are above the average? |
-| Départements | How do departments compare, fuel by fuel? The matrix has fuels in columns and no total, because an average over several fuels is meaningless |
-| Stations | Which stations are the cheapest and the most expensive for one fuel? Gaps colored in green and red |
+Screenshots of the generated report in Power BI Desktop, after *Refresh*, nothing edited by hand.
 
-The fuel slicer of *Synthèse* and *Stations* forces exactly one value, for the same reason as the
+**Synthèse**: how much is a litre now, how did it move in 14 months, which departments are above the
+average? Screenshot at the [top of this page](#result-on-public-data), with E10 selected.
+
+**Départements**: how do departments compare, fuel by fuel? The matrix has fuels in columns and no
+total, because an average over several fuels is meaningless.
+
+![Départements page: average price by department and fuel, spread between stations by department](docs/images/carburants-departements.webp)
+
+**Stations**: which stations are the cheapest and the most expensive for one fuel? Gaps above 5 cents
+in red, below -5 cents in green.
+
+![Stations page: price, gap to the region and extra cost of a 50 L tank for every station](docs/images/carburants-stations.webp)
+
+The fuel slicer of *Synthèse* and *Stations* forces exactly one value (E10, the first one, when the report opens), for the same reason as the
 matrix: no figure on these pages ever mixes two fuels.
 
 ### Modeling decisions
@@ -193,6 +204,9 @@ pages, written once in the spec (or drafted by Claude through the MCP server, th
   (the feed has no volumes). A motorway station counts as much as a supermarket one.
 - Two snapshots per month: short price spikes between two dates are not seen.
 - Data stops in November 2023, when Etalab's history ends.
+- A station with very few prices weighs as much as the others in its row of the *Stations* table: the
+  most expensive E10 station (Saint-Ouen, +0.51 € per litre) has a single price in 14 months. The
+  `Relevés` column is there to spot those rows.
 
 ## What it builds
 
