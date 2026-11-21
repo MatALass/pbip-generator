@@ -102,7 +102,7 @@ erDiagram
 | Prix au premier relevé | Releves | KPI | `#,##0.000 €` | Prix moyen à la première date de la sélection |
 | Prix au dernier relevé | Releves | KPI | `#,##0.000 €` | Prix moyen à la dernière date de la sélection |
 | Variation sur la période | Releves | KPI | `+0.0 %;-0.0 %;0.0 %` | Évolution du prix entre le premier et le dernier relevé de la sélection |
-| Écart entre stations | Releves | KPI | `#,##0.000 €` | Écart par litre entre la station la plus chère et la moins chère de la sélection |
+| Écart entre stations | Releves | KPI | `#,##0.000 €` | Écart par litre entre la station la plus chère et la moins chère de la sélection, parmi les stations qui ont au moins 5 relevés |
 | Couleur Écart à la région (masquée) | Releves | Couleurs |  | Couleur de mise en évidence de Écart à la région |
 
 ### Prix moyen
@@ -184,7 +184,11 @@ DIVIDE([Prix au dernier relevé] - [Prix au premier relevé], [Prix au premier r
 Expression DAX (Releves):
 
 ```dax
-VAR _prix = ADDCOLUMNS(VALUES(Releves[StationID]), "@p", [Prix moyen])
+VAR _prix =
+    FILTER(
+        ADDCOLUMNS(VALUES(Releves[StationID]), "@p", [Prix moyen], "@n", [Relevés]),
+        [@n] >= 5
+    )
 RETURN MAXX(_prix, [@p]) - MINX(_prix, [@p])
 ```
 

@@ -125,6 +125,15 @@ class Highlight:
 
 
 @dataclass
+class MeasureFilter:
+    """Visual-level filter: keep the rows (or points) of a visual where a measure passes a test."""
+
+    measure: FieldRef
+    operator: str  # ">=", ">", "<=", "<", "="
+    value: float
+
+
+@dataclass
 class Visual:
     visual_type: str
     roles: dict[str, list[FieldRef]]
@@ -140,6 +149,7 @@ class Visual:
     highlights: list[Highlight] = field(default_factory=list)
     totals: bool = True  # total row of a table
     single_select: bool = False  # slicer that takes exactly one value
+    filters: list[MeasureFilter] = field(default_factory=list)  # visual-level filters on measures
 
 
 @dataclass

@@ -63,10 +63,16 @@ measures:
   - table: Releves
     name: Écart entre stations
     expression: |-
-      VAR _prix = ADDCOLUMNS(VALUES(Releves[StationID]), "@p", [Prix moyen])
+      VAR _prix =
+          FILTER(
+              ADDCOLUMNS(VALUES(Releves[StationID]), "@p", [Prix moyen], "@n", [Relevés]),
+              [@n] >= 5
+          )
       RETURN MAXX(_prix, [@p]) - MINX(_prix, [@p])
     format: '#,##0.000 €'
-    description: Écart par litre entre la station la plus chère et la moins chère de la sélection
+    description: >-
+      Écart par litre entre la station la plus chère et la moins chère de la sélection,
+      parmi les stations qui ont au moins 5 relevés
 pages:
   - name: Synthèse
     purpose: Savoir combien coûte le litre, comment le prix a bougé en 14 mois et où il est le plus cher
@@ -115,6 +121,9 @@ pages:
                  '[Écart à la région]', '[Surcoût plein 50 L]', '[Relevés]']
         sort_by: '[Écart à la région]'
         totals: false
+        # A station seen once is not comparable: one price, possibly from another period.
+        filters:
+          - {field: '[Relevés]', operator: '>=', value: 5}
         highlights:
           - field: '[Écart à la région]'
             apply: font

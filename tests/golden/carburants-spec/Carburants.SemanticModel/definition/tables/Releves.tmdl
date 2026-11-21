@@ -59,9 +59,13 @@ table Releves
 		displayFolder: KPI
 		lineageTag: 779664be-9524-5aa9-8371-6d7919196fe5
 
-	/// Écart par litre entre la station la plus chère et la moins chère de la sélection
+	/// Écart par litre entre la station la plus chère et la moins chère de la sélection, parmi les stations qui ont au moins 5 relevés
 	measure 'Écart entre stations' =
-			VAR _prix = ADDCOLUMNS(VALUES(Releves[StationID]), "@p", [Prix moyen])
+			VAR _prix =
+			    FILTER(
+			        ADDCOLUMNS(VALUES(Releves[StationID]), "@p", [Prix moyen], "@n", [Relevés]),
+			        [@n] >= 5
+			    )
 			RETURN MAXX(_prix, [@p]) - MINX(_prix, [@p])
 		formatString: #,##0.000 €
 		displayFolder: KPI

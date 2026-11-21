@@ -46,7 +46,9 @@ Build Power BI reports (PBIP projects) from a folder of CSV/Excel files.
    - pick a theme for the audience (theme.preset light or dark, optional accent color);
    - color the measure a reader must notice with 'highlights' (thresholds -> good/neutral/bad...),
      turn 'totals' off on tables whose columns are ratios, and use 'single_select' for a slicer
-     the page needs exactly one value of (one team, one client).
+     the page needs exactly one value of (one team, one client);
+   - hide the rows of a table that rest on too few data points with a visual filter on a count
+     measure ('filters': [{field: '[Nb ...]', operator: '>=', value: 5}]).
 3. Call validate_spec until it returns no issue: each issue says what is available instead.
 4. Call generate_report. The user opens the .pbip in Power BI Desktop and clicks Refresh.
 Never write TMDL or PBIR yourself.

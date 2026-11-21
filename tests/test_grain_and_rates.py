@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 import pytest
@@ -168,3 +169,102 @@ def test_columns_created_inside_a_dax_expression_are_known(tmp_path):
         },
     )
     build_project_from_spec(folder, spec, "T")  # raises SpecError if [@p] is reported as unknown
+
+
+# --------------------------------------------------------------------------- #
+# Visual-level filters on measures
+# --------------------------------------------------------------------------- #
+def _fuel_files() -> dict[str, str]:
+    from pbip_generator import build_project_from_spec, load_spec, render_project
+
+    project = build_project_from_spec(FUEL / "data", load_spec(FUEL / "report.yaml"), "Carburants")
+    return render_project(project, strict=True)
+
+
+def test_measure_filter_is_written_like_power_bi_desktop():
+    import json
+
+    visuals = [json.loads(c) for k, c in _fuel_files().items() if k.endswith("visual.json")]
+    filtered = [v for v in visuals if "filterConfig" in v]
+    assert len(filtered) == 1 and filtered[0]["visual"]["visualType"] == "tableEx"
+    (flt,) = filtered[0]["filterConfig"]["filters"]
+    assert flt["type"] == "Advanced"
+    assert flt["field"] == {"Measure": {"Expression": {"SourceRef": {"Entity": "Releves"}}, "Property": "Relevés"}}
+    comparison = flt["filter"]["Where"][0]["Condition"]["Comparison"]
+    assert comparison["ComparisonKind"] == 2  # >=
+    assert comparison["Right"] == {"Literal": {"Value": "5L"}}
+    assert comparison["Left"]["Measure"]["Expression"] == {"SourceRef": {"Source": "t"}}
+    assert flt["filter"]["From"] == [{"Name": "t", "Entity": "Releves", "Type": 0}]
+
+
+def test_fuel_report_matches_microsoft_schemas(schema_validator):
+    import json
+
+    for name, content in _fuel_files().items():
+        if name.endswith((".json", ".pbir", ".pbism", ".pbip", ".platform")) and "StaticResources" not in name:
+            schema_validator(json.loads(content))
+
+
+@pytest.mark.parametrize(
+    ("operator", "value", "kind", "literal"),
+    [(">=", 5, 2, "5L"), (">", 0.5, 1, "0.5D"), ("<", 2, 3, "2L"), ("<=", 1.25, 4, "1.25D"), ("=", 0, 0, "0L")],
+)
+def test_measure_filter_operators(operator, value, kind, literal):
+    from pbip_generator.model import FieldRef, MeasureFilter
+    from pbip_generator.pbir import _measure_filter
+
+    f = _measure_filter("v", 0, MeasureFilter(FieldRef("T", "M", is_measure=True), operator, value))
+    comparison = f["filter"]["Where"][0]["Condition"]["Comparison"]
+    assert (comparison["ComparisonKind"], comparison["Right"]["Literal"]["Value"]) == (kind, literal)
+
+
+def _spec_with_filter(visual: dict) -> dict:
+    return {
+        "name": "T",
+        "business_question": "q",
+        "audience": "direction",
+        "measures": [{"table": "Releves", "name": "Nb", "description": "d", "expression": "COUNTROWS(Releves)"}],
+        "pages": [{"name": "P", "purpose": "p", "template": "table", "visuals": [visual]}],
+    }
+
+
+@pytest.mark.parametrize(
+    ("visual", "message"),
+    [
+        (
+            {
+                "type": "tableEx",
+                "title": "t",
+                "values": ["Stations[Ville]"],
+                "filters": [{"field": "Stations[Ville]", "value": 1}],
+            },
+            "Stations[Ville] is a column, filters test a measure",
+        ),
+        (
+            {
+                "type": "tableEx",
+                "title": "t",
+                "values": ["Stations[Ville]"],
+                "filters": [{"field": "[Nope]", "value": 1}],
+            },
+            "filters[0]",
+        ),
+        (
+            {"type": "card", "title": "t", "values": ["[Nb]"], "filters": [{"field": "[Nb]", "value": 1}]},
+            "a filter on a card would hide its only value",
+        ),
+    ],
+)
+def test_invalid_filters_are_reported(tmp_path, visual, message):
+    from pbip_generator import build_project_from_spec, parse_spec
+    from pbip_generator.spec import SpecError
+
+    folder = _folder(
+        tmp_path,
+        {
+            "stations.csv": "StationID,Ville\n1,Paris\n2,Meaux\n",
+            "releves.csv": "Date,StationID,Prix au litre\n2023-01-01,1,1.90\n2023-01-01,2,1.80\n",
+        },
+    )
+    with pytest.raises(SpecError, match=re.escape(message)):
+        build_project_from_spec(folder, parse_spec(_spec_with_filter(visual)), "T")

@@ -101,6 +101,12 @@ class HighlightSpec(_Strict):
     apply: Literal["background", "font"] = Field("background", description="Cell background or text (tables)")
 
 
+class FilterSpec(_Strict):
+    field: str = Field(description="A measure, '[Measure]'; rows of the visual that fail the test are hidden")
+    operator: Literal[">=", ">", "<=", "<", "="] = ">="
+    value: float
+
+
 class ThemeSpec(_Strict):
     preset: Literal["light", "dark"] = "light"
     accent: str | None = Field(None, pattern=r"^#[0-9A-Fa-f]{6}$", description="Main color: KPI values, first series")
@@ -122,6 +128,10 @@ class VisualSpec(_Strict):
         default=[], description="Color a measure by thresholds: table cells (tableEx) or the value (card)"
     )
     totals: bool = Field(True, description="Totals of a tableEx or pivotTable; turn off when values are ratios")
+    filters: list[FilterSpec] = Field(
+        default=[],
+        description="Visual-level filters on measures, e.g. hide the rows of a table built on too few data points",
+    )
 
 
 class PageSpec(_Strict):

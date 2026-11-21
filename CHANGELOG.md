@@ -7,6 +7,9 @@ All notable changes to this project. The format follows
 ## [0.2.0] - unreleased
 
 ### Added
+- **Visual filters on measures** (spec `filters`: `field`, `operator`, `value`): written as an
+  *Advanced* visual-level filter, the one Desktop creates from *Filters on this visual*. The fuel example
+  uses it to leave out stations with fewer than 5 prices.
 - **Public data example** (`examples/carburants`): official French fuel prices (Etalab), 70,771 prices of
   884 stations, a 3-page report spec, and `fetch_data.py` that rebuilds the data from a pinned commit.
 - **Model diagram**: `DATA_DICTIONARY.md` starts with a Mermaid `erDiagram` of the model (drawn by GitHub).

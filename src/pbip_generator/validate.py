@@ -175,12 +175,23 @@ def _check_highlights(project: Project, where: str, v: VisualSpec) -> list[str]:
     return issues
 
 
+def _check_filters(project: Project, where: str, v: VisualSpec) -> list[str]:
+    issues: list[str] = []
+    if v.filters and v.type == "card":
+        return [f"{where}: a filter on a card would hide its only value, filter the measure in DAX instead"]
+    for i, f in enumerate(v.filters):
+        ref, error = resolve(project, f.field)
+        if ref is None or not ref.is_measure:
+            issues.append(f"{where}.filters[{i}]: {error or f'{f.field} is a column, filters test a measure'}")
+    return issues
+
+
 def _check_visual(project: Project, where: str, v: VisualSpec) -> list[str]:
     issues: list[str] = []
     if v.type == "textbox":
         if not v.text:
             issues.append(f"{where}: a textbox needs 'text'")
-        if v.category or v.values:
+        if v.category or v.values or v.filters:
             issues.append(f"{where}: a textbox takes no field")
         return issues
     if not v.title:
@@ -216,6 +227,7 @@ def _check_visual(project: Project, where: str, v: VisualSpec) -> list[str]:
     for i, text in enumerate(v.values):
         issues += _field(project, f"{where}.values[{i}]", text, kind)[1]
     issues += _check_highlights(project, where, v)
+    issues += _check_filters(project, where, v)
     if v.sort_by is not None and v.sort_by not in fields:
         issues.append(f"{where}: sort_by '{v.sort_by}' must be one of the visual's fields")
     return issues
