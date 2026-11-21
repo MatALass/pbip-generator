@@ -7,7 +7,7 @@ import re
 from typing import Any
 
 from .ids import stable_name, stable_uuid
-from .model import FieldRef, Page, Project, Visual
+from .model import FieldRef, MeasureFilter, Page, Project, Visual
 
 _BASE = "https://developer.microsoft.com/json-schemas/fabric"
 SCHEMAS = {
@@ -216,8 +216,42 @@ def _slicer_objects(v: Visual) -> dict[str, Any]:
     return objects
 
 
-def _container(name: str, index: int, v: Visual, visual: dict[str, Any]) -> dict[str, Any]:
+# ComparisonKind of the semantic query language.
+_COMPARISON = {"=": 0, ">": 1, ">=": 2, "<": 3, "<=": 4}
+
+
+def _measure_filter(visual_name: str, index: int, f: MeasureFilter) -> dict[str, Any]:
+    """An 'Advanced' visual-level filter, written as Power BI Desktop writes one ('is greater than or
+    equal to 5' in the filter pane). Evaluated per row of the visual, like any visual filter."""
+    value = f"{int(f.value)}L" if float(f.value).is_integer() else f"{f.value}D"
+    alias = "t"
     return {
+        "name": stable_name(visual_name, "filter", str(index)),
+        "field": _field(f.measure),
+        "type": "Advanced",
+        "filter": {
+            "Version": 2,
+            "From": [{"Name": alias, "Entity": f.measure.table, "Type": 0}],
+            "Where": [
+                {
+                    "Condition": {
+                        "Comparison": {
+                            "ComparisonKind": _COMPARISON[f.operator],
+                            "Left": {
+                                "Measure": {"Expression": {"SourceRef": {"Source": alias}}, "Property": f.measure.name}
+                            },
+                            "Right": {"Literal": {"Value": value}},
+                        }
+                    }
+                }
+            ],
+        },
+        "howCreated": "User",
+    }
+
+
+def _container(name: str, index: int, v: Visual, visual: dict[str, Any]) -> dict[str, Any]:
+    container: dict[str, Any] = {
         "$schema": SCHEMAS["visual"],
         "name": name,
         "position": {
@@ -230,6 +264,9 @@ def _container(name: str, index: int, v: Visual, visual: dict[str, Any]) -> dict
         },
         "visual": visual,
     }
+    if v.filters:
+        container["filterConfig"] = {"filters": [_measure_filter(name, i, f) for i, f in enumerate(v.filters)]}
+    return container
 
 
 def render_report_json(project: Project) -> dict[str, Any]:

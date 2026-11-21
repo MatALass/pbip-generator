@@ -16,7 +16,7 @@ November 2023.
 
 | | |
 |---|---|
-| Input | 3 CSV files (prices, stations, fuels) and a 124-line report spec |
+| Input | 3 CSV files (prices, stations, fuels) and a 133-line report spec |
 | Output | 44 files: 4 tables, 3 relationships, 11 DAX measures, 3 pages, 22 visuals, a data dictionary |
 | Generation time | 0.4 s on a laptop, every file checked against Microsoft's schemas and loaded with TOM in CI |
 | Same project by hand | about 3 hours by my estimate (breakdown below), not timed |
@@ -30,8 +30,8 @@ What the generated report shows, once refreshed in Power BI Desktop:
 - **E10 went up 22.8 % in 14 months** (1.538 € to 1.889 € per litre, 15/09/2022 to 15/11/2023),
   diesel only 6.6 %. The September 2022 prices still include the state rebate at the pump, which ended
   on 31/12/2022.
-- **Stations of the same region differ by 0.92 € per litre** for E10 (average over the period), so the
-  choice of station matters more than the choice of department.
+- **Stations of the same region differ by 0.61 € per litre** for E10 (average over the period, stations
+  with at least 5 prices), so the choice of station matters more than the choice of department.
 
 ## How it works: Claude decides, the code writes
 
@@ -144,7 +144,7 @@ from the data (smallest unique set of keys and dates) and says so when no such s
 | `Surcoût plein 50 L` | The gap times 50 L: a figure a non-analyst reads without thinking |
 | `Prix au premier relevé`, `Prix au dernier relevé` | `Prix moyen` at the first and last date of the selection (`MIN` / `MAX` of the date, then `CALCULATE`), so a KPI card shows a current price and not a 14-month average |
 | `Variation sur la période` | `DIVIDE` of the two, blank instead of an error when a price is missing |
-| `Écart entre stations` | `ADDCOLUMNS` over the stations, then max minus min: the spread between the cheapest and the most expensive station of the selection |
+| `Écart entre stations` | `ADDCOLUMNS` over the stations, then max minus min: the spread between the cheapest and the most expensive station of the selection. Stations with fewer than 5 prices are left out: one price seen in September 2022, with the rebate, would pass for the cheapest station of 2023 |
 
 ### Pages
 
@@ -159,7 +159,8 @@ total, because an average over several fuels is meaningless.
 ![Départements page: average price by department and fuel, spread between stations by department](docs/images/carburants-departements.webp)
 
 **Stations**: which stations are the cheapest and the most expensive for one fuel? Gaps above 5 cents
-in red, below -5 cents in green.
+in red, below -5 cents in green. A visual filter keeps the stations with at least 5 prices
+(`filters` in the spec): 144 station and fuel pairs have fewer, too few to rank them.
 
 ![Stations page: price, gap to the region and extra cost of a 50 L tank for every station](docs/images/carburants-stations.webp)
 
@@ -204,9 +205,9 @@ pages, written once in the spec (or drafted by Claude through the MCP server, th
   (the feed has no volumes). A motorway station counts as much as a supermarket one.
 - Two snapshots per month: short price spikes between two dates are not seen.
 - Data stops in November 2023, when Etalab's history ends.
-- A station with very few prices weighs as much as the others in its row of the *Stations* table: the
-  most expensive E10 station (Saint-Ouen, +0.51 € per litre) has a single price in 14 months. The
-  `Relevés` column is there to spot those rows.
+- The threshold of 5 prices (out of 29 dates) is a choice, not a rule from the data: before it, the most
+  expensive E10 station (Saint-Ouen, +0.51 € per litre) had a single price in 14 months, and the spread
+  between stations was 0.92 € instead of 0.61 €.
 
 ## What it builds
 
@@ -320,6 +321,17 @@ Visuals: `card`, `lineChart`, `clusteredColumnChart`, `clusteredBarChart`, `donu
         rows: ['Produits[Catégorie]', 'Produits[Produit]']   # 1 to 3 levels
         columns: ['Calendrier[Année]']                       # one column, up to 12 values
         values: ['[Total Montant]']
+```
+
+A visual filter on a measure hides the rows (or bars) that fail a test, like the *Filters on this
+visual* pane in Desktop. Typical use: leave out the rows built on too few data points.
+
+```yaml
+      - type: tableEx
+        title: Prix par station
+        values: ['Stations[Commune]', '[Prix moyen]', '[Relevés]']
+        filters:
+          - {field: '[Relevés]', operator: '>=', value: 5}   # >=, >, <=, < or =
 ```
 
 Before anything is written, the spec is checked against the inferred model: unknown keys, unknown

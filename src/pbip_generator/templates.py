@@ -12,7 +12,7 @@ Every page has the same frame, so a report reads the same way from page to page:
 from __future__ import annotations
 
 from .layout import GAP, MARGIN, PAGE_H, PAGE_W
-from .model import FieldRef, Highlight, Page, Project, TableRole, Visual
+from .model import FieldRef, Highlight, MeasureFilter, Page, Project, TableRole, Visual
 from .spec import CHART_TYPES, PageSpec, VisualSpec
 from .validate import resolve
 
@@ -87,6 +87,7 @@ def _visual(project: Project, spec: VisualSpec, rect: Rect, colors: dict[int, Fi
         sort_descending=descending,
         highlights=highlights,
         totals=spec.totals,
+        filters=[MeasureFilter(_ref(project, f.field), f.operator, f.value) for f in spec.filters],
     )
 
 
