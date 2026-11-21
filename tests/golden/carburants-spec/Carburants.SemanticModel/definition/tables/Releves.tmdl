@@ -1,0 +1,133 @@
+table Releves
+	lineageTag: 3164e02a-9b03-5817-851b-280a3d98ebe7
+
+	/// Moyenne des prix affichés par les stations, sans pondération par les volumes vendus
+	measure 'Prix moyen' = AVERAGE(Releves[Prix au litre])
+		formatString: #,##0.000 €
+		displayFolder: KPI
+		lineageTag: 303e1c33-6b4b-5f0a-88ac-382dca18f3c4
+
+	/// Nombre de prix relevés (une station, un carburant, une date)
+	measure 'Relevés' = COUNTROWS(Releves)
+		formatString: #,##0
+		displayFolder: KPI
+		lineageTag: 97ffb4f6-4ee8-5e9c-9b9b-7bec10dfb242
+
+	/// Stations qui ont au moins un prix à jour sur la période
+	measure 'Stations relevées' = DISTINCTCOUNT(Releves[StationID])
+		formatString: #,##0
+		displayFolder: KPI
+		lineageTag: dffe656e-5193-5948-9313-4793b8543a76
+
+	/// Prix moyen de toutes les stations, pour le même carburant et la même période
+	measure 'Prix moyen de la région' = CALCULATE([Prix moyen], REMOVEFILTERS(Stations))
+		formatString: #,##0.000 €
+		displayFolder: KPI
+		lineageTag: e4c3bb20-c0e3-5857-9349-1d76fcc4fbd3
+
+	/// Différence par litre avec la moyenne de la région ; positif = plus cher
+	measure 'Écart à la région' = [Prix moyen] - [Prix moyen de la région]
+		formatString: +#,##0.000 €;-#,##0.000 €;0.000 €
+		displayFolder: KPI
+		lineageTag: 6092093f-cc63-55e7-a235-fe75a7db3941
+
+	/// Ce que coûte en plus (ou en moins) un plein de 50 litres par rapport à la région
+	measure 'Surcoût plein 50 L' = [Écart à la région] * 50
+		formatString: +#,##0.00 €;-#,##0.00 €;0.00 €
+		displayFolder: KPI
+		lineageTag: 1efb5314-6ce8-56a5-824c-b001ef83d404
+
+	/// Prix moyen à la première date de la sélection
+	measure 'Prix au premier relevé' =
+			VAR _d = MIN(Releves[Date relevé])
+			RETURN CALCULATE([Prix moyen], Calendrier[Date] = _d)
+		formatString: #,##0.000 €
+		displayFolder: KPI
+		lineageTag: cd8659bc-4419-55b2-a081-90a0e30527a3
+
+	/// Prix moyen à la dernière date de la sélection
+	measure 'Prix au dernier relevé' =
+			VAR _d = MAX(Releves[Date relevé])
+			RETURN CALCULATE([Prix moyen], Calendrier[Date] = _d)
+		formatString: #,##0.000 €
+		displayFolder: KPI
+		lineageTag: cfa9a1d7-f40a-59e4-996c-aab6d67afdc0
+
+	/// Évolution du prix entre le premier et le dernier relevé de la sélection
+	measure 'Variation sur la période' = DIVIDE([Prix au dernier relevé] - [Prix au premier relevé], [Prix au premier relevé])
+		formatString: +0.0 %;-0.0 %;0.0 %
+		displayFolder: KPI
+		lineageTag: 779664be-9524-5aa9-8371-6d7919196fe5
+
+	/// Écart par litre entre la station la plus chère et la moins chère de la sélection
+	measure 'Écart entre stations' =
+			VAR _prix = ADDCOLUMNS(VALUES(Releves[StationID]), "@p", [Prix moyen])
+			RETURN MAXX(_prix, [@p]) - MINX(_prix, [@p])
+		formatString: #,##0.000 €
+		displayFolder: KPI
+		lineageTag: 491c2508-c9a4-515d-ae1b-5ddf1de69c01
+
+	/// Couleur de mise en évidence de Écart à la région
+	measure 'Couleur Écart à la région' =
+			VAR _v = [Écart à la région]
+			RETURN SWITCH(
+			    TRUE(),
+			    ISBLANK(_v), BLANK(),
+			    _v < -0.05, "#12B886",
+			    _v < 0.05, "#F59F00",
+			    "#E03131"
+			)
+		displayFolder: Couleurs
+		isHidden
+		lineageTag: d5c18918-dbda-5ee5-b6e5-ef2a43e3dd63
+
+	column 'Date relevé'
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		isHidden
+		lineageTag: d2301966-237a-54d0-ac99-9fc742b5d3ab
+		summarizeBy: none
+		sourceColumn: Date relevé
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column StationID
+		dataType: int64
+		isHidden
+		lineageTag: e2ac6521-dc89-58a0-9c3c-1f7a5b9b3681
+		summarizeBy: none
+		sourceColumn: StationID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Carburant
+		dataType: string
+		isHidden
+		lineageTag: 95abf28a-ad6c-5410-b7a1-bc0dec85a2ff
+		summarizeBy: none
+		sourceColumn: Carburant
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Prix au litre'
+		dataType: double
+		formatString: #,##0.00 €
+		lineageTag: fb94fbb0-cfcc-5678-989a-22e50ef97341
+		summarizeBy: average
+		sourceColumn: Prix au litre
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Releves = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "releves.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers", {{"Date relevé", type date}, {"StationID", Int64.Type}, {"Carburant", type text}, {"Prix au litre", type number}}, "en-US")
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table

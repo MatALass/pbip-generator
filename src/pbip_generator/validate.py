@@ -19,6 +19,8 @@ _REF = re.compile(r"^\s*(?:'?(?P<table>[^'\[\]]+?)'?)?\s*\[(?P<name>[^\[\]]+)\]\
 _DAX_NOISE = re.compile(r'"(?:[^"]|"")*"|//[^\n]*|--[^\n]*|/\*.*?\*/', re.S)
 _DAX_QUALIFIED = re.compile(r"(?:'((?:[^']|'')+)'|([^\W\d][\w]*))\[([^\]]+)\]")
 _DAX_BARE = re.compile(r"(?<![\w'\]])\[([^\]]+)\]")
+# Columns a DAX expression creates itself: ADDCOLUMNS(t, "@Prix", ...), SELECTCOLUMNS, SUMMARIZE.
+_DAX_STRING = re.compile(r'"((?:[^"]|"")*)"')
 
 
 def _hint(name: str, candidates: list[str], label: str) -> str:
@@ -72,6 +74,7 @@ def _check_dax(project: Project, expression: str) -> list[str]:
         elif quoted:  # an unquoted word before '[' may be a variable or a function, not a table
             errors.append(f"unknown table '{tname}'")
     known = set(_measure_names(project)) | {c.name for t in project.tables for c in t.columns}
+    known |= {text.replace('""', '"') for text in _DAX_STRING.findall(expression)}
     for name in _DAX_BARE.findall(code):
         if name not in known:
             hint = _hint(name, _measure_names(project), "measures")

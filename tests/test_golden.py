@@ -45,7 +45,22 @@ def _auto_english() -> dict[str, str]:
     return render_project(infer_project(EXAMPLE / "data", "Sales", DATA_FOLDER, config), strict=True)
 
 
-CASES = {"ventes-auto": _auto, "ventes-auto-en": _auto_english, "ventes-spec": _spec, "ventes-spec-dark": _spec_dark}
+def _fuel_spec() -> dict[str, str]:
+    """Public data example: fuel prices of Ile-de-France stations (examples/carburants)."""
+    folder = ROOT / "examples" / "carburants"
+    project = build_project_from_spec(
+        folder / "data", load_spec(folder / "report.yaml"), "Carburants", "C:\\pbip\\Carburants\\data\\"
+    )
+    return render_project(project, strict=True)
+
+
+CASES = {
+    "ventes-auto": _auto,
+    "ventes-auto-en": _auto_english,
+    "ventes-spec": _spec,
+    "ventes-spec-dark": _spec_dark,
+    "carburants-spec": _fuel_spec,
+}
 
 
 @pytest.mark.parametrize("case", sorted(CASES))

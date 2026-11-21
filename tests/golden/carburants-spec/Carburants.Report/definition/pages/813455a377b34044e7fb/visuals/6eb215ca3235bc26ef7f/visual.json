@@ -1,0 +1,96 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "name": "6eb215ca3235bc26ef7f",
+  "position": {
+    "x": 648.0,
+    "y": 464.0,
+    "z": 9000,
+    "width": 616.0,
+    "height": 240.0,
+    "tabOrder": 9000
+  },
+  "visual": {
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Stations"
+                    }
+                  },
+                  "Property": "Département"
+                }
+              },
+              "queryRef": "Stations.Département",
+              "nativeQueryRef": "Département"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Releves"
+                    }
+                  },
+                  "Property": "Surcoût plein 50 L"
+                }
+              },
+              "queryRef": "Releves.Surcoût plein 50 L",
+              "nativeQueryRef": "Surcoût plein 50 L"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Releves"
+                  }
+                },
+                "Property": "Surcoût plein 50 L"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Surcoût d''un plein de 50 L par département'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

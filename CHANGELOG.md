@@ -7,6 +7,13 @@ All notable changes to this project. The format follows
 ## [0.2.0] - unreleased
 
 ### Added
+- **Public data example** (`examples/carburants`): official French fuel prices (Etalab), 70,771 prices of
+  884 stations, a 3-page report spec, and `fetch_data.py` that rebuilds the data from a pinned commit.
+- **Model diagram**: `DATA_DICTIONARY.md` starts with a Mermaid `erDiagram` of the model (drawn by GitHub).
+- **Grain of fact tables**: a unique row ID, or the smallest unique set of dates and foreign keys,
+  computed on the data and written in the dictionary (`Table.grain`).
+- Unit prices and rates (`Prix unitaire`, `Prix au litre`, `price per kg`, `Taux`, `%`) are averaged:
+  automatic measure `Moyenne <column>` / `Average <column>` and `summarizeBy: average`, instead of a sum.
 - **Report spec** (`--spec report.yaml`): model overrides, measures and pages in one typed file (Pydantic),
   checked against the inferred model before anything is written, with suggestions for unknown names.
   `pbip-generator spec-schema` prints its JSON schema.
@@ -50,6 +57,8 @@ All notable changes to this project. The format follows
   report them as messages; any other exception is a bug and keeps its traceback.
 
 ### Fixed
+- The spec validation accepted no column created inside a DAX expression: `[@p]` after
+  `ADDCOLUMNS(..., "@p", ...)` (also `SELECTCOLUMNS`, `SUMMARIZE`) is now known.
 - `overwrite` no longer deletes the source data when the project is regenerated from its own
   `<project>/data` folder (`copy_data`): the data is copied into the new project before the old one goes.
 - Project names are plain folder names: a name such as `../x`, `.` or `..` is refused, and the

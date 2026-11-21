@@ -1,0 +1,124 @@
+# Report spec for the fuel price example (public data, see fetch_data.py).
+# Usage: pbip-generator build examples/carburants/data --spec examples/carburants/report.yaml -o output --strict
+name: Carburants
+business_question: Où et quand le plein coûte-t-il le plus cher en Île-de-France, et de combien ?
+audience: direction
+# The automatic measures would sum prices per litre and compare years on 14 months of data:
+# the spec defines its own, built on an average.
+auto_measures: false
+tables:
+  Stations:
+    types: {Code postal: string}
+    hide: [Latitude, Longitude]
+measures:
+  - table: Releves
+    name: Prix moyen
+    expression: AVERAGE(Releves[Prix au litre])
+    format: '#,##0.000 €'
+    description: Moyenne des prix affichés par les stations, sans pondération par les volumes vendus
+  - table: Releves
+    name: Relevés
+    expression: COUNTROWS(Releves)
+    format: '#,##0'
+    description: Nombre de prix relevés (une station, un carburant, une date)
+  - table: Releves
+    name: Stations relevées
+    expression: DISTINCTCOUNT(Releves[StationID])
+    format: '#,##0'
+    description: Stations qui ont au moins un prix à jour sur la période
+  - table: Releves
+    name: Prix moyen de la région
+    expression: CALCULATE([Prix moyen], REMOVEFILTERS(Stations))
+    format: '#,##0.000 €'
+    description: Prix moyen de toutes les stations, pour le même carburant et la même période
+  - table: Releves
+    name: Écart à la région
+    expression: '[Prix moyen] - [Prix moyen de la région]'
+    format: '+#,##0.000 €;-#,##0.000 €;0.000 €'
+    description: Différence par litre avec la moyenne de la région ; positif = plus cher
+  - table: Releves
+    name: Surcoût plein 50 L
+    expression: '[Écart à la région] * 50'
+    format: '+#,##0.00 €;-#,##0.00 €;0.00 €'
+    description: Ce que coûte en plus (ou en moins) un plein de 50 litres par rapport à la région
+  - table: Releves
+    name: Prix au premier relevé
+    expression: |-
+      VAR _d = MIN(Releves[Date relevé])
+      RETURN CALCULATE([Prix moyen], Calendrier[Date] = _d)
+    format: '#,##0.000 €'
+    description: Prix moyen à la première date de la sélection
+  - table: Releves
+    name: Prix au dernier relevé
+    expression: |-
+      VAR _d = MAX(Releves[Date relevé])
+      RETURN CALCULATE([Prix moyen], Calendrier[Date] = _d)
+    format: '#,##0.000 €'
+    description: Prix moyen à la dernière date de la sélection
+  - table: Releves
+    name: Variation sur la période
+    expression: DIVIDE([Prix au dernier relevé] - [Prix au premier relevé], [Prix au premier relevé])
+    format: '+0.0 %;-0.0 %;0.0 %'
+    description: Évolution du prix entre le premier et le dernier relevé de la sélection
+  - table: Releves
+    name: Écart entre stations
+    expression: |-
+      VAR _prix = ADDCOLUMNS(VALUES(Releves[StationID]), "@p", [Prix moyen])
+      RETURN MAXX(_prix, [@p]) - MINX(_prix, [@p])
+    format: '#,##0.000 €'
+    description: Écart par litre entre la station la plus chère et la moins chère de la sélection
+pages:
+  - name: Synthèse
+    purpose: Savoir combien coûte le litre, comment le prix a bougé en 14 mois et où il est le plus cher
+    template: kpis_1_2
+    slicers: ['Carburants[Carburant]', 'Stations[Département]']
+    single_select: ['Carburants[Carburant]']
+    kpis: ['[Prix au dernier relevé]', '[Variation sur la période]', '[Écart entre stations]', '[Stations relevées]']
+    visuals:
+      - type: lineChart
+        title: Prix moyen du litre par mois
+        category: Calendrier[Année-Mois]
+        values: ['[Prix moyen]']
+      - type: clusteredBarChart
+        title: Prix moyen par département
+        category: Stations[Département]
+        values: ['[Prix moyen]']
+      - type: clusteredBarChart
+        title: Surcoût d'un plein de 50 L par département
+        category: Stations[Département]
+        values: ['[Surcoût plein 50 L]']
+  - name: Départements
+    purpose: Comparer les départements carburant par carburant, sans jamais mélanger deux carburants
+    template: kpis_2
+    slicers: ['Calendrier[Année]', 'Calendrier[Mois]']
+    kpis: ['[Relevés]', '[Stations relevées]']
+    visuals:
+      - type: pivotTable
+        title: Prix moyen par département et par carburant
+        rows: ['Stations[Département]']
+        columns: ['Carburants[Carburant]']
+        values: ['[Prix moyen]']
+        totals: false
+      - type: clusteredBarChart
+        title: Écart entre stations par département
+        category: Stations[Département]
+        values: ['[Écart entre stations]']
+  - name: Stations
+    purpose: Trouver les stations les moins chères et les plus chères pour un carburant
+    template: table
+    slicers: ['Carburants[Carburant]', 'Stations[Département]', 'Stations[Commune]']
+    single_select: ['Carburants[Carburant]']
+    visuals:
+      - type: tableEx
+        title: Prix par station, de la plus chère à la moins chère
+        values: ['Stations[Commune]', 'Stations[Adresse]', 'Stations[Département]', '[Prix moyen]',
+                 '[Écart à la région]', '[Surcoût plein 50 L]', '[Relevés]']
+        sort_by: '[Écart à la région]'
+        totals: false
+        highlights:
+          - field: '[Écart à la région]'
+            apply: font
+            rules:
+              - {below: -0.05, color: good}
+              - {below: 0.05, color: neutral}
+            otherwise: bad

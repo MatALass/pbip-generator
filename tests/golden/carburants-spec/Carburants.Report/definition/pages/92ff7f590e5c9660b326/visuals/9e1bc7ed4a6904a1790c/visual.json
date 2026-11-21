@@ -1,0 +1,96 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "name": "9e1bc7ed4a6904a1790c",
+  "position": {
+    "x": 648.0,
+    "y": 208,
+    "z": 6000,
+    "width": 616.0,
+    "height": 496,
+    "tabOrder": 6000
+  },
+  "visual": {
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Stations"
+                    }
+                  },
+                  "Property": "Département"
+                }
+              },
+              "queryRef": "Stations.Département",
+              "nativeQueryRef": "Département"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Releves"
+                    }
+                  },
+                  "Property": "Écart entre stations"
+                }
+              },
+              "queryRef": "Releves.Écart entre stations",
+              "nativeQueryRef": "Écart entre stations"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Releves"
+                  }
+                },
+                "Property": "Écart entre stations"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Écart entre stations par département'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

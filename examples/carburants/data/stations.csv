@@ -1,0 +1,885 @@
+StationID,Adresse,Code postal,Commune,Département,Région,Latitude,Longitude
+75001003,"8,10,10bis rue bailleul",75001,Paris,Paris,Île-de-France,48.861,2.341
+75007003,15 avenue duquesne,75007,Paris,Paris,Île-de-France,48.853,2.308
+75007004,37 rue fabert,75007,Paris,Paris,Île-de-France,48.85862,2.31125
+75008006,164 boulevard haussmann,75008,Paris,Paris,Île-de-France,48.875,2.31
+75008009,face 55 av. georges v - parkg ge,75008,Paris,Paris,Île-de-France,48.872,2.301
+75008010,face 35 bld malesherbes,75008,Paris,Paris,Île-de-France,48.87253,2.31149
+75010002,1 boulevard de la chapelle,75010,Paris,Paris,Île-de-France,48.8842,2.36446
+75010003,2/6 rue louis blanc,75010,Paris,Paris,Île-de-France,48.879,2.37
+75011003,175 avenue ledru-rollin,75011,Paris,Paris,Île-de-France,48.85667,2.3791
+75012005,173 avenue daumesnil,75012,Paris,Paris,Île-de-France,48.84074,2.39104
+75012010,36 quai de la rapée,75012,Paris,Paris,Île-de-France,48.842,2.373
+75012020,238 rue de charenton,75012,Paris,Paris,Île-de-France,48.83905,2.38906
+75012021,55 bld de picpus,75012,Paris,Paris,Île-de-France,48.846,2.401
+75012023,32 rue de reuilly,75012,Paris,Paris,Île-de-France,48.84655403,2.38741851
+75013022,27 avenue de la porte d'italie,75013,Paris,Paris,Île-de-France,48.817,2.36
+75013023,rue jean-baptiste berlier - quai,75013,Paris 13,Paris,Île-de-France,48.82586,2.38433
+75013024,114 bd de l hopital,75013,Paris,Paris,Île-de-France,48.835,2.358
+75013025,"181, boulevard vincent auriol",75013,Paris,Paris,Île-de-France,48.832,2.359
+75013026,231 rue de tolbiac,75013,Paris,Paris,Île-de-France,48.826,2.344
+75013028,85 rue jeanne darc,75013,Paris,Paris,Île-de-France,48.832,2.365
+75014008,253 boulevard raspail,75014,Paris,Paris,Île-de-France,48.838,2.331
+75014011,18 a 22 avenue de la porte de chatillon,75014,Paris,Paris,Île-de-France,48.82335277,2.31601065
+75014012,154 rue d'alésia,75014,Paris,Paris,Île-de-France,48.832,2.316
+75015003,151 rue de la convention,75015,Paris,Paris,Île-de-France,48.839,2.292
+75015011,19 bd des freres voisins,75015,Paris,Paris,Île-de-France,48.828,2.272
+75015025,34 boulevard de grenelle,75015,Paris,Paris,Île-de-France,48.852,2.29
+75015026,quai d'issy les moulineaux,75015,Paris,Paris,Île-de-France,48.835,2.266
+75015028,76-78 boulevard garibaldi,75015,Paris,Paris,Île-de-France,48.846,2.308
+75015030,1 quater boulevard victor,75015,Paris,Paris,Île-de-France,48.834,2.285
+75015031,47 bd de vaugirard,75015,Paris,Paris,Île-de-France,48.841,2.317
+75015034,11 boulevard garibaldi,75015,Paris,Paris,Île-de-France,48.8475903,2.3034181
+75015035,21 avenue emile zola,75015,Paris,Paris,Île-de-France,48.846408600000004,2.2796164
+75016001,1 avenue du général sarrail,75016,Paris,Paris,Île-de-France,48.847,2.256
+75016006,place tattegrain,75116,Paris,Paris,Île-de-France,48.864,2.272
+75016011,69 avenue kléber,75116,Paris,Paris,Île-de-France,48.865,2.289
+75016017,2 av de la porte de st cloud,75016,Paris,Paris,Île-de-France,48.83868,2.25394
+75016022,26 av paul doumer,75016,Paris,Paris,Île-de-France,48.861,2.283
+75016023,7 boulevard murat,75016,Paris,Paris,Île-de-France,48.847,2.259
+75016025,99 avenue de versailles,75016,Paris,Paris,Île-de-France,48.845,2.272
+75016026,4 avenue foch,75016,Paris,Paris,Île-de-France,48.87366,2.292015
+75017017,190 avenue de clichy,75017,Paris,Paris,Île-de-France,48.89345,2.3154
+75017020,17-23 avenue de la porte de st ouen,75017,Paris 17e Arrondissement,Paris,Île-de-France,48.900190681145,2.3296082112975
+75018013,30 av pte clignancourt,75018,Paris,Paris,Île-de-France,48.9,2.344
+75018014,32 avenue de la porte de st ouen,75018,Paris,Paris,Île-de-France,48.899525999474,2.3298743609466
+75019013,bld du peripherique exterieur,75019,Paris,Paris,Île-de-France,48.8828951822,2.38263217986
+75019014,bld du peripherique interieur,75019,Paris,Paris,Île-de-France,48.9,2.373
+75019015,121 rue manin,75019,Paris,Paris,Île-de-France,48.88384,2.38977
+75019016,234 rue de crimee,75019,Paris,Paris,Île-de-France,48.89421,2.37306
+75019017,152-162 bld de la villette,75019,Paris,Paris,Île-de-France,48.88001,2.37055
+75020008,217 boulevard marechal davout,75020,Paris,Paris,Île-de-France,48.863356385399996,2.40721478657
+75020010,101 bld mortier,75020,Paris,Paris,Île-de-France,48.871,2.409
+77000003,rue des trois rodes,77000,Vaux-le-Pénil,Seine-et-Marne,Île-de-France,48.52528,2.69402349348
+77000005,48 avenue de meaux,77000,Melun,Seine-et-Marne,Île-de-France,48.55,2.666
+77000011,rn 5 bis rte de nangis (angle),77000,Melun,Seine-et-Marne,Île-de-France,48.541,2.678
+77000013,27 bis avenue du general leclerc,77000,La Rochette,Seine-et-Marne,Île-de-France,48.5228144311,2.65389046258
+77000014,27 route de montereau,77000,Vaux-le-Pénil,Seine-et-Marne,Île-de-France,48.541,2.68
+77090001,centre commercial bay 2,77090,Collégien,Seine-et-Marne,Île-de-France,48.838446872,2.66161659318
+77100008,av president salvador allende,77100,Meaux,Seine-et-Marne,Île-de-France,48.957,2.885
+77100009,rue georges claude,77100,Meaux,Seine-et-Marne,Île-de-France,48.95848,2.9173
+77100010,81 avenue président roosevelt,77100,Meaux,Seine-et-Marne,Île-de-France,48.95674,2.90382
+77100015,avenue de la foulée,77100,Nanteuil-lès-Meaux,Seine-et-Marne,Île-de-France,48.93756,2.8801
+77100016,30 mail de la grande haie,77100,Mareuil-lès-Meaux,Seine-et-Marne,Île-de-France,48.94,2.878
+77100021,1-5 avenue de melun,77100,Nanteuil-lès-Meaux,Seine-et-Marne,Île-de-France,48.953673788900005,2.89673896765
+77100022,30/34 rue francois de tessan,77100,Meaux,Seine-et-Marne,Île-de-France,48.949037155409,2.8797154887761
+77100023,334 avenue de la victoire,77100,Meaux,Seine-et-Marne,Île-de-France,48.95742,2.93791
+77100024,14 rue de senlis,77100,Meaux,Seine-et-Marne,Île-de-France,48.96,2.872
+77100025,42 allée jean louis barrault,77100,Meaux,Seine-et-Marne,Île-de-France,48.954,2.912
+77116001,aire de acheres est a6,77760,Ury,Seine-et-Marne,Île-de-France,48.362118139041996,2.5744144437015
+77120003,boulevard de la marne,77120,Coulommiers,Seine-et-Marne,Île-de-France,48.804,3.091
+77120004,rn 34,77120,Mouroux,Seine-et-Marne,Île-de-France,48.81675,3.05222
+77120005,5 rue abel prouharam,77120,Coulommiers,Seine-et-Marne,Île-de-France,48.81449541,3.0808549910700003
+77120006,avenue de strasbourg,77120,Coulommiers,Seine-et-Marne,Île-de-France,48.801,3.087
+77120007,19-29 av. victor hugo,77120,Coulommiers,Seine-et-Marne,Île-de-France,48.8160809795,3.08307394086
+77124001,zac des vignes,77124,Crégy-lès-Meaux,Seine-et-Marne,Île-de-France,48.97462,2.87015
+77124002,11 av roland moréno,77124,Chauconin-Neufmontiers,Seine-et-Marne,Île-de-France,48.962,2.862
+77127001,c.commercial carre senart,77127,Lieusaint,Seine-et-Marne,Île-de-France,48.617,2.548
+77130003,rn 105,77130,Forges,Seine-et-Marne,Île-de-France,48.402,2.936
+77130005,avenue du 8 mai 1945,77130,Varennes-sur-Seine,Seine-et-Marne,Île-de-France,48.37,2.939
+77130006,boulevard diderot,77130,Montereau-Fault-Yonne,Seine-et-Marne,Île-de-France,48.39853918239999,2.95158027595
+77130008,route du bréau,77130,Varennes-sur-Seine,Seine-et-Marne,Île-de-France,48.375,2.943
+77130012,a5 aire des jonchets grande paroisse,77130,Forges,Seine-et-Marne,Île-de-France,48.426413433117,2.9286144113189
+77130013,a5 aire des jonchets les récompenses,77130,Forges,Seine-et-Marne,Île-de-France,48.429176472519,2.9317977798399997
+77140003,route de larchant,77140,Saint-Pierre-lès-Nemours,Seine-et-Marne,Île-de-France,48.268,2.676
+77140005,"28, rue du général de gaulle",77140,Nemours,Seine-et-Marne,Île-de-France,48.268,2.713
+77140006,1 rue jm jacquard,77140,Nemours,Seine-et-Marne,Île-de-France,48.269,2.701
+77140010,autoroute du soleil - aire de nemours ouest,77140,Nemours,Seine-et-Marne,Île-de-France,48.261701654868,2.7220366668700997
+77140011,10 avenue du general de gaulle,77140,Nemours,Seine-et-Marne,Île-de-France,48.26687,2.70651
+77140012,aire de darvault a6,77140,Darvault,Seine-et-Marne,Île-de-France,48.264,2.722
+77141001,"rd 231, station total",77141,Vaudoy en Brie,Seine-et-Marne,Île-de-France,48.693,3.082
+77141003,"rn4 route de pecy, lieu dit lugins",77141,Vaudoy-en-Brie,Seine-et-Marne,Île-de-France,48.6840914,3.0871627000000004
+77144001,1 boulevard charles de gaulle,77144,Montévrain,Seine-et-Marne,Île-de-France,48.877,2.751
+77144002,zac du clos rose,77144,Montevrain,Seine-et-Marne,Île-de-France,48.853,2.761
+77150002,avenue des pyramides,77420,Champs-sur-Marne,Seine-et-Marne,Île-de-France,48.853,2.584
+77150003,centre commercial de la fontaine,77150,Lésigny,Seine-et-Marne,Île-de-France,48.744,2.612
+77150004,av des hyvernaux - rd 51,77150,Lesigny,Seine-et-Marne,Île-de-France,48.739,2.607
+77160002,avenue de la voulzie,77160,Provins,Seine-et-Marne,Île-de-France,48.548,3.292
+77160003,15 avenue du maréchal de lattre de tassigny,77160,Provins,Seine-et-Marne,Île-de-France,48.559,3.309
+77160004,16 av general de gaulle,77160,Provins,Seine-et-Marne,Île-de-France,48.559,3.286
+77164001,avenue james de rothschild,77164,Ferrières-en-Brie,Seine-et-Marne,Île-de-France,48.827,2.704
+77165002,avenue du maréchal gallieni,77165,Saint-Soupplets,Seine-et-Marne,Île-de-France,49.037,2.801
+77165006,rn 330 - route de meaux,77165,St Soupplets,Seine-et-Marne,Île-de-France,49.03354,2.80467
+77170004,7 rue du général leclerc,77170,Brie-Comte-Robert,Seine-et-Marne,Île-de-France,48.70075943685,2.600879926279
+77170005,25 rue pasteur,77170,Brie-Comte-Robert,Seine-et-Marne,Île-de-France,48.69424,2.61673
+77170006,12 rue gustave eiffel,77170,Brie-Comte-Robert,Seine-et-Marne,Île-de-France,48.703,2.6
+77170012,52 rue jean jaures,77170,Coubert,Seine-et-Marne,Île-de-France,48.669,2.699
+77170013,5 rue du général leclerc,77170,Brie-Comte-Robert,Seine-et-Marne,Île-de-France,48.701,2.601
+77171003,"38, rue de paris",77171,Sourdun,Seine-et-Marne,Île-de-France,48.535,3.361
+77176001,8 avenue du 8 mai 1945,77176,Savigny-le-Temple,Seine-et-Marne,Île-de-France,48.597,2.573
+77181002,route de chelles,77181,Le Pin,Seine-et-Marne,Île-de-France,48.91061,2.62339
+77183001,boulevard georges bidault,77183,Croissy-Beaubourg,Seine-et-Marne,Île-de-France,48.828,2.644
+77184004,4 boulevard olof palme,77184,Émerainville,Seine-et-Marne,Île-de-France,48.809,2.615
+77186001,4 avenue pierre mendès france,77186,Noisiel,Seine-et-Marne,Île-de-France,48.841,2.62
+77186003,cours de l'arche guedon,77186,Noisiel,Seine-et-Marne,Île-de-France,48.851,2.631
+77190004,544 avenue andré ampère,77190,Dammarie-les-Lys,Seine-et-Marne,Île-de-France,48.509,2.604
+77190005,936 avenue du general leclerc,77190,Dammarie-les-Lys,Seine-et-Marne,Île-de-France,48.518812310533995,2.654305293398
+77190006,avenue des lys,77190,Dammarie-les-Lys,Seine-et-Marne,Île-de-France,48.518,2.628
+77195001,rn7 bp23,77190,Dammarie-les-Lys,Seine-et-Marne,Île-de-France,48.501,2.579
+77200001,11 rue de paris,77200,Torcy,Seine-et-Marne,Île-de-France,48.851,2.656
+77210001,73 avenue du président franklin roosevelt,77210,Avon,Seine-et-Marne,Île-de-France,48.416502022012,2.7233452057241996
+77210002,36 avenue du président franklin roosevelt,77210,Avon,Seine-et-Marne,Île-de-France,48.4149444259,2.71959190391
+77220004,boulevard victor hugo,77220,Gretz-Armainvilliers,Seine-et-Marne,Île-de-France,48.73913,2.72084
+77220005,rue de la liberation,77220,Tournan-en-Brie,Seine-et-Marne,Île-de-France,48.73996641,2.77658058
+77230001,route de paris,77230,Villeneuve-sous-Dammartin,Seine-et-Marne,Île-de-France,49.033,2.635
+77230004,route de vémars,77230,Moussy-le-Neuf,Seine-et-Marne,Île-de-France,49.06414392,2.5978657800000002
+77230006,rn 2 route de soissons,77230,Rouvres,Seine-et-Marne,Île-de-France,49.070142347799994,2.71523931506
+77230009,5 avenue des deux moulins,77230,Saint-Mard,Seine-et-Marne,Île-de-France,49.040705804682,2.6860146976508004
+77240002,rte nationale 6 centre cial boissénart,77240,Cesson,Seine-et-Marne,Île-de-France,48.586955815752,2.5964565667331
+77250002,2 avenue de la gare,77250,Moret-Loing-et-Orvanne,Seine-et-Marne,Île-de-France,48.375482965623,2.8113895223141
+77250004,11 rue de l'orvanne,77250,Moret-Loing-et-Orvanne,Seine-et-Marne,Île-de-France,48.369354347807004,2.8275599738244
+77250006,rd 606,77250,Moret-Loing-et-Orvanne,Seine-et-Marne,Île-de-France,48.364,2.853
+77250007,rd 606 - sens province paris,77250,Ecuelles,Seine-et-Marne,Île-de-France,48.363,2.857
+77260002,42 avenue franklin roosevelt,77260,La Ferté-sous-Jouarre,Seine-et-Marne,Île-de-France,48.94365,3.12094
+77260004,avenue de rebais,77260,La Ferté-sous-Jouarre,Seine-et-Marne,Île-de-France,48.937,3.135
+77260005,rn 3 zi du hainault.,77260,Sept-Sorts,Seine-et-Marne,Île-de-France,48.937,3.104
+77260007,aire d'ussy sur marne,77260,Ussy sur Marne,Seine-et-Marne,Île-de-France,48.971,3.065
+77260008,aire de changis-sur-marne a4,77260,La Ferté-sous-Jouarre,Seine-et-Marne,Île-de-France,48.964,3.053
+77260009,42 avenue franklin roosevelt,77260,La Ferte sous Jouarre,Seine-et-Marne,Île-de-France,48.943676592765,3.1212115997505
+77260010,aire de changis-sur-marne a4,77260,Ussy sur Marne,Seine-et-Marne,Île-de-France,48.96384,3.05281
+77260011,aire de ussy sur marne - autoroute a4,77260,Ussy sur Marne,Seine-et-Marne,Île-de-France,48.970497,3.0641059999999998
+77270001,avenue roger salengro,77270,Villeparisis,Seine-et-Marne,Île-de-France,48.95355016926,2.6068766680146
+77280001,rue du 8 mai 1945,77280,Othis,Seine-et-Marne,Île-de-France,49.073,2.671
+77290002,46 rue de villeparisis,77290,Mitry-Mory,Seine-et-Marne,Île-de-France,48.981,2.72
+77290003,aerodrome de mitry,77290,Compans,Seine-et-Marne,Île-de-France,48.995636952778,2.6491095556006
+77300001,44 boulevard du maréchal foch,77300,Fontainebleau,Seine-et-Marne,Île-de-France,48.417,2.708
+77300005,carrefour de la liberation,77300,Fontainebleau,Seine-et-Marne,Île-de-France,48.408,2.688
+77310006,rue des bordes,77310,Saint-Fargeau-Ponthierry,Seine-et-Marne,Île-de-France,48.53167,2.53511
+77310009,rn 7,77310,St Fargeau Ponthierry,Seine-et-Marne,Île-de-France,48.540827353740994,2.5220939606196
+77320002,avenue du général leclerc,77320,La Ferté-Gaucher,Seine-et-Marne,Île-de-France,48.78355,3.30653
+77320003,avenue de la maison-blanche,77320,La Ferté-Gaucher,Seine-et-Marne,Île-de-France,48.78261,3.29464
+77330002,2 avenue édouard gourdon,77330,Ozoir-la-Ferrière,Seine-et-Marne,Île-de-France,48.773,2.676
+77330003,84 rue françois de tessan,77330,Ozoir-la-Ferrière,Seine-et-Marne,Île-de-France,48.757,2.7
+77330004,rn4 lieudit l erable,77330,Ozoir-la-Ferrière,Seine-et-Marne,Île-de-France,48.766943966835996,2.6511255845880997
+77340003,route de paris,77340,Pontault-Combault,Seine-et-Marne,Île-de-France,48.7768,2.59631
+77340005,chemin départemental 51 - aire des bréchères,77340,Pontault-Combault,Seine-et-Marne,Île-de-France,48.79236,2.61848
+77340006,6 a 10 av charles rouxel,77340,Pontault-Combault,Seine-et-Marne,Île-de-France,48.79836,2.60505
+77340007,n104 la francilienne - aire pre de l'aulnes et de la gde mar,77340,Pontault Combault,Seine-et-Marne,Île-de-France,48.816,2.623
+77346001,rn 4 77346 pontault-combault,77340,Pontault-Combault,Seine-et-Marne,Île-de-France,48.763,2.647
+77350004,avenue jean monnet,77350,Boissise-la-Bertrand,Seine-et-Marne,Île-de-France,48.54,2.612
+77350005,av maurice dauvergne,77350,Le Mee sur Seine,Seine-et-Marne,Île-de-France,48.5430139632,2.63315746474
+77360001,place du général de gaulle,77360,Vaires-sur-Marne,Seine-et-Marne,Île-de-France,48.874,2.641
+77370001,avenue de verdun,77370,Nangis,Seine-et-Marne,Île-de-France,48.558094704,3.02534519556
+77370003,route de fontainebleau,77370,Nangis,Seine-et-Marne,Île-de-France,48.55,3.0
+77370005,"rn 19 , avenue du general de gau",77370,Nangis,Seine-et-Marne,Île-de-France,48.559,3.021
+77380001,rue charles fabry,77380,Combs-la-Ville,Seine-et-Marne,Île-de-France,48.649,2.563
+77390003,l oree de guignes,77390,Guignes,Seine-et-Marne,Île-de-France,48.63502,2.799
+77390005,rd 619,77390,Yèbles,Seine-et-Marne,Île-de-France,48.635962863929,2.7811196141947003
+77400007,avenue de la courtillière,77400,Saint-Thibault-des-Vignes,Seine-et-Marne,Île-de-France,48.869,2.675
+77400008,17 allée des rousselets zac des vallières,77400,Thorigny-sur-Marne,Seine-et-Marne,Île-de-France,48.896,2.716
+77400011,rn 34,77400,Lagny-sur-Marne,Seine-et-Marne,Île-de-France,48.877,2.729
+77400012,avenue st germain des noyers,77400,Saint-Thibault-des-Vignes,Seine-et-Marne,Île-de-France,48.865,2.676
+77400015,127 avenue du général leclerc,77400,Lagny sur Marne,Seine-et-Marne,Île-de-France,48.871,2.683
+77410001,chemin de compans,77410,Claye-Souilly,Seine-et-Marne,Île-de-France,48.953,2.666
+77410008,aire de villevaude autoroute a 104,77410,Claye-Souilly,Seine-et-Marne,Île-de-France,48.905,2.644
+77410009,autoroute n104 - aire de villevaudé,77410,Villevaude,Seine-et-Marne,Île-de-France,48.905201156416005,2.6412004299141003
+77430001,2 rue jean cocteau,77430,Champagne-sur-Seine,Seine-et-Marne,Île-de-France,48.39575,2.79896
+77440001,16 avenue du chemin noir,77440,Lizy-sur-Ourcq,Seine-et-Marne,Île-de-France,49.02663,3.02167
+77440002,"8, route des platanes",77440,Lizy-sur-Ourcq,Seine-et-Marne,Île-de-France,49.022,3.033
+77450005,"2, avenue charles de gaulle",77450,Esbly,Seine-et-Marne,Île-de-France,48.89966,2.8111
+77450006,02 avenue charles de gaulle,77450,Esbly,Seine-et-Marne,Île-de-France,48.895,2.81
+77450007,53 avenue joffre,77450,Esbly,Seine-et-Marne,Île-de-France,48.89668571755001,2.8152766036782
+77460001,115 avenue du maréchal leclerc,77460,Souppes-sur-Loing,Seine-et-Marne,Île-de-France,48.183,2.736
+77460005,val de loing,77460,Souppes-sur-Loing,Seine-et-Marne,Île-de-France,48.184,2.742
+77470001,86 avenue de verdun,77470,Trilport,Seine-et-Marne,Île-de-France,48.958,2.959
+77480001,rue de la sucrerie,77480,Mousseaux-lès-Bray,Seine-et-Marne,Île-de-France,48.414,3.239
+77480002,82 avenue de la liberation,77480,Bray-sur-Seine,Seine-et-Marne,Île-de-France,48.41421,3.24178
+77500001,avenue sylvie - zi belle-ile,77500,Chelles,Seine-et-Marne,Île-de-France,48.869,2.59
+77500004,route de montfermeil,77500,Chelles,Seine-et-Marne,Île-de-France,48.89216,2.58113
+77500008,20 avenue de claye,77500,Chelles,Seine-et-Marne,Île-de-France,48.882,2.6
+77500009,119 av du gendarme castermant,77500,Chelles,Seine-et-Marne,Île-de-France,48.8782,2.60782
+77508001,avenue du gendarme castermant,77500,Chelles,Seine-et-Marne,Île-de-France,48.878,2.609
+77508002,route nationale 3,77410,Claye-Souilly,Seine-et-Marne,Île-de-France,48.944,2.681
+77510001,zac pre ancel,77510,Rebais,Seine-et-Marne,Île-de-France,48.84615,3.23114
+77515001,parc d'activites pres des bourdeaux,77515,Faremoutiers,Seine-et-Marne,Île-de-France,48.8,2.986
+77520001,2 rue du montpensier,77520,Donnemarie-Dontilly,Seine-et-Marne,Île-de-France,48.476,3.14
+77540002,56 rue de vilpré,77540,Rozay-en-Brie,Seine-et-Marne,Île-de-France,48.677,2.969
+77550004,autoroute a5b - aire de galande-la-mare-laroche,77550,Reau,Seine-et-Marne,Île-de-France,48.6257047881,2.630067987
+77550005,autoroute a5a - aire du plessis-picard,77550,Reau,Seine-et-Marne,Île-de-France,48.62473,2.59212
+77570001,rue de nisceville,77570,Château-Landon,Seine-et-Marne,Île-de-France,48.14461,2.6942
+77580001,26 avenue charles de gaulle,77580,Crécy-la-Chapelle,Seine-et-Marne,Île-de-France,48.86,2.908
+77580002,avenue de villiers,77580,Crécy-la-Chapelle,Seine-et-Marne,Île-de-France,48.86,2.9
+77590001,rue gallieni,77590,Chartrettes,Seine-et-Marne,Île-de-France,48.48338,2.69601
+77600003,autoroute a4 - aire de bussy st georges,77600,Bussy-Saint-Georges,Seine-et-Marne,Île-de-France,48.829492394000006,2.74003485613
+77600004,autoroute a4 - aire de ferrières,77600,Bussy-Saint-Georges,Seine-et-Marne,Île-de-France,48.8291488545,2.74177363716
+77600005,autoroute a4,77600,Bussy-Saint-Georges,Seine-et-Marne,Île-de-France,48.828684113950004,2.7414659494568
+77610002,rue bertaux,77610,Fontenay-Trésigny,Seine-et-Marne,Île-de-France,48.71,2.86
+77610003,7 rue marguerite perey,77610,Fontenay-Trésigny,Seine-et-Marne,Île-de-France,48.698,2.889
+77620001,route de lorrez,77620,Égreville,Seine-et-Marne,Île-de-France,48.177,2.872
+77650001,rue de la croix brouillard,77650,Longueville,Seine-et-Marne,Île-de-France,48.521,3.233
+77680001,bld de la malibran,77680,Roissy-en-Brie,Seine-et-Marne,Île-de-France,48.796,2.643
+77680003,route d'ozoir,77680,Roissy-en-Brie,Seine-et-Marne,Île-de-France,48.78203,2.65712
+77680004,place robert schuman,77680,Roissy-en-Brie,Seine-et-Marne,Île-de-France,48.79,2.642
+77690001,22 rue du poirier de fromie,77690,Montigny sur Loing,Seine-et-Marne,Île-de-France,48.335633428284005,2.732221899292
+77700001,14 cours du danube,77700,Serris,Seine-et-Marne,Île-de-France,48.856,2.77677
+77700002,rue d'esbly,77700,Coupvray,Seine-et-Marne,Île-de-France,48.89666,2.80162
+77700003,1 avenue robert schuman,77700,Coupvray,Seine-et-Marne,Île-de-France,48.872,2.798
+77700004,17 place de l'europe,77700,Bailly-Romainvilliers,Seine-et-Marne,Île-de-France,48.85,2.819
+77710001,chemin du berceau,77710,Lorrez-le-Bocage-Préaux,Seine-et-Marne,Île-de-France,48.251,2.874
+77720002,les chaumes rn 19,77720,Mormant,Seine-et-Marne,Île-de-France,48.6084,2.89009
+77740002,62 route de paris / rn 34,77860,Saint-Germain-sur-Morin,Seine-et-Marne,Île-de-France,48.884,2.841
+77760001,rue de l'avenir,77760,La Chapelle-la-Reine,Seine-et-Marne,Île-de-France,48.324,2.577
+77760002,36 avenue de fontainebleau,77760,La Chapelle-la-Reine,Seine-et-Marne,Île-de-France,48.32,2.575
+77760003,aire de acheres la foret ouest a6,77760,Achères-la-Forêt,Seine-et-Marne,Île-de-France,48.3615736,2.5730022
+77780003,rn 7,77780,Bourron-Marlotte,Seine-et-Marne,Île-de-France,48.328230549341995,2.6873032082164
+77810001,chemin des prés,77810,Thomery,Seine-et-Marne,Île-de-France,48.409,2.792
+77820003,5 rue des grands champs,77820,Le Châtelet-en-Brie,Seine-et-Marne,Île-de-France,48.492,2.796
+77860001,61 avenue de l'ensoleillee,77860,Couilly-Pont-aux-Dames,Seine-et-Marne,Île-de-France,48.872599637190994,2.8718865694261
+77860002,94 avenue du marechal foch,77860,Quincy-Voisins,Seine-et-Marne,Île-de-France,48.897546218528,2.8644722322041
+77870001,44 route d'héricy,77870,Vulaines-sur-Seine,Seine-et-Marne,Île-de-France,48.434,2.753
+77880001,rn 7,77880,Grez-sur-Loing,Seine-et-Marne,Île-de-France,48.32226878311901,2.6862912924282
+77910001,17 avenue des américains,77910,Varreddes,Seine-et-Marne,Île-de-France,49.00096,2.92102
+77950001,rue du perré,77950,Rubelles,Seine-et-Marne,Île-de-France,48.5527528221,2.67091809609
+78000005,50 rue du pont colbert,78000,Versailles,Yvelines,Île-de-France,48.788,2.15
+78000008,"10 bis, rue des états-généraux",78000,Versailles,Yvelines,Île-de-France,48.8,2.133
+78000016,avenue clément ader,78000,Versailles,Yvelines,Île-de-France,48.791,2.114
+78000019,15 av du general pershing,78000,Versailles,Yvelines,Île-de-France,48.81774,2.15029
+78000020,71 rue des chantiers,78000,Versailles,Yvelines,Île-de-France,48.793,2.143
+78000021,60 av de la republique,78000,Versailles,Yvelines,Île-de-France,48.805,2.153
+78000022,15 rue du general pershing,78000,Versailles,Yvelines,Île-de-France,48.8032726,2.1260463052083
+78100002,122 rue du president roosevelt,78100,Saint-Germain-en-Laye,Yvelines,Île-de-France,48.89957,2.07564
+78110002,101 boulevard carnot,78110,Le Vésinet,Yvelines,Île-de-France,48.896,2.126
+78114001,rue vincent van gogh,78114,Magny-les-Hameaux,Yvelines,Île-de-France,48.725,2.083
+78120003,rn10 centre commercial du bel air,78120,Rambouillet,Yvelines,Île-de-France,48.625,1.83
+78120005,rue clos batant,78120,Rambouillet,Yvelines,Île-de-France,48.647,1.856
+78120012,rn 10 lieu dit l'abbe,78120,Sonchamp,Yvelines,Île-de-France,48.568,1.833
+78120013,1 rue auguste moutie,78120,Rambouillet,Yvelines,Île-de-France,48.644,1.84
+78121001,27 route départementale 307,78121,Crespières,Yvelines,Île-de-France,48.886551876734,1.9161588548828998
+78124001,"16, route de mante",78124,Mareil sur Mauldre,Yvelines,Île-de-France,48.8932373,1.8738757000000001
+78130011,29 av. paul raoult,78130,Les Mureaux,Yvelines,Île-de-France,48.9924,1.91384
+78140001,4 rue dewoitine,78140,Vélizy-Villacoublay,Yvelines,Île-de-France,48.783,2.215
+78140008,autoroute a86 - aire de velizy ouest,78140,Vélizy-Villacoublay,Yvelines,Île-de-France,48.78137,2.1726
+78140009,aire du val de grace,78140,Velizy-Villacoublay,Yvelines,Île-de-France,48.771104975942,2.2275512428149
+78140010,"27,rue louis breguet",78140,Velizy Villacoublay,Yvelines,Île-de-France,48.781,2.183
+78150005,"145, rue de versailles",78150,Le Chesnay,Yvelines,Île-de-France,48.827,2.128
+78150007,52 bld st antoine,78150,Le Chesnay,Yvelines,Île-de-France,48.81865,2.11953
+78150011,100 rue de versailles,78150,Le Chesnay,Yvelines,Île-de-France,48.824,2.128
+78150012,90/94 rue de versailles,78150,Le Chesnay,Yvelines,Île-de-France,48.82327,2.12772
+78150013,18 route de maule- d 307,78150,Rocquencourt,Yvelines,Île-de-France,48.836,2.098
+78150014,angle rn 307 et 317,78150,Rocquencourt,Yvelines,Île-de-France,48.837,2.105
+78160002,"120, route de versailles",78160,Marly-le-Roi,Yvelines,Île-de-France,48.872,2.105
+78170002,64 avenue lucien-rené duchesne,78170,La Celle-Saint-Cloud,Yvelines,Île-de-France,48.837,2.13
+78170006,24 avenue de la jonchère,78170,La Celle-Saint-Cloud,Yvelines,Île-de-France,48.857,2.145
+78175001,130 avenue du maréchal foch,78100,Saint-Germain-en-Laye,Yvelines,Île-de-France,48.903,2.084
+78180002,13 avenue ampère,78180,Montigny-le-Bretonneux,Yvelines,Île-de-France,48.798,2.048
+78180010,"69, boulevard vauban",78180,Montigny le Bretonneux,Yvelines,Île-de-France,48.781,2.04
+78180011,11 avenue des près,78180,Montigny le Bretonneux,Yvelines,Île-de-France,48.777,2.018
+78190008,route de trappes la boissiere rn 10,78190,Trappes,Yvelines,Île-de-France,48.77,1.984
+78190010,rn 10,78190,Trappes,Yvelines,Île-de-France,48.78205422,2.02329658
+78190011,1 avenue le verrier,78190,Trappes,Yvelines,Île-de-France,48.789,1.974
+78190012,1 av martin luther king,78190,Trappes,Yvelines,Île-de-France,48.773,1.991
+78200001,cd 110 - bp 1525,78200,Buchelay,Yvelines,Île-de-France,48.981,1.689
+78200003,4/6/8 rue de chantereine rn.13,78711,Mantes-la-Ville,Yvelines,Île-de-France,48.968,1.717
+78200008,16 rue jean hoët,78200,Mantes-la-Jolie,Yvelines,Île-de-France,48.997,1.711
+78200012,48 bd roger salengro,78711,Mantes-la-Ville,Yvelines,Île-de-France,48.983,1.698
+78210006,4 bld henri barbusse,78210,Saint-Cyr-L'école,Yvelines,Île-de-France,48.794,2.07
+78230002,46 avenue du président john f. kennedy,78230,Le Pecq,Yvelines,Île-de-France,48.881,2.097
+78230005,"angle rue de paris, quai maurice berteaux",78230,Le Pecq,Yvelines,Île-de-France,48.89601129,2.10679703
+78230006,56 avenue du président john fitzgerald kennedy,78230,Le Pecq,Yvelines,Île-de-France,48.879081594009,2.0969036115051
+78241001,rn 13,78240,Chambourcy,Yvelines,Île-de-France,48.91,2.033
+78250002,60 rue du vexin,78250,Hardricourt,Yvelines,Île-de-France,49.01009,1.89914
+78250003,rd28,78250,Tessancourt-sur-Aubette,Yvelines,Île-de-France,49.01261117295599,1.9092504310608
+78260001,3 avenue wolfgang amadeus mozart,78260,Acheres,Yvelines,Île-de-France,48.962,2.059
+78270002,rn 13 rte d'evreux,78270,Chaufour-lès-Bonnières,Yvelines,Île-de-France,49.02015,1.48938
+78280003,10 av de l'europe,78280,Guyancourt,Yvelines,Île-de-France,48.76991,2.06
+78280004,voie e8 les saules - avenue du 8 mai 1945,78280,Guyancourt,Yvelines,Île-de-France,48.785,2.06
+78290001,22 avenue du général de gaulle,78290,Croissy-sur-Seine,Yvelines,Île-de-France,48.88112,2.13987
+78290003,46 rue des ponts,78290,Croissy-sur-Seine,Yvelines,Île-de-France,48.875,2.14
+78300003,rue de la reine blanche,78955,Carrières-sous-Poissy,Yvelines,Île-de-France,48.942,2.029
+78300011,45 av de la maladrerie,78300,Poissy,Yvelines,Île-de-France,48.921,2.034
+78310001,rn10,78310,Coignières,Yvelines,Île-de-France,48.74514,1.92182
+78310006,avenue de langres,78310,Maurepas,Yvelines,Île-de-France,48.76206,1.9457
+78310007,222/224 route nationale 10,78310,Coignières,Yvelines,Île-de-France,48.743739662791,1.9152968184968
+78318001,avenue gutenberg,78310,Maurepas,Yvelines,Île-de-France,48.763834182146,1.9144763670718998
+78320001,3 rue de versailles,78320,Le Mesnil-Saint-Denis,Yvelines,Île-de-France,48.745,1.963
+78340004,avenue henri barbusse,78340,Les Clayes-sous-Bois,Yvelines,Île-de-France,48.829,1.985
+78340005,rue de la pointe de l'ange- rd,78340,Les Clayes-sous-Bois,Yvelines,Île-de-France,48.829,1.994
+78350002,autoroute a86,78350,Jouy-en-Josas,Yvelines,Île-de-France,48.780582855606006,2.1731592564109
+78360001,280 avenue gabriel péri,78360,Montesson,Yvelines,Île-de-France,48.93,2.145
+78360002,40 avenue gabriel péri,78360,Montesson,Yvelines,Île-de-France,48.90666,2.11625
+78360004,150 ave paul doumer,78360,Montesson,Yvelines,Île-de-France,48.909,2.159
+78370001,centre commerciale brigitte,78370,Plaisir,Yvelines,Île-de-France,48.827,1.948
+78370002,cd 161,78370,Plaisir,Yvelines,Île-de-France,48.829,1.958
+78380004,58 quai boissy d'anglas,78380,Bougival,Yvelines,Île-de-France,48.868490000799994,2.13183308716
+78380005,12 av jean moulin,78380,Bougival,Yvelines,Île-de-France,48.857,2.139
+78390003,11 avenue jean jaurès,78390,Bois-D'arcy,Yvelines,Île-de-France,48.8,2.038
+78390005,rn 12 route de dreux,78390,Bois-D'arcy,Yvelines,Île-de-France,48.798841163765,2.0034336831272
+78390006,41 bis rue paul vaillant couturi,78390,Bois-D'arcy,Yvelines,Île-de-France,48.80133,2.02637
+78400004,133 av du marechal foch,78400,Chatou,Yvelines,Île-de-France,48.8923050953,2.14405585465
+78410002,route renault,78410,Flins-sur-Seine,Yvelines,Île-de-France,48.96631638097001,1.8667049841285
+78410004,44 avenue de l union,78410,Aubergenville,Yvelines,Île-de-France,48.96,1.843
+78420004,104 rte de chatou,78420,Carrières-sur-Seine,Yvelines,Île-de-France,48.904,2.167
+78430005,9 ter quai conti rn 13,78430,Louveciennes,Yvelines,Île-de-France,48.875,2.119
+78440001,avenue de paris,78440,Gargenville,Yvelines,Île-de-France,48.99,1.835
+78450001,avenue nagelmackers.,78450,Villepreux,Yvelines,Île-de-France,48.819,2.004
+78470001,place de beauplan,78470,Saint-Rémy-lès-Chevreuse,Yvelines,Île-de-France,48.716,2.085
+78480001,rue des rosiers,78480,Verneuil-sur-Seine,Yvelines,Île-de-France,48.986,1.968
+78480004,7 bd georges clemenceau,78480,Verneuil-sur-Seine,Yvelines,Île-de-France,48.978,1.978
+78490002,av arbre quenée,78490,Méré,Yvelines,Île-de-France,48.801553211788004,1.8208143438025
+78500001,avenue robert shumann,78500,Sartrouville,Yvelines,Île-de-France,48.948,2.198
+78520002,route nationale 190,78520,Limay,Yvelines,Île-de-France,48.995,1.729
+78520004,60 av.de la paix,78520,Limay,Yvelines,Île-de-France,48.993,1.744
+78530001,avenue guyemer,78530,Buc,Yvelines,Île-de-France,48.765,2.127
+78540001,rue de la grosse pierre,78540,Vernouillet,Yvelines,Île-de-France,48.97561,1.99535
+78550004,rn12 e12-le val raymond,78550,Maulette,Yvelines,Île-de-France,48.792,1.633
+78550005,rn 12 - la prairie,78550,Maulette,Yvelines,Île-de-France,48.792,1.633
+78550006,route de gambais,78550,Maulette,Yvelines,Île-de-France,48.791,1.628
+78550007,lieu-dit la porte d'épernon,78550,Maulette,Yvelines,Île-de-France,48.78637,1.61421
+78550009,22 avenue gerard annel - d912,78550,Maulette,Yvelines,Île-de-France,48.793,1.62
+78560004,4 avenue simon vouet,78560,Le Port-Marly,Yvelines,Île-de-France,48.878,2.115
+78570001,cd55 route de poissy chanteloup,78570,Andrésy,Yvelines,Île-de-France,48.976,2.043
+78570004,rue de triel,78570,Andrésy,Yvelines,Île-de-France,48.97587,2.04812
+78580001,67 boulevard paul barre,78580,Maule,Yvelines,Île-de-France,48.912,1.852
+78590003,3 rue andré lebourblanc,78590,Noisy-le-Roi,Yvelines,Île-de-France,48.842,2.068
+78600002,18 avenue du général de gaulle,78600,Maisons-Laffitte,Yvelines,Île-de-France,48.94518,2.14253
+78600004,101 av.de poissy - rn.306,78600,Le Mesnil-le-Roi,Yvelines,Île-de-France,48.943,2.129
+78610002,57 rue de chartres,78610,Le Perray-en-Yvelines,Yvelines,Île-de-France,48.684,1.845
+78630004,116 avenue pasteur,78630,Orgeval,Yvelines,Île-de-France,48.925,1.976
+78630008,autoroute a13 - aire de morainvilliers sud,78630,Morainvilliers,Yvelines,Île-de-France,48.94070118,1.95295914
+78630009,autoroute a13 - aire de morainvilliers nord,78630,Morainvilliers,Yvelines,Île-de-France,48.940636390951,1.9546125318413001
+78630010,cc art de vivre - cd 113,78630,Orgeval,Yvelines,Île-de-France,48.92529,1.99188
+78630011,route de 40 sous - rn113,78630,Orgeval,Yvelines,Île-de-France,48.925090170131995,1.9930666183828
+78650002,rd.191,78650,Beynes,Yvelines,Île-de-France,48.852,1.878
+78660003,1 rue de boinville,78660,Ablis,Yvelines,Île-de-France,48.515054663739,1.8381448602102002
+78660004,rn 10 hameau de l'abbe,78660,Prunay-en-Yvelines,Yvelines,Île-de-France,48.57069,1.8318
+78680002,30 avenue du professeur emile sergent,78680,Épône,Yvelines,Île-de-France,48.979,1.955
+78680004,route de gargenville,78680,Epone,Yvelines,Île-de-France,48.961,1.812
+78690002,lieudit le village,78690,Les Essarts-le-Roi,Yvelines,Île-de-France,48.714,1.926
+78690003,37- rn 10,78690,Les Essarts le Roi,Yvelines,Île-de-France,48.717570147636,1.8828914484381998
+78700001,109 rue de l'ambassadeur,78700,Conflans-Sainte-Honorine,Yvelines,Île-de-France,49.011,2.097
+78700002,10 place de la liberté et du 8 mai 1945,78700,Conflans-Sainte-Honorine,Yvelines,Île-de-France,49.00644751,2.11854078
+78700003,188 avenue du maréchal foch,78700,Conflans-Sainte-Honorine,Yvelines,Île-de-France,49.006,2.113
+78700010,184 rn hautes coutures,78700,Conflans-Sainte-Honorine,Yvelines,Île-de-France,48.995,2.08
+78700011,route nationale 184,78700,Conflans-Sainte-Honorine,Yvelines,Île-de-France,48.995,2.081
+78702001,rue des belles hâtes,78700,Conflans-Sainte-Honorine,Yvelines,Île-de-France,49.009,2.086
+78710003,aire de rosny sud,78710,Rosny-sur-Seine,Yvelines,Île-de-France,48.9935279689,1.6249058189199999
+78710004,aire de rosny nord - autoroute a13 - sens paris,78710,Rosny sur Seine,Yvelines,Île-de-France,48.993,1.634
+78710005,a13 aire de rosny sud,78710,Rosny-sur-Seine,Yvelines,Île-de-France,48.9923,1.63231
+78730001,rue du docteur rémond,78730,Saint-Arnoult-en-Yvelines,Yvelines,Île-de-France,48.582252000000004,1.937076
+78760004,32 route du pontel,78760,Jouars-Pontchartrain,Yvelines,Île-de-France,48.80442,1.89592
+78770001,4 route de versailles,78770,Thoiry,Yvelines,Île-de-France,48.865757640000005,1.79757381
+78790001,10 place de la mairie,78790,Septeuil,Yvelines,Île-de-France,48.892164616577,1.6783590679534999
+78800001,108 boulevard émile zola,78800,Houilles,Yvelines,Île-de-France,48.924,2.205
+78800004,138 boulevard jean jaures,78800,Houilles,Yvelines,Île-de-France,48.922,2.202
+78800006,136 rue henri barbusse,78800,Houilles,Yvelines,Île-de-France,48.932,2.182
+78820001,"233, avenue de paris",78820,Juziers,Yvelines,Île-de-France,48.98981,1.83454
+78840003,2 rue charles de gaulle,78840,Freneuse,Yvelines,Île-de-France,49.039,1.592
+78840004,rue des voies vaches,78840,Freneuse,Yvelines,Île-de-France,49.037,1.593
+78885001,place joel le theule,78180,Montigny-le-Bretonneux,Yvelines,Île-de-France,48.786,2.043
+78890004,29 route de la gare,78890,Garancières,Yvelines,Île-de-France,48.811728101522,1.7636808872304999
+78910001,route de béhoust,78910,Orgerus,Yvelines,Île-de-France,48.834,1.708
+78920004,chemin departemental 43,78920,Ecquevilly,Yvelines,Île-de-France,48.971,1.919
+78940001,route nationale,78940,La Queue-les-Yvelines,Yvelines,Île-de-France,48.802,1.781
+78955001,"55, route d'andresy",78955,Carrières-sous-Poissy,Yvelines,Île-de-France,48.956,2.042
+78960001,rue aux fleurs,78960,Voisins-le-Bretonneux,Yvelines,Île-de-France,48.756,2.055
+78960004,cd 36,78960,Voisins le Bretonneux,Yvelines,Île-de-France,48.762342564781996,2.042312091291
+78970001,6 avenue de la gare,78970,Mézières-sur-Seine,Yvelines,Île-de-France,48.96039,1.80785
+78980001,31 rue rené dhal,78980,Bréval,Yvelines,Île-de-France,48.947,1.526
+78980002,39 route de mantes,78980,Longnes,Yvelines,Île-de-France,48.923,1.591
+78990004,rue du fond des roches,78990,Élancourt,Yvelines,Île-de-France,48.776,1.954
+78990010,rond-point de l'hotel de ville,78990,Elancourt,Yvelines,Île-de-France,48.768,1.952
+90160002,route nationale 188 déviée,91160,Champlan,Essonne,Île-de-France,48.709386808774,2.2621625463069
+91000001,rue de villeroy,91070,Bondoufle,Essonne,Île-de-France,48.613,2.377
+91000004,bd des champs elysees,91000,Évry,Essonne,Île-de-France,48.639,2.427
+91000007,boulevard des coquibus,91000,Evry,Essonne,Île-de-France,48.624,2.441
+91000008,boulevard des coquibus,91000,Évry,Essonne,Île-de-France,48.624,2.441
+91080001,avenue de l'orme à martin,91080,Courcouronnes,Essonne,Île-de-France,48.631,2.417
+91090001,rue de corbeil,91090,Lisses,Essonne,Île-de-France,48.59986,2.4344
+91100014,autoroute a6 - aire des lisses,91100,Corbeil Essonnes,Essonne,Île-de-France,48.593070352800005,2.44276477061
+91100015,autoroute a6 - aire de villabé,91100,Villabe,Essonne,Île-de-France,48.594,2.444
+91100016,rue sigmund freud,91100,Corbeil Essonnes,Essonne,Île-de-France,48.608,2.449
+91100017,rn 104 aire des chevreaux,91250,Saint-Germain-lès-Corbeil,Essonne,Île-de-France,48.63,2.487
+91100019,46 avenue du 8 mai 1945,91100,Corbeil Essonnes,Essonne,Île-de-France,48.611136939679,2.4521181995589
+91130003,38 rue pierre brossolette,91130,Ris-Orangis,Essonne,Île-de-France,48.648,2.408
+91130006,75 rue de la liberation,91130,Ris Orangis,Essonne,Île-de-France,48.64729,2.41893
+91130007,rn7 rue albert remy,91130,Ris-Orangis,Essonne,Île-de-France,48.657,2.407
+91130008,rn7 domaine de l'aunette,91130,Ris-Orangis,Essonne,Île-de-France,48.648,2.417
+91140002,chemin de briis cd 59,91140,Villebon-sur-Yvette,Essonne,Île-de-France,48.7046,2.25396
+91140003,"réservée aux membres costco, 3 avenue de bréhat",91140,Villebon-sur-Yvette,Essonne,Île-de-France,48.687,2.223
+91150005,av de bonnevaux,91150,Étampes,Essonne,Île-de-France,48.429,2.16
+91150007,rn20 - ville sauvage,91150,Étampes,Essonne,Île-de-France,48.40881,2.12543
+91150008,rue des lys,91150,Étampes,Essonne,Île-de-France,48.441,2.138
+91150010,32 boulevard saint-michel,91150,Étampes,Essonne,Île-de-France,48.44176,2.17016
+91150012,rn 191 / av coquerive,91150,Etampes,Essonne,Île-de-France,48.434,2.172
+91150013,94 bld st michel,91150,Etampes,Essonne,Île-de-France,48.452,2.173
+91160006,avenue de la division leclerc n20,91160,Ballainvilliers,Essonne,Île-de-France,48.669209341122,2.2798807196018998
+91160009,31 route d'orleans,91160,Ballainvilliers,Essonne,Île-de-France,48.677,2.282
+91160010,1 rue du pont neuf,91160,Saulx-les-Chartreux,Essonne,Île-de-France,48.694,2.282
+91170003,route de fleury,91170,Viry-Châtillon,Essonne,Île-de-France,48.662,2.375
+91170006,rn 445 / 29 route de fleury,91170,Viry-Châtillon,Essonne,Île-de-France,48.65277,2.36915
+91170007,158 rn 7,91170,Viry-Châtillon,Essonne,Île-de-France,48.684,2.376
+91180001,rn 20,91180,Saint-Germain-lès-Arpajon,Essonne,Île-de-France,48.603,2.248
+91180002,rue de chanteloup,91180,Saint-Germain-lès-Arpajon,Essonne,Île-de-France,48.596,2.254
+91180007,rn 20,91180,Saint-Germain-lès-Arpajon,Essonne,Île-de-France,48.603,2.249
+91190001,chevry belleville,91190,Gif-sur-Yvette,Essonne,Île-de-France,48.694,2.121
+91190009,2 route des gometz,91190,Gif-sur-Yvette,Essonne,Île-de-France,48.685,2.124
+91190011,155 avenue du general leclerc,91190,Gif-sur-Yvette,Essonne,Île-de-France,48.70346,2.10705
+91190012,27 av du general leclerc,91190,Gif-sur-Yvette,Essonne,Île-de-France,48.703,2.128
+91200001,180 route nationale 7,91200,Athis-Mons,Essonne,Île-de-France,48.712,2.371
+91200006,38 av de morangis,91200,Athis Mons,Essonne,Île-de-France,48.706,2.369
+91210007,70 bld henri barbusse,91210,Draveil,Essonne,Île-de-France,48.676,2.411
+91210008,108 av du general de gaulle,91210,Draveil,Essonne,Île-de-France,48.68696,2.40085
+91210009,6 avenue de l'europe,91210,Draveil,Essonne,Île-de-France,48.681401572312,2.4293925471744
+91220001,ccial maison neuve,91220,Brétigny-sur-Orge,Essonne,Île-de-France,48.587,2.304
+91220005,chemin departemental 19,91220,Le Plessis-Pâté,Essonne,Île-de-France,48.608,2.331
+91230001,105 avenue de la république,91230,Montgeron,Essonne,Île-de-France,48.703,2.463
+91230003,72 avenue jean jaurès,91230,Montgeron,Essonne,Île-de-France,48.716,2.446
+91230004,110 avenue de la république,91230,Montgeron,Essonne,Île-de-France,48.70418,2.46037
+91230005,rn 6,91230,Montgeron,Essonne,Île-de-France,48.691,2.454
+91240001,domaine du bois des roches,91240,Saint-Michel-sur-Orge,Essonne,Île-de-France,48.639,2.32
+91240003,route de la boele,91240,Saint-Michel-sur-Orge,Essonne,Île-de-France,48.63,2.297
+91250001,avenue charles de gaulle,91250,Saint-Germain-lès-Corbeil,Essonne,Île-de-France,48.619,2.494
+91250004,183 route de melun,91250,Saintry-sur-Seine,Essonne,Île-de-France,48.594,2.503
+91250010,7 avenue du general leclerc,91250,Saint-Germain-lès-Corbeil,Essonne,Île-de-France,48.62613,2.49147
+91250011,lieudit butte de gravois rn104,91250,Saint-Germain-lès-Corbeil,Essonne,Île-de-France,48.631,2.486
+91260001,8 rue de la longueraie,91270,Vigneux-sur-Seine,Essonne,Île-de-France,48.72,2.442
+91260002,avenue camille desmoulins,91260,Juvisy-sur-Orge,Essonne,Île-de-France,48.695,2.356
+91270002,5 avenue henri barbusse,91270,Vigneux-sur-Seine,Essonne,Île-de-France,48.697,2.415
+91270003,54 avenue henri barbusse,91270,Vigneux-sur-Seine,Essonne,Île-de-France,48.7,2.42
+91280001,rue marguerite yourcenar,91280,Saint-Pierre-du-Perray,Essonne,Île-de-France,48.614,2.506
+91290005,4 route de marolles,91290,La Norville,Essonne,Île-de-France,48.578,2.258
+91290006,route de limours,91290,Arpajon,Essonne,Île-de-France,48.6,2.24
+91290007,25 route d'orleans rn 20,91180,Saint-Germain-lès-Arpajon,Essonne,Île-de-France,48.603,2.247
+91300006,route de palaiseau,91300,Massy,Essonne,Île-de-France,48.729,2.245
+91300007,avenue de l'europe,91300,Massy,Essonne,Île-de-France,48.726,2.28
+91300018,180 rue de paris,91300,Massy,Essonne,Île-de-France,48.722,2.262
+91300019,190 avenue du maréchal leclerc,91300,Massy,Essonne,Île-de-France,48.739,2.302
+91300020,40 route de palaiseau,91300,Massy,Essonne,Île-de-France,48.72852,2.24518
+91300022,voie express cd 117,91300,Massy,Essonne,Île-de-France,48.731,2.242
+91310002,chemin des échassons,91310,Longpont-sur-Orge,Essonne,Île-de-France,48.653,2.274
+91310004,"3, rue du 8 mai 1945",91310,Leuville-sur-Orge,Essonne,Île-de-France,48.623,2.267
+91350002,17 route de corbeil,91350,Grigny,Essonne,Île-de-France,48.657,2.384
+91360003,route de corbeil,91360,Épinay-sur-Orge,Essonne,Île-de-France,48.66764153721,2.334365708351
+91360004,liaison cd 25 a cd 17,91360,Épinay-sur-Orge,Essonne,Île-de-France,48.668495636387995,2.3385703993892997
+91370001,bd du marechal juin,91370,Verrières-le-Buisson,Essonne,Île-de-France,48.753,2.273
+91380004,7 avenue pierre brossolette,91380,Chilly-Mazarin,Essonne,Île-de-France,48.701,2.319
+91380007,118 rue de la passerelle,91380,Chilly-Mazarin,Essonne,Île-de-France,48.699,2.321
+91380008,route de longjumeau,91380,Chilly-Mazarin,Essonne,Île-de-France,48.71,2.298
+91380009,10 rue pierre brossolette,91380,Chilly-Mazarin,Essonne,Île-de-France,48.699,2.303
+91380010,32 av. pierre brossolette,91380,Chilly-Mazarin,Essonne,Île-de-France,48.70198,2.32019
+91380011,rue de longjumeau rue ampere,91380,Chilly-Mazarin,Essonne,Île-de-France,48.713,2.298
+91380012,38 route de longjumeau,91380,Chilly-Mazarin,Essonne,Île-de-France,48.705629088765,2.2962892758557
+91390003,intermarche flotin,91390,Morsang-sur-Orge,Essonne,Île-de-France,48.662381537766,2.3592727991082003
+91400005,4 espace trois quartiers,91400,Gometz-la-Ville,Essonne,Île-de-France,48.67,2.12
+91400008,17 rue archange,91400,Orsay,Essonne,Île-de-France,48.69762,2.18628
+91400010,route de paris rn 118,91400,Saclay,Essonne,Île-de-France,48.733612697635,2.1747967838002
+91400011,autoroute f 18 - rn 118,91400,Saclay,Essonne,Île-de-France,48.723,2.168
+91410001,101 avenue de paris,91410,Dourdan,Essonne,Île-de-France,48.531,2.029
+91410003,48 rue raymond laubier,91410,Dourdan,Essonne,Île-de-France,48.528,2.023
+91410004,69 avenue charles de gaulle,91420,Morangis,Essonne,Île-de-France,48.706,2.343
+91420002,rue de savigny,91420,Morangis,Essonne,Île-de-France,48.693,2.337
+91420004,avenue blaise pascal,91420,Morangis,Essonne,Île-de-France,48.697,2.333
+91430003,route nationale 444,91430,Igny,Essonne,Île-de-France,48.735,2.225
+91450001,rond point des coudray,91450,Étiolles,Essonne,Île-de-France,48.639,2.458
+91460008,zac de la croix de bellejame,91460,Marcoussis,Essonne,Île-de-France,48.64065,2.24877
+91460013,voie exp f6 lieudit beauvert,91460,Marcoussis,Essonne,Île-de-France,48.648,2.189
+91460014,f6 voie express fonds pres,91460,Marcoussis,Essonne,Île-de-France,48.638,2.202
+91470007,20 rue de chartres,91470,Limours,Essonne,Île-de-France,48.6416709,2.0651417000000003
+91480001,61 rue de brunoy,91480,Quincy-sous-Sénart,Essonne,Île-de-France,48.678,2.529
+91490003,grande rue,91490,Oncy-sur-École,Essonne,Île-de-France,48.39317,2.46614
+91490004,za le chenet,91490,Milly-la-Forêt,Essonne,Île-de-France,48.399,2.437
+91490005,av de ganay - rn 148,91490,Milly-la-Forêt,Essonne,Île-de-France,48.4073707208,2.46799022236
+91510002,10 rue jacques cartier,91510,Lardy,Essonne,Île-de-France,48.531,2.294
+91520001,22 avenue d'arpajon,91520,Égly,Essonne,Île-de-France,48.582,2.231
+91540003,17 rue faraday,91540,Mennecy,Essonne,Île-de-France,48.565,2.447
+91540004,rue jean cocteau,91540,Mennecy,Essonne,Île-de-France,48.566388654797,2.4507039061738
+91540005,"n191, boulevard charles de gaulle",91540,Mennecy,Essonne,Île-de-France,48.566,2.442
+91570003,route nationale 118,91570,Bièvres,Essonne,Île-de-France,48.747887484016,2.1970602821709
+91570004,rn118,91570,Bièvres,Essonne,Île-de-France,48.74637,2.19666
+91580001,8 avenue d'orléans,91580,Etréchy,Essonne,Île-de-France,48.486,2.19
+91590001,26 rue eugène millet,91590,La Ferté-Alais,Essonne,Île-de-France,48.485,2.345
+91590009,rn191 - route de corbeil,91590,Baulne,Essonne,Île-de-France,48.507,2.37442
+91600005,35/37 rue henri dunant,91600,Savigny-sur-Orge,Essonne,Île-de-France,48.67986,2.34208
+91610001,z.a.c. de l'aunaye,91610,Ballancourt-sur-Essonne,Essonne,Île-de-France,48.531,2.388
+91620001,5 rue de la croix saint jacques,91620,La Ville-du-Bois,Essonne,Île-de-France,48.67,2.277
+91630001,rue de la gare,91630,Marolles-en-Hurepoix,Essonne,Île-de-France,48.56445,2.29216
+91630006,rn 20,91630,Avrainville,Essonne,Île-de-France,48.562,2.247
+91630007,rn 20 direction paris,91630,Avrainville,Essonne,Île-de-France,48.562,2.227
+91640003,autoroute a10 - aire de limours briis sous forges,91640,Briis-sous-Forges,Essonne,Île-de-France,48.635,2.148
+91640004,a10 aire de limours janvry,91640,Janvry,Essonne,Île-de-France,48.636809050000004,2.1475289600000003
+91650001,le buisson rondeau,91650,Breuillet,Essonne,Île-de-France,48.569,2.163
+91660001,route d'angerville,91660,Méréville,Essonne,Île-de-France,48.313,2.076
+91670001,14 rue du pont lafleur,91670,Angerville,Essonne,Île-de-France,48.32,2.003
+91700003,139 route de corbeil,91700,Sainte-Geneviève-des-Bois,Essonne,Île-de-France,48.639,2.334
+91700005,rn 104 zi des ciroliers,91700,Fleury Merogis,Essonne,Île-de-France,48.624,2.37
+91700006,70 route de corbeil,91700,Sainte-Geneviève-des-Bois,Essonne,Île-de-France,48.642180599999996,2.3286010999999998
+91710001,"8, rue berthollet",91710,Vert-le-Petit,Essonne,Île-de-France,48.53969,2.36564
+91760001,route de la ferté-alais,91760,Itteville,Essonne,Île-de-France,48.50264,2.34774
+91800005,centre commercial val d'yerres 2,91800,Boussy-Saint-Antoine,Essonne,Île-de-France,48.683,2.534
+91800008,rue philisbourg,91800,Brunoy,Essonne,Île-de-France,48.698,2.507
+91800009,5 bd charles de gaulle,91800,Brunoy,Essonne,Île-de-France,48.695,2.505
+91814001,route de villoison,91100,Villabe,Essonne,Île-de-France,48.584,2.444
+91940003,35 route de chartres,91940,Gometz-le-Châtel,Essonne,Île-de-France,48.6818,2.1444
+91940007,avenue des cévennes,91940,Les Ulis,Essonne,Île-de-France,48.676,2.176
+91940008,1 av de l oceanie zac courtaboeu,91940,Les Ulis,Essonne,Île-de-France,48.678,2.199
+91940009,4 av de l'oceanie - zac courtab,91940,Les Ulis,Essonne,Île-de-France,48.678,2.199
+91942001,centre commercial ulis 2,91940,Les Ulis,Essonne,Île-de-France,48.676,2.171
+92000011,36 route des fusillés de la résistance 1940-1944,92000,Nanterre,Hauts-de-Seine,Île-de-France,48.88241,2.2229200000001
+92000015,93 avenue vladimir illitch lénine,92000,Nanterre,Hauts-de-Seine,Île-de-France,48.888,2.188
+92000017,84-90 avenue lenine,92000,Nanterre,Hauts-de-Seine,Île-de-France,48.888494749100005,2.19358
+92000018,47 bld du havre,92000,Nanterre,Hauts-de-Seine,Île-de-France,48.919,2.223
+92000019,"77, avenue lenine",92000,Nanterre,Hauts-de-Seine,Île-de-France,48.887970599999996,2.18965697632
+92000020,141 rue pv couturier,92000,Nanterre,Hauts-de-Seine,Île-de-France,48.88327,2.2039052
+92000021,182 rue p.vaillant couturier,92000,Nanterre,Hauts-de-Seine,Île-de-France,48.88063,2.20622
+92000024,265 av georges clemenceau,92000,Nanterre,Hauts-de-Seine,Île-de-France,48.886,2.222
+92100010,16 avenue andré morizet,92100,Boulogne-Billancourt,Hauts-de-Seine,Île-de-France,48.83468,2.24193
+92100014,29-31 avenue morizet,92100,Boulogne Billancourt,Hauts-de-Seine,Île-de-France,48.83585,2.23898
+92100015,108 av.a morizet,92100,Boulogne Billancourt,Hauts-de-Seine,Île-de-France,48.84,2.231
+92100016,263 boulevard jean jaures,92100,Boulogne-Billancourt,Hauts-de-Seine,Île-de-France,48.826,2.248
+92110010,143/145 bld jean jaures,92110,Clichy,Hauts-de-Seine,Île-de-France,48.907,2.301
+92110011,10 bld du general leclerc,92110,Clichy,Hauts-de-Seine,Île-de-France,48.9,2.317
+92120002,91 avenue aristide briand,92120,Montrouge,Hauts-de-Seine,Île-de-France,48.81468,2.32592
+92120004,70-74 av aristide briand,92120,Montrouge,Hauts-de-Seine,Île-de-France,48.813,2.357
+92130005,115 avenue du général de gaulle,92130,Issy-les-Moulineaux,Hauts-de-Seine,Île-de-France,48.818,2.277
+92130006,18-22 bld des freres voisin,92130,Issy-les-Moulineaux,Hauts-de-Seine,Île-de-France,48.827841660000004,2.2713364300000003
+92140005,448 av general de gaulle,92140,Clamart,Hauts-de-Seine,Île-de-France,48.78,2.238
+92140009,5 rue de vanves,92140,Clamart,Hauts-de-Seine,Île-de-France,48.812,2.271
+92140014,320 av du general de gaulle,92140,Clamart,Hauts-de-Seine,Île-de-France,48.785,2.251
+92140015,6 avenue claude trebignaud,92140,Clamart,Hauts-de-Seine,Île-de-France,48.793,2.253
+92140016,1 avenue claude trebignaud,92140,Clamart,Hauts-de-Seine,Île-de-France,48.79355,2.25241
+92140017,1 av. claude trebignaud,92140,Clamart,Hauts-de-Seine,Île-de-France,48.8005566,2.2630660000000002
+92150006,131 boulevard henri sellier,92150,Suresnes,Hauts-de-Seine,Île-de-France,48.865,2.219
+92150008,138 boulevard henri sellier,92150,Suresnes,Hauts-de-Seine,Île-de-France,48.862,2.216
+92160001,134 rue pascal,92160,Antony,Hauts-de-Seine,Île-de-France,48.74,2.315
+92160003,18 rue jean moulin,92160,Antony,Hauts-de-Seine,Île-de-France,48.753,2.308
+92160006,100 av du president kennedy,92160,Antony,Hauts-de-Seine,Île-de-France,48.738,2.295
+92170002,59 rue jean bleuzen,92170,Vanves,Hauts-de-Seine,Île-de-France,48.82274,2.29497
+92190003,97 ter route du pave des gardes,92190,Meudon,Hauts-de-Seine,Île-de-France,48.813200300000005,2.21690094
+92200005,rue achile peretti - total,92200,Neuilly-sur-Seine,Hauts-de-Seine,Île-de-France,48.8836134,2.2725178
+92200006,31 avenue du roule,92200,Neuilly,Hauts-de-Seine,Île-de-France,48.882,2.28
+92210003,24 rue pasteur,92210,Saint-Cloud,Hauts-de-Seine,Île-de-France,48.842,2.202
+92210008,35 boulevard de la république,92210,Saint-Cloud,Hauts-de-Seine,Île-de-France,48.845,2.21
+92210009,65 quai marcel dassault,92210,Saint-Cloud,Hauts-de-Seine,Île-de-France,48.855,2.223
+92220009,12 avenue du général de gaulle,92220,Bagneux,Hauts-de-Seine,Île-de-France,48.797,2.298
+92220010,98t av de bourg la reine,92220,Bagneux,Hauts-de-Seine,Île-de-France,48.785,2.305
+92230003,21 rue louis calmel,92230,Gennevilliers,Hauts-de-Seine,Île-de-France,48.926,2.292
+92230008,192 avenue louis roche,92230,Gennevilliers,Hauts-de-Seine,Île-de-France,48.9327,2.3044
+92230009,111 avenue gabriel péri,92230,Gennevilliers,Hauts-de-Seine,Île-de-France,48.921,2.295
+92230010,113 av laurent cely,92230,Gennevilliers,Hauts-de-Seine,Île-de-France,48.92082,2.30617
+92230011,37 avenue lucien lanternier,92230,Gennevilliers,Hauts-de-Seine,Île-de-France,48.932,2.29
+92240001,22 boulevard gabriel péri,92240,Malakoff,Hauts-de-Seine,Île-de-France,48.81915,2.29591
+92240010,76 avenue pierre larousse,92240,Malakoff,Hauts-de-Seine,Île-de-France,48.82,2.305
+92242003,12 avenue pierre brossolette,92242,Malakoff,Hauts-de-Seine,Île-de-France,48.821,2.312
+92250002,13 avenue de verdun-1916,92250,La Garenne-Colombes,Hauts-de-Seine,Île-de-France,48.906,2.236
+92260001,21 avenue jeanne et maurice dolivet,92260,Fontenay-aux-Roses,Hauts-de-Seine,Île-de-France,48.793,2.29
+92290007,151 avenue division leclerc,92290,Châtenay-Malabry,Hauts-de-Seine,Île-de-France,48.763,2.278
+92300004,2/10 bld fort de vaux,75017,Paris,Paris,Île-de-France,48.893,2.302
+92300013,162 rue victor hugo,92300,Levallois-Perret,Hauts-de-Seine,Île-de-France,48.899,2.294
+92300014,"106, rue du président wilson",92300,Levallois-Perret,Hauts-de-Seine,Île-de-France,48.896,2.287
+92310002,av de l europe,92310,Sevres,Hauts-de-Seine,Île-de-France,48.824,2.212
+92320005,40 rue de fontenay,92320,Chatillon,Hauts-de-Seine,Île-de-France,48.797,2.286
+92330002,77 avenue ãdouard depreux,92330,Sceaux,Hauts-de-Seine,Île-de-France,48.774,2.28
+92340002,18 bd marechal joffre,92340,Bourg-la-Reine,Hauts-de-Seine,Île-de-France,48.786,2.317
+92360005,"38, avenue du delattre de tassigny",92360,Meudon-la-Forêt,Hauts-de-Seine,Île-de-France,48.7848266,2.2263927
+92370002,484 rue roger salengro,92370,Chaville,Hauts-de-Seine,Île-de-France,48.8167,2.19491
+92380007,173 179 rue de la porte jaune,92380,Garches,Hauts-de-Seine,Île-de-France,48.851,2.204
+92390001,37 avenue de verdun,92390,Villeneuve-la-Garenne,Hauts-de-Seine,Île-de-France,48.935,2.331
+92400013,82 quai du maréchal joffre,92400,Courbevoie,Hauts-de-Seine,Île-de-France,48.902,2.278
+92400016,41 quai paul doumer,92400,Courbevoie,Hauts-de-Seine,Île-de-France,48.894024742099994,2.26003452849
+92400017,72 bld de verdun,92400,Courbevoie,Hauts-de-Seine,Île-de-France,48.902,2.259
+92400018,53-55 rue de l'alma,92400,Courbevoie,Hauts-de-Seine,Île-de-France,48.89685,2.25419
+92400019,133 boulevard de verdun,92400,Courbevoie,Hauts-de-Seine,Île-de-France,48.905,2.256
+92400020,43-47 boulevard de verdun,92400,Courbevoie,Hauts-de-Seine,Île-de-France,48.9,2.261
+92410001,191 rue de versailles,92410,Ville-D'avray,Hauts-de-Seine,Île-de-France,48.819,2.168
+92420002,18 boulevard de la république,92420,Vaucresson,Hauts-de-Seine,Île-de-France,48.839,2.166
+92420003,bd republique zac pepiniere,92420,Vaucresson,Hauts-de-Seine,Île-de-France,48.838,2.166
+92500012,119 avenue du pdt pompidou,92500,Rueil-Malmaison,Hauts-de-Seine,Île-de-France,48.86843,2.19878
+92500013,32-40 avenue du 18 juin 1940,92500,Rueil-Malmaison,Hauts-de-Seine,Île-de-France,48.8682,2.19093
+92500015,246 route de l'empereur,92500,Rueil Malmaison,Hauts-de-Seine,Île-de-France,48.862,2.184
+92500017,155 avenue paul doumer,92500,Rueil-Malmaison,Hauts-de-Seine,Île-de-France,48.8706222,2.1804532
+92600007,96 avenue d'argenteuil,92600,Asnières-sur-Seine,Hauts-de-Seine,Île-de-France,48.91459,2.28328
+92600009,272 avenue des gresillons,92600,Asnières-sur-Seine,Hauts-de-Seine,Île-de-France,48.92,2.313
+92700019,14 bd edgar quinet,92700,Colombes,Hauts-de-Seine,Île-de-France,48.924,2.249
+92700020,autoroute a 86 - la prairie,92700,Colombes,Hauts-de-Seine,Île-de-France,48.925,2.234
+92700023,64 bd charles de gaulle,92700,Colombes,Hauts-de-Seine,Île-de-France,48.911,2.235
+92700024,44-50 bd de valmy,92700,Colombes,Hauts-de-Seine,Île-de-France,48.926,2.253
+92700025,16-22 avenue de stalingrad,92700,Colombes,Hauts-de-Seine,Île-de-France,48.928,2.271
+92800007,quai de dion-bouton,92800,Puteaux,Hauts-de-Seine,Île-de-France,48.88,2.245
+92800008,42 quai de dion bouton,92800,Puteaux,Hauts-de-Seine,Île-de-France,48.883,2.248
+93000001,300 avenue paul vaillant-couturier,93000,Bobigny,Seine-Saint-Denis,Île-de-France,48.9065,2.45646
+93000010,54 avenue louis aragon,93000,Bobigny,Seine-Saint-Denis,Île-de-France,48.914,2.441
+93000011,19 av jean jaures,93000,Bobigny,Seine-Saint-Denis,Île-de-France,48.906,2.445
+93100011,16 boulevard aristide briand,93100,Montreuil,Seine-Saint-Denis,Île-de-France,48.869,2.448
+93100014,48-54 boulevard theophile sueur,93100,Montreuil,Seine-Saint-Denis,Île-de-France,48.86885,2.47055
+93100015,86 rue de paris,93100,Montreuil,Seine-Saint-Denis,Île-de-France,48.857,2.43
+93100017,"151, rue nouvelle france",93100,Montreuil,Seine-Saint-Denis,Île-de-France,48.863140989324,2.4640536046628
+93110005,12/14 bd.gabriel peri - total,93110,Rosny-sous-Bois,Seine-Saint-Denis,Île-de-France,48.878,2.482
+93120004,autoroute a1 - aire de la courneuve est,93120,La Courneuve,Seine-Saint-Denis,Île-de-France,48.933921662064,2.3899556342881003
+93120005,autoroute a1 - aire de la courneuve ouest - sens lille/paris,93120,La Courneuve,Seine-Saint-Denis,Île-de-France,48.935,2.394
+93130006,140 rue de paris,93130,Noisy-le-Sec,Seine-Saint-Denis,Île-de-France,48.902,2.459
+93130007,rue de la chasse,93130,Noisy-le-Sec,Seine-Saint-Denis,Île-de-France,48.88,2.457
+93130009,20-30 rue jules auffret,93130,Noisy-le-Sec,Seine-Saint-Denis,Île-de-France,48.888,2.455
+93130011,107 rue de brement,93130,Noisy-le-Sec,Seine-Saint-Denis,Île-de-France,48.888,2.46
+93140002,108 avenue gallieni,93140,Bondy,Seine-Saint-Denis,Île-de-France,48.906,2.481
+93140003,205 avenue gallieni,93140,Bondy,Seine-Saint-Denis,Île-de-France,48.907,2.489
+93140004,175 av mal gallieni,93140,Bondy,Seine-Saint-Denis,Île-de-France,48.907,2.485
+93150007,2 av du 8 mai 1945,93150,Le Blanc-Mesnil,Seine-Saint-Denis,Île-de-France,48.948,2.438
+93150008,1 avenue armand esders,93150,Le Blanc-Mesnil,Seine-Saint-Denis,Île-de-France,48.948,2.467
+93150009,140 avenue de la republique,93150,Le Blanc-Mesnil,Seine-Saint-Denis,Île-de-France,48.935,2.473
+93150011,192 avenue charles floquet,93150,Le Blanc-Mesnil,Seine-Saint-Denis,Île-de-France,48.939,2.464
+93150012,60 - 68 paul vaillant couturier,93150,Le Blanc-Mesnil,Seine-Saint-Denis,Île-de-France,48.92779230000001,2.4739954
+93160001,33 avenue médéric,93160,Noisy-le-Grand,Seine-Saint-Denis,Île-de-France,48.83,2.561
+93160004,2 rue des hauts-châteaux,93160,Noisy-le-Grand,Seine-Saint-Denis,Île-de-France,48.843,2.577
+93160005,22 route de neuilly,93160,Noisy-le-Grand,Seine-Saint-Denis,Île-de-France,48.851,2.535
+93160006,4 boulevard du maréchal foch,93160,Noisy le Grand,Seine-Saint-Denis,Île-de-France,48.845,2.528
+93160008,rue du centre centre reg mont d'est,93160,Noisy-le-Grand,Seine-Saint-Denis,Île-de-France,48.838125330120995,2.547563329687
+93160009,104/106 av mederic,93160,Noisy-le-Grand,Seine-Saint-Denis,Île-de-France,48.82908,2.56861
+93170002,44-48 avenue de la republique,93170,Bagnolet,Seine-Saint-Denis,Île-de-France,48.86205,2.4165
+93190001,2 allée de l est,93190,Livry-Gargan,Seine-Saint-Denis,Île-de-France,48.929,2.554
+93190002,70 boulevard marx dormoy,93190,Livry-Gargan,Seine-Saint-Denis,Île-de-France,48.9055105953,2.52200168155
+93190004,137 avenue aristide briand,93190,Livry-Gargan,Seine-Saint-Denis,Île-de-France,48.91435,2.52625
+93190006,"69, avenue aristide briand",93190,Livry Gargan,Seine-Saint-Denis,Île-de-France,48.912,2.519
+93190007,41/45 boulevard robert schuman,93190,Livry-Gargan,Seine-Saint-Denis,Île-de-France,48.928,2.549
+93200008,112 av p. vaillant couturier,93200,St Denis,Seine-Saint-Denis,Île-de-France,48.935,2.368
+93210003,207-213 avenue du pdt wilson,93210,La Plaine-Saint-Denis,Seine-Saint-Denis,Île-de-France,48.91232,2.35758
+93230005,22 avenue lenine,93230,Romainville,Seine-Saint-Denis,Île-de-France,48.884,2.43
+93240001,80 boulevard maxime gorki,93240,Stains,Seine-Saint-Denis,Île-de-France,48.949,2.385
+93240005,201 avenue de stalingrad,93240,Stains,Seine-Saint-Denis,Île-de-France,48.95957,2.39866
+93240007,21 av.de stalingrad - cours st l,93240,Stains,Seine-Saint-Denis,Île-de-France,48.9487499536,2.3798807028
+93240008,17 avenue marcel cachin,93240,Stains,Seine-Saint-Denis,Île-de-France,48.95763,2.38253
+93250004,8 avenue de rosny-sous-bois,93250,Villemomble,Seine-Saint-Denis,Île-de-France,48.885,2.507
+93250009,32 av de rosny,93250,Villemomble,Seine-Saint-Denis,Île-de-France,48.885,2.505
+93260007,238 rue de paris,93260,Les Lilas,Seine-Saint-Denis,Île-de-France,48.88021,2.41759
+93270001,route des petits ponts,93270,Sevran,Seine-Saint-Denis,Île-de-France,48.951,2.528
+93270006,29 avenue du général leclerc,93270,Sevran,Seine-Saint-Denis,Île-de-France,48.939,2.527
+93270008,50 avenue john fitzgerald kennedy,93270,Sevran,Seine-Saint-Denis,Île-de-France,48.936,2.515
+93290003,av gilbert berger,93290,Tremblay-en-France,Seine-Saint-Denis,Île-de-France,48.9467460327,2.57048818541
+93290005,deviation cd 88 - 1 route de roi,93290,Tremblay-en-France,Seine-Saint-Denis,Île-de-France,48.984,2.55
+93290006,62-68 route des petits ponts,93290,Tremblay-en-France,Seine-Saint-Denis,Île-de-France,48.96372,2.56421
+93300001,43 avenue du président roosevelt,93300,Aubervilliers,Seine-Saint-Denis,Île-de-France,48.918,2.379
+93300003,100 rue charles tillon,93300,Aubervilliers,Seine-Saint-Denis,Île-de-France,48.919,2.394
+93300008,55 rue de la commune de paris,93300,Aubervilliers,Seine-Saint-Denis,Île-de-France,48.91,2.38
+93300009,62-64 avenue de la republique,93300,Aubervilliers,Seine-Saint-Denis,Île-de-France,48.909,2.386
+93300010,126 avenue victor hugo,93300,Aubervilliers,Seine-Saint-Denis,Île-de-France,48.912,2.38
+93320002,262 avenue aristide briand,93320,Les Pavillons-sous-Bois,Seine-Saint-Denis,Île-de-France,48.9104270577,2.51041120111
+93330004,avenue jean jaures,93330,Neuilly-sur-Marne,Seine-Saint-Denis,Île-de-France,48.865836168664,2.56269534165
+93330005,9 ter bd marechal foch,93330,Neuilly-sur-Marne,Seine-Saint-Denis,Île-de-France,48.85427,2.52019
+93330006,29-33 bld du marechal foch,93330,Neuilly-sur-Marne,Seine-Saint-Denis,Île-de-France,48.85523,2.52475
+93350003,7/9 av du 8 mai 1945,93350,Le Bourget,Seine-Saint-Denis,Île-de-France,48.942,2.432
+93360002,3 chemin de meaux,93360,Neuilly-Plaisance,Seine-Saint-Denis,Île-de-France,48.862,2.51
+93370001,"186, avenue jean-jaurès",93370,Montfermeil,Seine-Saint-Denis,Île-de-France,48.899,2.549
+93380009,"42, boulevard jean mermoz",93380,Pierrefitte-sur-Seine,Seine-Saint-Denis,Île-de-France,48.9660970452,2.36413094302
+93380010,185 bd jean mermoz,93380,Pierrefitte-sur-Seine,Seine-Saint-Denis,Île-de-France,48.973468486200005,2.3658464324
+93390001,12 allée de la fosse-maussoin,93390,Clichy-sous-Bois,Seine-Saint-Denis,Île-de-France,48.907,2.532
+93400007,23 boulevard victor hugo,93400,Saint-Ouen,Seine-Saint-Denis,Île-de-France,48.911,2.332
+93400010,56-74 avenue michelet,93400,Saint-Ouen,Seine-Saint-Denis,Île-de-France,48.908,2.344
+93400011,41 rue albert dhalenne,93400,Saint-Ouen,Seine-Saint-Denis,Île-de-France,48.91608,2.33077
+93410002,64 rue de meaux,93410,Vaujours,Seine-Saint-Denis,Île-de-France,48.935,2.567
+93420001,boulevard robert ballanger,93420,Villepinte,Seine-Saint-Denis,Île-de-France,48.955,2.537
+93420004,rue des buttes,93420,Villepinte,Seine-Saint-Denis,Île-de-France,48.97468,2.4964
+93420007,bd robert ballanger d115,93420,Villepinte,Seine-Saint-Denis,Île-de-France,48.953965389285,2.533686306402
+93420008,avenue g clemenceau cd 40,93420,Villepinte,Seine-Saint-Denis,Île-de-France,48.957,2.56
+93440004,226-232 avenue du 8 mai 1945,93440,Dugny,Seine-Saint-Denis,Île-de-France,48.9517,2.41673
+93470002,zac des pres cd n° 136,93470,Coubron,Seine-Saint-Denis,Île-de-France,48.915,2.589
+93500008,130-132 avenue du general leclerc,93500,Pantin,Seine-Saint-Denis,Île-de-France,48.9,2.411
+93600006,rue isaac newton,93600,Aulnay-sous-Bois,Seine-Saint-Denis,Île-de-France,48.93022,2.51132
+93600014,32 rue jacques duclos,93600,Aulnay-sous-Bois,Seine-Saint-Denis,Île-de-France,48.945,2.496
+93600016,bld marc chagall,93600,Aulnay-sous-Bois,Seine-Saint-Denis,Île-de-France,48.953,2.497
+93600018,rue michel ange route n 370,93600,Aulnay sous Bois,Seine-Saint-Denis,Île-de-France,48.953,2.486
+93606001,zone de parinor secteur n°2,93600,Aulnay-sous-Bois,Seine-Saint-Denis,Île-de-France,48.955,2.476
+93700003,"80, rue saint stenay",93700,Drancy,Seine-Saint-Denis,Île-de-France,48.918,2.418
+93700004,35-39 avenue henri barbusse,93700,Drancy,Seine-Saint-Denis,Île-de-France,48.91625,2.44355
+93700006,274 avenue jean-jaures,93700,Drancy,Seine-Saint-Denis,Île-de-France,48.913,2.463
+93800003,86 avenue de lattre de tassigny,93800,Épinay-sur-Seine,Seine-Saint-Denis,Île-de-France,48.96,2.304
+93800005,159 route de saint-leu,93800,Epinay sur Seine,Seine-Saint-Denis,Île-de-France,48.954,2.335
+93800006,53 route de saint leu,93800,Épinay-sur-Seine,Seine-Saint-Denis,Île-de-France,48.949,2.343
+94000004,22 avenue pierre brossolette,94000,Créteil,Val-de-Marne,Île-de-France,48.791,2.462
+94000006,69 avenue pierre brossolette,94000,Créteil,Val-de-Marne,Île-de-France,48.79014,2.46408
+94000009,63 avenue du général de gaulle,94000,Creteil,Val-de-Marne,Île-de-France,48.790388298253,2.4451740423071002
+94000010,autoroute a86 carre.pompadour,94000,Creteil,Val-de-Marne,Île-de-France,48.777365166952,2.4409142048333
+94000011,route de choisy rn 186,94000,Creteil,Val-de-Marne,Île-de-France,48.78292,2.4467
+94000012,route de choisy rn186,94000,Creteil,Val-de-Marne,Île-de-France,48.753221718172,2.3613484723061
+94003002,autoroute a86 aire de carrefour pompadour,94000,Créteil,Val-de-Marne,Île-de-France,48.77982431969,2.4408683431092
+94012001,119 avenue du général de gaulle,94000,Créteil,Val-de-Marne,Île-de-France,48.781867204601,2.4578945751426
+94100005,"57, rue delenue",94100,Saint-Maur-des-Fossés,Val-de-Marne,Île-de-France,48.802,2.487
+94100006,99/101 avenue foch,94100,Saint-Maur-des-Fossés,Val-de-Marne,Île-de-France,48.799,2.5
+94100011,57 bd de creteil,94100,Saint-Maur-des-Fossés,Val-de-Marne,Île-de-France,48.798,2.481
+94100012,29 bvd de créteil,94100,Saint-Maur,Val-de-Marne,Île-de-France,48.798,2.477
+94100013,64 avenue foch,94100,St Maur des Fosses,Val-de-Marne,Île-de-France,48.8005783,2.4949924
+94110003,23 avenue paul doumer,94110,Arcueil,Val-de-Marne,Île-de-France,48.807,2.337
+94110004,20 avenue paul vaillant-couturier,94110,Arcueil,Val-de-Marne,Île-de-France,48.801,2.34
+94110005,89 av a. briand,94110,Arcueil,Val-de-Marne,Île-de-France,48.804,2.325
+94120005,236 avenue de la république,94120,Fontenay-sous-Bois,Val-de-Marne,Île-de-France,48.853,2.466
+94120010,rue pt gal de gaulle,94120,Fontenay-sous-Bois,Val-de-Marne,Île-de-France,48.853,2.485
+94130003,"128, boulevard de strasbourg",94130,Nogent-sur-Marne,Val-de-Marne,Île-de-France,48.843,2.486
+94140004,43 quai auguste blanqui,94140,Alfortville,Val-de-Marne,Île-de-France,48.8043,2.41212
+94150005,autoroute a106 - aire de rungis delta pondo,94150,Rungis,Val-de-Marne,Île-de-France,48.7575828377,2.3483460055500003
+94150006,avenue charles lindbergh,94150,Rungis,Val-de-Marne,Île-de-France,48.749,2.356
+94150008,route nationale 186,94150,Rungis,Val-de-Marne,Île-de-France,48.754,2.362
+94150009,route nationale 186,94150,Rungis,Val-de-Marne,Île-de-France,48.753,2.361
+94160001,186 avenue gallieni,94160,Saint-Mandé,Val-de-Marne,Île-de-France,48.847,2.416
+94170002,264 avenue du général de gaulle,94170,Le Perreux-sur-Marne,Val-de-Marne,Île-de-France,48.851,2.495
+94170004,44-46 avenue de bry,94170,Le Perreux sur Marne,Val-de-Marne,Île-de-France,48.835,2.497
+94190002,20 rue winston churchill,94190,Villeneuve-Saint-Georges,Val-de-Marne,Île-de-France,48.754,2.45
+94190007,232 rue de paris,94190,Villeneuve-Saint-Georges,Val-de-Marne,Île-de-France,48.742052731851004,2.446910938728
+94200008,168-180 bld de stalingrad,94200,Ivry-sur-Seine,Val-de-Marne,Île-de-France,48.80595,2.37609
+94200009,79 av. georges gosnat,94200,Ivry sur Seine,Val-de-Marne,Île-de-France,48.813,2.389
+94204001,10 rue westermeyer,94200,Ivry-sur-Seine,Val-de-Marne,Île-de-France,48.819,2.396
+94220003,114 rue de paris,94220,Charenton-le-Pont,Val-de-Marne,Île-de-France,48.825,2.408
+94220004,4 bis av de la liberte,94220,Charenton-le-Pont,Val-de-Marne,Île-de-France,48.82225,2.40285
+94240004,110 boulevard paul vaillant-couturier,94240,L'hay-les-Roses,Val-de-Marne,Île-de-France,48.777,2.34
+94250001,67 avenue raspail,94250,Gentilly,Val-de-Marne,Île-de-France,48.814,2.348
+94270005,avenue de fontainebleau,94270,Le Kremlin-Bicêtre,Val-de-Marne,Île-de-France,48.81193,2.3618
+94290003,32 avenue le foll,94290,Villeneuve-le-Roi,Val-de-Marne,Île-de-France,48.728739311157995,2.4318446308188
+94300001,44 avenue de paris,94300,Vincennes,Val-de-Marne,Île-de-France,48.845,2.433
+94310002,8 place gaston viens,94310,Orly,Val-de-Marne,Île-de-France,48.743,2.408
+94310004,106 avenue la victoire,94310,Orly,Val-de-Marne,Île-de-France,48.74588,2.38308
+94340007,39 rue chapsal,94340,Joinville-le-Pont,Val-de-Marne,Île-de-France,48.822,2.465
+94340008,17/19 bd de l'europe,94340,Joinville le Pont,Val-de-Marne,Île-de-France,48.814,2.466
+94350003,75 rue de noisy,94350,Villiers sur Marne,Val-de-Marne,Île-de-France,48.834,2.547
+94370003,1 rue de paris,94370,Sucy-en-Brie,Val-de-Marne,Île-de-France,48.773,2.5
+94370005,69 route de la queue en brie,94370,Sucy-en-Brie,Val-de-Marne,Île-de-France,48.761,2.533
+94370007,13 rue maurice berteaux,94370,Sucy-en-Brie,Val-de-Marne,Île-de-France,48.773,2.517
+94370008,63/71 av du general leclerc,94370,Sucy-en-Brie,Val-de-Marne,Île-de-France,48.777,2.511
+94380002,route de la pompadour,94380,Bonneuil-sur-Marne,Val-de-Marne,Île-de-France,48.765,2.478
+94380003,5 avenue des roses,94380,Bonneuil sur Marne,Val-de-Marne,Île-de-France,48.766,2.493
+94380004,avenue jean rostand,94380,Bonneuil-sur-Marne,Val-de-Marne,Île-de-France,48.76736,2.48537
+94400003,159 avenue rouget de l'isle,94400,Vitry-sur-Seine,Val-de-Marne,Île-de-France,48.782,2.395
+94400004,2 rue eugène hénaff,94400,Vitry-sur-Seine,Val-de-Marne,Île-de-France,48.794,2.416
+94400005,34 av. henri barbusse,94400,Vitry-sur-Seine,Val-de-Marne,Île-de-France,48.79281,2.3905
+94420001,63 rue maurice berteaux,94420,Le Plessis-Trévise,Val-de-Marne,Île-de-France,48.8132,2.56641
+94420005,26 avenue ardouin,94420,Le Plessis-Trévise,Val-de-Marne,Île-de-France,48.81012715725701,2.5721811878052
+94430002,2 route de la libération,94430,Chennevières-sur-Marne,Val-de-Marne,Île-de-France,48.80464,2.53525
+94430003,85 route de provins cc pincevent,94490,Ormesson-sur-Marne,Val-de-Marne,Île-de-France,48.793,2.554
+94430007,79 rue des fusilles de chateaubr,94430,Chennevieres sur Marne,Val-de-Marne,Île-de-France,48.799,2.543
+94440001,rue d'yerres,94440,Villecresnes,Val-de-Marne,Île-de-France,48.721,2.525
+94450004,1 bis av gabriel peri,94450,Limeil-Brévannes,Val-de-Marne,Île-de-France,48.755,2.484
+94460001,44 rue sablonnière,94460,Valenton,Val-de-Marne,Île-de-France,48.74926,2.45465
+94470002,36 avenue du général leclerc,94470,Boissy-Saint-Léger,Val-de-Marne,Île-de-France,48.74854,2.50903
+94470006,55 av du général leclerc,94470,Boissy Saint Léger,Val-de-Marne,Île-de-France,48.748,2.51
+94500007,156 rue alexandre fourny,94500,Champigny-sur-Marne,Val-de-Marne,Île-de-France,48.82,2.531
+94500010,247 av charles de gaulle,94500,Champigny-sur-Marne,Val-de-Marne,Île-de-France,48.828,2.513
+94500011,114 av. du general de gaulle,94500,Champigny sur Marne,Val-de-Marne,Île-de-France,48.823,2.495
+94500014,97 avenue general de gaulle,94500,Champigny-sur-Marne,Val-de-Marne,Île-de-France,48.823,2.494
+94510001,2 rue du général de gaulle,94510,La Queue-en-Brie,Val-de-Marne,Île-de-France,48.789,2.576
+94537002,1 rue des lances,94537,Orly,Val-de-Marne,Île-de-France,48.75,2.389
+94542003,"sarl jaby, orly ouest 453",94542,Orly,Val-de-Marne,Île-de-France,48.732370599999996,2.3657066
+94550001,264 avenue de stalingrad,94550,Chevilly-Larue,Val-de-Marne,Île-de-France,48.767,2.368
+94550002,14 av du general de gaulle,94550,Chevilly-Larue,Val-de-Marne,Île-de-France,48.77313,2.3378
+94594002,103 boulevard circulaire e fruileg,94594,Rungis,Val-de-Marne,Île-de-France,48.76462365898399,2.3566444220819003
+94594003,rue du viaduc,94594,Rungis Cedex,Val-de-Marne,Île-de-France,48.761,2.349
+94600003,14 boulevard de stalingrad,94600,Choisy-le-Roi,Val-de-Marne,Île-de-France,48.768,2.403
+94600005,36 avenue de lugo,94600,Choisy-le-Roi,Val-de-Marne,Île-de-France,48.772,2.409
+94600007,33 av.de lugo,94600,Choisy-le-Roi,Val-de-Marne,Île-de-France,48.77084,2.4091
+94651002,334 thais sud c.c belle epine,94651,Thiais,Val-de-Marne,Île-de-France,48.755,2.375
+94700005,5 avenue léon blum,94700,Maisons-Alfort,Val-de-Marne,Île-de-France,48.802,2.436
+94700007,99 avenue du gl leclerc,94700,Maisons-Alfort,Val-de-Marne,Île-de-France,48.80694774210001,2.43827166369
+94700008,135 av du general leclerc,94700,Maisons-Alfort,Val-de-Marne,Île-de-France,48.80623,2.43809
+94700009,172 rue jean jaures,94700,Maisons-Alfort,Val-de-Marne,Île-de-France,48.79694,2.43334
+94800007,117 bld maxime gorki,94800,Villejuif,Val-de-Marne,Île-de-France,48.79261,2.36955
+94800008,60 av de stalingrad,94800,Villejuif,Val-de-Marne,Île-de-France,48.785417567889,2.366599755323
+94880001,1 rue sadi carnot,94880,Noiseau,Val-de-Marne,Île-de-France,48.77667,2.55134
+95000007,3 avenue des trois fontaines,95000,Cergy,Val-d'Oise,Île-de-France,49.0371,2.0756
+95000011,angle av grouettes bld l'hautil,95000,Cergy,Val-d'Oise,Île-de-France,49.032,2.069
+95100006,239 route d'enghien,95100,Argenteuil,Val-d'Oise,Île-de-France,48.95679,2.2839
+95100007,rn 311 quai st denis,95100,Argenteuil,Val-d'Oise,Île-de-France,48.945,2.263
+95100011,2 avenue gabriel péri,95100,Argenteuil,Val-d'Oise,Île-de-France,48.943,2.253
+95100021,63 avenue jean jaurès,95100,Argenteuil,Val-d'Oise,Île-de-France,48.94,2.233
+95100029,avenue de la division leclerc,95200,Sarcelles,Val-d'Oise,Île-de-France,48.98486690000001,2.3735923000000003
+95100030,rue jacques brel,95100,Argenteuil,Val-d'Oise,Île-de-France,48.95763,2.27971
+95100032,rue des grives - zac fosse aux l,95100,Argenteuil,Val-d'Oise,Île-de-France,48.94889,2.20959
+95100033,193 avenue henri barbusse,95100,Argenteuil,Val-d'Oise,Île-de-France,48.933,2.233
+95100034,176 ave stalingrad,95100,Argenteuil,Val-d'Oise,Île-de-France,48.95463,2.27332595196
+95100035,8 r des martyrs chateaubriant,95100,Argenteuil,Val-d'Oise,Île-de-France,48.952306479647,2.2130157579777
+95100037,5-7 bld des martyrs de chateaubriand,95100,Argenteuil,Val-d'Oise,Île-de-France,48.951634109562,2.2122929705522
+95110006,38-42 boulevard gabriel peri,95110,Sannois,Val-d'Oise,Île-de-France,48.967,2.262
+95110007,82 bld gabriel peri,95110,Sannois,Val-d'Oise,Île-de-France,48.96344,2.2604
+95120001,avenue du président georges pompidou,95120,Ermont,Val-d'Oise,Île-de-France,48.987,2.247
+95120002,16 rue du 18 juin,95120,Ermont,Val-d'Oise,Île-de-France,48.98975,2.25717
+95130001,9 boulevard du bel air,95130,Franconville,Val-d'Oise,Île-de-France,48.986,2.238
+95137001,362 rue du général leclerc,95130,Franconville,Val-d'Oise,Île-de-France,48.989285938081,2.2065467998684
+95140001,boulevard de la muette,95140,Garges-lès-Gonesse,Val-d'Oise,Île-de-France,48.974987592299996,2.4176564324
+95150001,centre commercial les portes de taverny,95150,Taverny,Val-d'Oise,Île-de-France,49.0146669398,2.22190168155
+95150002,180 rue d'herblay,95150,Taverny,Val-d'Oise,Île-de-France,49.0159409245,2.20719526702
+95150005,avenue de la division leclerc,95150,Taverny,Val-d'Oise,Île-de-France,49.018,2.22
+95160003,avenue de domont,95160,Montmorency,Val-d'Oise,Île-de-France,49.01,2.313
+95170001,28 avenue de la division leclerc,95170,Deuil-la-Barre,Val-d'Oise,Île-de-France,48.968,2.316
+95170002,17 route de saint-denis,95170,Deuil-la-Barre,Val-d'Oise,Île-de-France,48.961,2.326
+95180001,1 côte des auges,95180,Menucourt,Val-d'Oise,Île-de-France,49.02938,1.99173
+95190003,1 rue jacques anquetil,95190,Goussainville,Val-d'Oise,Île-de-France,49.022,2.456
+95190005,32/38 av de la gare,95190,Goussainville,Val-d'Oise,Île-de-France,49.015625843572,2.4702620933139
+95190006,"182, rue albert sarraut",95190,Goussainville,Val-d'Oise,Île-de-France,49.038,2.455
+95220003,61 boulevard du havre,95220,Herblay,Val-d'Oise,Île-de-France,49.006,2.172
+95220005,421 route de conflans,95220,Herblay,Val-d'Oise,Île-de-France,49.00469,2.12666
+95220006,"34, av. de la liberation",95220,Herblay,Val-d'Oise,Île-de-France,49.00291,2.18698
+95230006,59 avenue kellermann,95230,Soisy-sous-Montmorency,Val-d'Oise,Île-de-France,48.978,2.292
+95230008,20 av.de paris,95230,Soisy-sous-Montmorency,Val-d'Oise,Île-de-France,48.9869,2.29595
+95230010,63 avenue de paris,95230,Soisy sous Montmorency,Val-d'Oise,Île-de-France,48.990753655031,2.2892381272629
+95240003,"27, 29, 31, boulevard clemenceau",95240,Cormeilles-en-Parisis,Val-d'Oise,Île-de-France,48.971,2.192
+95260002,rue saint-roch,95260,Beaumont-sur-Oise,Val-d'Oise,Île-de-France,49.141,2.278
+95260003,48 rue de l'isle adam - rn322,95260,Beaumont-sur-Oise,Val-d'Oise,Île-de-France,49.138,2.275
+95270001,le clos pontcel d 316,95270,Luzarches,Val-d'Oise,Île-de-France,49.118658474551005,2.4268962159043
+95270002,route de royaumont,95270,Viarmes,Val-d'Oise,Île-de-France,49.137,2.373
+95270004,rn 16,95270,Épinay-Champlâtreux,Val-d'Oise,Île-de-France,49.085,2.416
+95270006,rn 16,95270,Chaumontel,Val-d'Oise,Île-de-France,49.123,2.427
+95280001,les versants de l'hautil,95280,Jouy-le-Moutier,Val-d'Oise,Île-de-France,49.0,2.016
+95290001,boulevard tilsit,95290,L'isle-Adam,Val-d'Oise,Île-de-France,49.124,2.248
+95290003,44 avenue de paris,95290,L'isle-Adam,Val-d'Oise,Île-de-France,49.110450964099996,2.22459192177
+95300004,"11, av du general gabriel delarue",95300,Pontoise,Val-d'Oise,Île-de-France,49.045,2.096
+95310003,27 rue d'épluches,95310,Saint-Ouen-L'aumone,Val-d'Oise,Île-de-France,49.057,2.124
+95310010,52 rue de paris,95310,Saint-Ouen-L'aumône,Val-d'Oise,Île-de-France,49.04,2.116
+95310011,rn 184 - zi vert galant,95310,Saint-Ouen-L'aumône,Val-d'Oise,Île-de-France,49.047756660000005,2.13195072
+95320005,boulevard andré brémond,95320,Saint-Leu-la-Forêt,Val-d'Oise,Île-de-France,49.008,2.242
+95320006,av jean rostand,95320,Saint-Leu-la-Forêt,Val-d'Oise,Île-de-France,49.013,2.249
+95330009,2 avenue du lycée,95330,Domont,Val-d'Oise,Île-de-France,49.027,2.339
+95331002,rn 1 - bp4,95331,Domont,Val-d'Oise,Île-de-France,49.028,2.347
+95340003,rue du 8 mai 1945,95340,Persan,Val-d'Oise,Île-de-France,49.146,2.282
+95340004,5 a 11 avenue jean-jaures,95340,Persan,Val-d'Oise,Île-de-France,49.146667120000004,2.2837288200000003
+95350002,20 avenue robert schumann,95350,Saint-Brice-sous-Forêt,Val-d'Oise,Île-de-France,49.00763,2.35163
+95350004,47 avenue du general de gaulle,95350,Saint-Brice-sous-Forêt,Val-d'Oise,Île-de-France,48.993,2.359
+95360001,136 rue jules ferry,95360,Montmagny,Val-d'Oise,Île-de-France,48.963,2.339
+95370001,66 boulevard victor bordier,95370,Montigny-lès-Cormeilles,Val-d'Oise,Île-de-France,48.993,2.198
+95370003,211 boulevard de pontoise,95370,Montigny-les-Cormeilles,Val-d'Oise,Île-de-France,48.992,2.182
+95370007,175 boulevard de pontoise,95370,Montigny-lès-Cormeilles,Val-d'Oise,Île-de-France,48.985054207800005,2.18181283895
+95370008,177 bd victor bordier,95370,Montigny-lès-Cormeilles,Val-d'Oise,Île-de-France,48.99694,2.18922
+95380001,zi de la briquetterie,95380,Louvres,Val-d'Oise,Île-de-France,49.049,2.498
+95380002,145 rue de paris,95380,Louvres,Val-d'Oise,Île-de-France,49.04806137,2.50257752
+95390001,41 avenue du général leclerc,95390,Saint-Prix,Val-d'Oise,Île-de-France,49.003352,2.260898
+95400003,100 avenue de la république,95400,Arnouville-lès-Gonesse,Val-d'Oise,Île-de-France,48.982,2.431
+95400004,59 avenue charles vaillant,95400,Arnouville,Val-d'Oise,Île-de-France,48.986,2.413
+95400008,avenue des erables,95400,Villiers-le-Bel,Val-d'Oise,Île-de-France,49.00053,2.39389
+95420002,route de rouen,95420,Magny-en-Vexin,Val-d'Oise,Île-de-France,49.157,1.784
+95420003,route de mantes,95420,Magny-en-Vexin,Val-d'Oise,Île-de-France,49.147,1.787
+95420005,rn 14,95420,Charmont,Val-d'Oise,Île-de-France,49.13514,1.78964
+95440001,56 rue de la libération,95440,Écouen,Val-d'Oise,Île-de-France,49.027,2.369
+95440002,route nationale 16,95440,Écouen,Val-d'Oise,Île-de-France,49.03,2.39
+95450006,rn 14 lieudit la marliere,95450,Sagy,Val-d'Oise,Île-de-France,49.064610342954,1.9789464314269
+95450007,rn14 - lieu dit la marliere,95450,Sagy,Val-d'Oise,Île-de-France,49.064195539574,1.9827089208983002
+95460003,route d'ecouen rn 370,95460,Ezanville,Val-d'Oise,Île-de-France,49.028241057696,2.3655005925033
+95470004,autoroute a1 - aire de vémars est,95470,Vemars,Val-d'Oise,Île-de-France,49.072,2.553
+95470005,autoroute a1 - aire de vemars ouest,95470,Vemars,Val-d'Oise,Île-de-France,49.07,2.552
+95470006,2 avenue henri barbusse,95470,Fosses,Val-d'Oise,Île-de-France,49.10021,2.52395
+95470008,aut a1 aire de vémars ouest,95470,Vemars,Val-d'Oise,Île-de-France,49.067,2.566
+95480002,autoroute a 15,95480,Pierrelaye,Val-d'Oise,Île-de-France,49.01547848852,2.1464288181662
+95480003,autoroute a15 - aire de pierrelaye,95480,Pierrelaye,Val-d'Oise,Île-de-France,49.01263,2.14895
+95500006,1 rue georges pompidou,95500,Gonesse,Val-d'Oise,Île-de-France,48.98940867009,2.433548852432
+95500010,rn 370,95500,Gonesse,Val-d'Oise,Île-de-France,48.967,2.465
+95500011,rd 370 rue nungesser et coli,95500,Gonesse,Val-d'Oise,Île-de-France,48.9811274725,2.4450748025399998
+95500012,19 rue gabriel peri,95500,Gonesse,Val-d'Oise,Île-de-France,48.99401,2.42407
+95500014,avenue des violettes,95500,Le Thillay,Val-d'Oise,Île-de-France,49.008,2.465
+95520001,chemin du poirier charles guérin,95520,Osny,Val-d'Oise,Île-de-France,49.077,2.077
+95520002,4 chaussée jules césar,95520,Osny,Val-d'Oise,Île-de-France,49.05,2.075
+95520004,chemin des hayettes,95520,Osny,Val-d'Oise,Île-de-France,49.068,2.088
+95520005,lieudit le champ pourri cd 915,95520,Osny,Val-d'Oise,Île-de-France,49.061,2.084
+95540002,route de pontoise,95540,Méry-sur-Oise,Val-d'Oise,Île-de-France,49.061,2.17
+95540005,lieudit les 4 chemins-rn1,95540,Mery sur Oise,Val-d'Oise,Île-de-France,49.054,2.175
+95550002,zac des meuniers - 7 rue stephane hessel,95550,Bessancourt,Val-d'Oise,Île-de-France,49.033,2.205
+95560003,13 bis route nationale 1,95560,Maffliers,Val-d'Oise,Île-de-France,49.083,2.315
+95570003,route nationale 1,95570,Moisselles,Val-d'Oise,Île-de-France,49.041177467467996,2.3422049553388
+95570007,rn1,95570,Moisselles,Val-d'Oise,Île-de-France,49.041,2.343
+95570009,9 rd 104,95570,Attainville,Val-d'Oise,Île-de-France,49.06,2.348
+95600001,48 avenue kellermann,95600,Eaubonne,Val-d'Oise,Île-de-France,48.978,2.291
+95600002,5 avenue voltaire,95600,Eaubonne,Val-d'Oise,Île-de-France,48.994,2.28
+95610007,"rn184, direction st germain",95610,Eragny sur Oise,Val-d'Oise,Île-de-France,49.026324790000004,2.10290854
+95610008,route nationale 184,95610,Eragny-sur-Oise,Val-d'Oise,Île-de-France,49.026,2.104
+95640001,boulevard gambetta,95640,Marines,Val-d'Oise,Île-de-France,49.147,1.975
+95650002,cd 916 - route de gisors,95650,Genicourt,Val-d'Oise,Île-de-France,49.080593609,2.07055138774
+95712003,voie p5 et f2 bp 20212,95700,Roissy-en-France,Val-d'Oise,Île-de-France,48.99981732010001,2.52286702801
+95712004,1 rue de l'or - bp.20212,95700,Roissy-en-France,Val-d'Oise,Île-de-France,49.0091,2.53736
+95740005,14 avenue du general de gaulle,95740,Frepillon,Val-d'Oise,Île-de-France,49.048,2.201
+95800001,rue neuve,95650,Puiseux-Pontoise,Val-d'Oise,Île-de-France,49.05575,2.0188
+95800003,boulevard d'osny,95800,Cergy,Val-d'Oise,Île-de-France,49.05,2.045
+95800007,rond point des chenes (bd de loise),95800,Cergy,Val-d'Oise,Île-de-France,49.053,2.038
+95870005,179 boulevard gabriel péri,95870,Bezons,Val-d'Oise,Île-de-France,48.937,2.207
+95870009,151 avenue gabriel péri,95870,Bezons,Val-d'Oise,Île-de-France,48.935567999999996,2.2076279999999997
+95870010,179 avenue gabriel péri,95870,Bezons,Val-d'Oise,Île-de-France,48.936888607759,2.2069830018219

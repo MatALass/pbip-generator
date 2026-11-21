@@ -11,6 +11,36 @@ Généré par pbip-generator : 4 tables, 8 mesures, 4 relations.
 | Produits | dimension | `produits.csv` | 25 | 4 | 0 |
 | Calendrier | dates | table générée (Power Query) |  | 8 | 0 |
 
+## Schéma du modèle
+
+```mermaid
+erDiagram
+    T0["Ventes (faits)"] {
+        int64 VenteID PK
+        dateTime Date_commande FK "Date commande"
+        dateTime Date_livraison FK "Date livraison"
+        int64 ClientID FK
+        int64 ProduitID FK
+    }
+    T1["Clients (dimension)"] {
+        int64 ClientID PK
+    }
+    T2["Produits (dimension)"] {
+        int64 ProduitID PK
+    }
+    T3["Calendrier (dates)"] {
+        dateTime Date PK
+    }
+    T0 }o--|| T1 : "ClientID"
+    T0 }o--|| T2 : "ProduitID"
+    T0 }o--|| T3 : "Date commande"
+    T0 }o..|| T3 : "Date livraison"
+```
+
+## Grain des tables de faits
+
+- **Ventes** : une ligne par `VenteID`
+
 ### Ventes
 
 | Colonne | Type | Format | Masquée |

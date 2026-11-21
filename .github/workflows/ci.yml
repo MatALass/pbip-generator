@@ -22,11 +22,13 @@ jobs:
           git -C .schemas-src sparse-checkout set fabric
           echo "PBIP_SCHEMAS_DIR=$GITHUB_WORKSPACE/.schemas-src/fabric" >> "$GITHUB_ENV"
       - run: pip install -e ".[dev]"
-      - run: ruff check src tests
-      - run: ruff format --check src tests
+      - run: ruff check src tests examples
+      - run: ruff format --check src tests examples
       - run: pytest -v --cov=pbip_generator --cov-report=term-missing --cov-fail-under=95
-      - name: Build the example project
-        run: pbip-generator build examples/ventes/data -c examples/ventes/config.yaml -o output
+      - name: Build the example projects
+        run: |
+          pbip-generator build examples/ventes/data -c examples/ventes/config.yaml -o output
+          pbip-generator build examples/carburants/data --spec examples/carburants/report.yaml -o output --strict
 
   # The JSON schemas check the report; TOM, the library Power BI uses, checks that the semantic
   # model (TMDL) loads. It catches TMDL syntax and reference errors no schema sees.
@@ -46,6 +48,7 @@ jobs:
         run: |
           pbip-generator build examples/ventes/data -c examples/ventes/config.yaml -o output/auto -n Ventes
           pbip-generator build examples/ventes/data --spec examples/ventes/report.yaml -o output/spec -n Ventes
+          pbip-generator build examples/carburants/data --spec examples/carburants/report.yaml -o output/carburants
       - name: Load every semantic model with TOM
         shell: pwsh
         run: |

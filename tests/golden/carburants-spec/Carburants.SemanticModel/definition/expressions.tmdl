@@ -1,0 +1,4 @@
+expression DataFolder = "C:\pbip\Carburants\data\" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: aa4ac9ae-3093-5ff7-a378-a76650654426
+
+	annotation PBI_ResultType = Text

@@ -30,7 +30,7 @@ table Produits
 		dataType: double
 		formatString: #,##0.00 €
 		lineageTag: 9994933e-8b80-5f32-83f4-ca0f36510c40
-		summarizeBy: sum
+		summarizeBy: average
 		sourceColumn: Prix unitaire
 
 		annotation SummarizationSetBy = Automatic
